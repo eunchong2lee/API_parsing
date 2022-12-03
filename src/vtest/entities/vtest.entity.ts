@@ -47,7 +47,7 @@ export class Vtest {
   @Column({ nullable: true })
   PRMS_IMG: string;
 
-  @Column({ nullable: true })
+  @Column('simple-json', { nullable: true })
   PRMS_STANDARD: string;
 
   @CreateDateColumn()
