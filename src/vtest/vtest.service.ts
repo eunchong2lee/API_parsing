@@ -7,7 +7,7 @@ import * as cheerio from 'cheerio';
 import * as fs from 'fs';
 import { response } from 'express';
 import { error } from 'console';
-import { end } from 'cheerio/lib/api/traversing';
+import { end, find } from 'cheerio/lib/api/traversing';
 import { Kafka } from 'aws-sdk';
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
@@ -88,6 +88,7 @@ export class VtestService {
         if (e.BASE_STANDARD) {
           const data = e.BASE_STANDARD.split('\n');
           // // console.log(data);
+          const final_data = {};
           for (let i = 0; i < data.length; i++) {
             if (data[i].includes('표시량')) {
               const split_data = data[i].split(':');
@@ -108,6 +109,7 @@ export class VtestService {
                     first_index + 1,
                     second_index + 1,
                   );
+                  final_data['회색갈정제'] = find_data;
                   const complete_data = { 회갈색정제: find_data };
                 }
                 // 미황색정제
@@ -119,6 +121,7 @@ export class VtestService {
                     first_index + 1,
                     second_index + 1,
                   );
+                  final_data['미황색정제'] = find_data;
                   const complete_data = { 미황색정제: find_data };
                 }
                 // 진세노사이드 Rg1, Rb1, Rg3 파싱
@@ -136,6 +139,7 @@ export class VtestService {
                       first_index + 4,
                       second_index + 2,
                     );
+                    final_data['진세노사이드 Rg1, Rb1 및 Rg3의 합'] = find_data;
                     let complete_data = {
                       '진세노사이드 Rg1, Rb1 및 Rg3의 합': find_data,
                     };
@@ -147,6 +151,8 @@ export class VtestService {
                         first_index + 4,
                         second_index + 2,
                       );
+                      final_data['진세노사이드 Rg1, Rb1 및 Rg3의 합'] =
+                        find_data;
                       complete_data = {
                         '진세노사이드 Rg1, Rb1 및 Rg3의 합': find_data,
                       };
@@ -159,6 +165,7 @@ export class VtestService {
                       first_index + 5,
                       second_index + 2,
                     );
+                    final_data['진세노사이드 Rg1, Rb1 및 Rg3의 합'] = find_data;
                     const complete_data = {
                       '진세노사이드 Rg1, Rb1 및 Rg3의 합': find_data,
                     };
@@ -171,10 +178,11 @@ export class VtestService {
                       first_index + 4,
                       second_index + 2,
                     );
+                    final_data['진세노사이드 Rg1, Rb1 및 Rg3의 합'] = find_data;
                     let complete_data = {
                       '진세노사이드 Rg1, Rb1 및 Rg3의 합': find_data,
                     };
-                    // console.log(complete_data, e._id);
+
                     if (!find_data.length) {
                       const parse_data = split_data[0];
                       const first_index = parse_data.indexOf('합 ');
@@ -188,19 +196,26 @@ export class VtestService {
                           .slice(find_data.indexOf('서') + 1, find_data.length)
                           .trim();
                       }
+
+                      final_data['진세노사이드 Rg1, Rb1 및 Rg3의 합'] =
+                        find_data;
                       complete_data = {
                         '진세노사이드 Rg1, Rb1 및 Rg3의 합': find_data,
                       };
                     } else {
                       if (parse_data.includes('25')) {
+                        final_data['진세노사이드 Rg1, Rb1 및 Rg3의 합'] =
+                          '25mg';
                         complete_data = {
                           '진세노사이드 Rg1, Rb1 및 Rg3의 합': '25mg',
                         };
                       } else if (parse_data.includes('5')) {
+                        final_data['진세노사이드 Rg1, Rb1 및 Rg3의 합'] = '5mg';
                         complete_data = {
                           '진세노사이드 Rg1, Rb1 및 Rg3의 합': '5mg',
                         };
                       } else {
+                        final_data['진세노사이드 Rg1, Rb1 및 Rg3의 합'] = '4mg';
                         complete_data = {
                           '진세노사이드 Rg1, Rb1 및 Rg3의 합': '4mg',
                         };
@@ -214,6 +229,7 @@ export class VtestService {
                       first_index + 6,
                       second_index + 2,
                     );
+                    final_data['진세노사이드 Rg1, Rb1 및 Rg3의 합'] = find_data;
                     const complete_data = {
                       '진세노사이드 Rg1, Rb1 및 Rg3의 합': find_data,
                     };
@@ -225,10 +241,13 @@ export class VtestService {
                       first_index + 5,
                       second_index + 2,
                     );
+
+                    final_data['진세노사이드 Rg1, Rb1 및 Rg3의 합'] = find_data;
                     const complete_data = {
                       '진세노사이드 Rg1, Rb1 및 Rg3의 합': find_data,
                     };
                   } else if (split_data[0].includes('3mg')) {
+                    final_data['진세노사이드 Rg1, Rb1 및 Rg3의 합'] = '3mg';
                     const complete_data = {
                       '진세노사이드 Rg1, Rb1 및 Rg3의 합': '3mg',
                     };
@@ -257,6 +276,7 @@ export class VtestService {
                         .trim();
                     }
 
+                    final_data['진세노사이드 Rg1, Rb1 및 Rg3의 합'] = find_data;
                     const complete_data = {
                       '진세노사이드 Rg1, Rb1 및 Rg3의 합': find_data,
                     };
@@ -274,6 +294,7 @@ export class VtestService {
                     first_index + 1,
                     second_index + 2,
                   );
+                  final_data['진세노사이드 Rg1, Rb1 및 Rg3의 합'] = find_data;
                   const complete_data = {
                     '진세노사이드 Rg1, Rb1 및 Rg3의 합': find_data,
                   };
@@ -292,6 +313,7 @@ export class VtestService {
                     first_index + 1,
                     second_index + 2,
                   );
+                  final_data['진세노사이드 Rg1과 Rb1의 합'] = find_data;
                   let complete_data = {
                     '진세노사이드 Rg1과 Rb1의 합': find_data,
                   };
@@ -302,6 +324,8 @@ export class VtestService {
                     const find_data = parse_data
                       .slice(first_index + 2, second_index + 2)
                       .trim();
+
+                    final_data['진세노사이드 Rg1과 Rb1의 합'] = find_data;
                     complete_data = {
                       '진세노사이드 Rg1과 Rb1의 합': find_data,
                     };
@@ -324,6 +348,7 @@ export class VtestService {
                           .trim();
                       }
                     }
+                    final_data['비타민C'] = find_data;
                     const complete_data = {
                       비타민C: find_data,
                     };
@@ -333,19 +358,23 @@ export class VtestService {
                     const find_data = parse_data
                       .slice(first_index + 1, first_index + 4)
                       .trim();
+                    final_data['비타민A'] = `${find_data}ugRE`;
                     let complete_data = {
                       비타민A: `${find_data}ugRE`,
                     };
                     if (find_data.includes(')') || find_data.includes('캡슐')) {
                       if (split_data[0].includes('459')) {
+                        final_data['비타민A'] = `459ugRE`;
                         complete_data = {
                           비타민A: `459ugRE`,
                         };
                       } else if (split_data[0].includes('700')) {
+                        final_data['비타민A'] = `700ugRE`;
                         complete_data = {
                           비타민A: `700ugRE`,
                         };
                       } else if (split_data[0].includes('450')) {
+                        final_data['비타민A'] = `450ugRE`;
                         complete_data = {
                           비타민A: `450ugRE`,
                         };
@@ -359,10 +388,12 @@ export class VtestService {
                     const find_data = parse_data
                       .slice(first_index + 1, second_index + 2)
                       .trim();
+                    final_data['비타민E'] = `${find_data}α-TE`;
                     let complete_data = {
                       비타민E: `${find_data}α-TE`,
                     };
                     if (!find_data) {
+                      final_data['비타민E'] = `11mgα-TE`;
                       complete_data = {
                         비타민E: `11mgα-TE`,
                       };
@@ -374,6 +405,7 @@ export class VtestService {
                     const find_data = parse_data
                       .slice(first_index + 1, second_index)
                       .trim();
+                    final_data['비타민D'] = `${find_data}ug`;
                     let complete_data = {
                       비타민D: `${find_data}µg`,
                     };
@@ -385,6 +417,7 @@ export class VtestService {
                         const find_data = parse_data
                           .slice(first_index + 1, second_index)
                           .trim();
+                        final_data['비타민D'] = `${find_data}ug`;
                         complete_data = {
                           비타민D: `${find_data}µg`,
                         };
@@ -395,6 +428,7 @@ export class VtestService {
                         const find_data = parse_data
                           .slice(first_index + 1, second_index)
                           .trim();
+                        final_data['비타민D'] = `${find_data}ug`;
                         complete_data = {
                           비타민D: `${find_data}µg`,
                         };
@@ -407,6 +441,7 @@ export class VtestService {
                         const find_data = parse_data
                           .slice(first_index + 1, second_index)
                           .trim();
+                        final_data['비타민D'] = `${find_data}ug`;
                         complete_data = {
                           비타민D: `${find_data}µg`,
                         };
@@ -419,6 +454,7 @@ export class VtestService {
                     const find_data = parse_data
                       .slice(first_index + 1, second_index)
                       .trim();
+                    final_data['비타민K'] = `${find_data}ug`;
                     const complete_data = {
                       비타민K: `${find_data}µg`,
                     };
@@ -432,6 +468,7 @@ export class VtestService {
                         const find_data = parse_data
                           .slice(first_index + 1, second_index)
                           .trim();
+                        final_data['비타민B12'] = `${find_data}ug`;
                         complete_data = {
                           비타민B12: `${find_data}µg`,
                         };
@@ -449,6 +486,7 @@ export class VtestService {
                         if (!find_data) {
                           find_data = 10;
                         }
+                        final_data['비타민B12'] = `${find_data}ug`;
                         complete_data = {
                           비타민B12: `${find_data}µg`,
                         };
@@ -459,6 +497,7 @@ export class VtestService {
                         const find_data = parse_data
                           .slice(first_index + 1, second_index)
                           .trim();
+                        final_data['비타민B12'] = `${find_data}ug`;
                         complete_data = {
                           비타민B12: `${find_data}µg`,
                         };
@@ -469,6 +508,7 @@ export class VtestService {
                         const find_data = parse_data
                           .slice(first_index + 1, second_index)
                           .trim();
+                        final_data['비타민B12'] = `${find_data}ug`;
                         complete_data = {
                           비타민B12: `${find_data}µg`,
                         };
@@ -493,8 +533,9 @@ export class VtestService {
                           find_data.length,
                         );
                       }
+                      final_data['비타민B1'] = `${find_data}ug`;
                       complete_data = {
-                        비타민B12: `${find_data}mg`,
+                        비타민B1: `${find_data}mg`,
                       };
                     } else if (split_data[0].includes('B2')) {
                       const parse_data = split_data[0];
@@ -516,6 +557,7 @@ export class VtestService {
                           .slice(first_index + 1, second_index)
                           .trim();
                       }
+                      final_data['비타민B2'] = `${find_data}ug`;
                       complete_data = {
                         비타민B2: `${find_data}mg`,
                       };
@@ -546,6 +588,7 @@ export class VtestService {
                         if (find_data.includes('표시량')) {
                           find_data = find_data.slice(3, find_data.length);
                         }
+                        final_data['비타민B6'] = `${find_data}ug`;
                         complete_data = {
                           비타민B6: `${find_data}mg`,
                         };
@@ -589,6 +632,7 @@ export class VtestService {
 
                       // console.log(find_data);
                     }
+                    final_data['엠에스엠'] = `${find_data}g`;
                     const complete_data = {
                       엠에스엠: `${find_data}g`,
                     };
@@ -627,8 +671,6 @@ export class VtestService {
                     }
                     if (find_data.includes('표시량')) {
                       find_data = find_data.slice(3, find_data.length).trim();
-
-                      // console.log(find_data);
                     }
 
                     if (find_data.includes('아연')) {
@@ -649,7 +691,7 @@ export class VtestService {
                         아연: `${find_data}g`,
                       };
 
-                      // console.log(complete_data);
+                      final_data['아연'] = `${find_data}g`;
                     }
                   }
                 } else if (split_data[0].includes('셀렌')) {
@@ -661,6 +703,7 @@ export class VtestService {
                       .slice(first_index + 1, second_index)
                       .trim();
 
+                    final_data['셀렌'] = `${find_data}ug`;
                     const complete_data = {
                       셀렌: `${find_data}µg`,
                     };
@@ -674,18 +717,18 @@ export class VtestService {
                     if (find_data.length > 8) {
                       find_data = '55.1';
                     }
+                    final_data['셀렌'] = `${find_data}ug`;
                     const complete_data = {
                       셀렌: `${find_data}µg`,
                     };
                   } else if (split_data[0].includes('ug')) {
-                    // console.log(complete_data);
                     const parse_data = split_data[0];
                     const first_index = parse_data.indexOf('(');
                     const second_index = parse_data.indexOf('ug');
                     const find_data = parse_data
                       .slice(first_index + 1, second_index)
                       .trim();
-
+                    final_data['셀렌'] = `${find_data}ug`;
                     const complete_data = {
                       셀렌: `${find_data}µg`,
                     };
@@ -699,9 +742,9 @@ export class VtestService {
                     const find_data = parse_data
                       .slice(first_index + 1, second_index)
                       .trim();
-
+                    final_data['엽산'] = `${find_data}ug`;
                     const complete_data = {
-                      셀렌: `${find_data}µg`,
+                      엽산: `${find_data}µg`,
                     };
                   } else if (split_data[0].includes('µg')) {
                     const parse_data = split_data[0];
@@ -713,9 +756,9 @@ export class VtestService {
                     if (find_data.length > 8) {
                       find_data = '400';
                     }
-
+                    final_data['엽산'] = `${find_data}ug`;
                     const complete_data = {
-                      셀렌: `${find_data}µg`,
+                      엽산: `${find_data}µg`,
                     };
                   } else if (split_data[0].includes('μg')) {
                     const parse_data = split_data[0];
@@ -724,9 +767,9 @@ export class VtestService {
                     const find_data = parse_data
                       .slice(first_index + 1, second_index)
                       .trim();
-
+                    final_data['엽산'] = `${find_data}ug`;
                     const complete_data = {
-                      셀렌: `${find_data}µg`,
+                      엽산: `${find_data}µg`,
                     };
                   } else if (split_data[0].includes('ug')) {
                     const parse_data = split_data[0];
@@ -735,9 +778,9 @@ export class VtestService {
                     const find_data = parse_data
                       .slice(first_index + 1, second_index)
                       .trim();
-
+                    final_data['엽산'] = `${find_data}ug`;
                     const complete_data = {
-                      셀렌: `${find_data}µg`,
+                      엽산: `${find_data}µg`,
                     };
                   } else {
                   }
@@ -755,7 +798,7 @@ export class VtestService {
                     } else if (find_data.length > 6) {
                       find_data = '5';
                     }
-
+                    final_data['판토텐산'] = `${find_data}mg`;
                     const complete_data = {
                       판토텐산: `${find_data}mg`,
                     };
@@ -778,6 +821,7 @@ export class VtestService {
                         .slice(find_data.length - 3, find_data.length)
                         .trim();
                     }
+                    final_data['나이아신'] = `${find_data}mg`;
                     const complete_data = {
                       나이아신: `${find_data}mg`,
                     };
@@ -809,6 +853,7 @@ export class VtestService {
                         find_data.length,
                       );
                     }
+                    final_data['실리마린'] = `${find_data}mg`;
                     const complete_data = {
                       실라마린: `${find_data}mg`,
                     };
@@ -830,6 +875,7 @@ export class VtestService {
                         .slice(first_index + 1, second_index)
                         .trim();
                     }
+                    final_data['셀레늄'] = `${find_data}ug`;
                     const complete_data = {
                       셀레늄: `${find_data}µg`,
                     };
@@ -847,6 +893,7 @@ export class VtestService {
                         .slice(first_index + 1, second_index)
                         .trim();
                     }
+                    final_data['셀레늄'] = `${find_data}ug`;
                     const complete_data = {
                       셀레늄: `${find_data}µg`,
                     };
@@ -867,6 +914,7 @@ export class VtestService {
                         .slice(first_index + 1, second_index)
                         .trim();
                     }
+                    final_data['비오틴'] = `${find_data}ug`;
                     const complete_data = {
                       비오틴: `${find_data}µg`,
                     };
@@ -888,6 +936,7 @@ export class VtestService {
                         .slice(find_data.length - 4, find_data.length)
                         .trim();
                     }
+                    final_data['비오틴'] = `${find_data}ug`;
                     const complete_data = {
                       비오틴: `${find_data}µg`,
                     };
@@ -916,6 +965,7 @@ export class VtestService {
                     } else if (find_data.includes('[')) {
                       find_data = '100m';
                     }
+                    final_data['마그네슘'] = `${find_data}g`;
                     const complete_data = {
                       마그네슘: `${find_data}g`,
                     };
@@ -940,6 +990,7 @@ export class VtestService {
                         .slice(find_data.length - 4, find_data.length)
                         .trim();
                     }
+                    final_data['칼슘'] = `${find_data}g`;
                     const complete_data = {
                       칼슘: `${find_data}g`,
                     };
@@ -965,7 +1016,7 @@ export class VtestService {
                         .slice(find_data.indexOf('(') + 1, find_data.length)
                         .trim();
                     }
-
+                    final_data['디메틸설폰'] = `${find_data}g`;
                     const complete_data = {
                       디메틸설폰: `${find_data}g`,
                     };
@@ -978,9 +1029,9 @@ export class VtestService {
                     const find_data = parse_data
                       .slice(first_index + 1, second_index)
                       .trim();
-
+                    final_data['로르산'] = `${find_data}g`;
                     const complete_data = {
-                      디메틸설폰: `${find_data}g`,
+                      로르산: `${find_data}g`,
                     };
                   }
                 } else if (split_data[0].includes('프락토올리고당')) {
@@ -1002,7 +1053,7 @@ export class VtestService {
                         .slice(find_data.indexOf('[') + 1, find_data.length)
                         .trim();
                     }
-
+                    final_data['프락토올리고당'] = `${find_data}g`;
                     const complete_data = {
                       프락토올리고당: `${find_data}g`,
                     };
@@ -1043,7 +1094,7 @@ export class VtestService {
                         .slice(find_data.indexOf('2'), find_data.length)
                         .trim();
                     }
-
+                    final_data['식이섬유'] = `${find_data}g`;
                     const complete_data = {
                       식이섬유: `${find_data}g`,
                     };
@@ -1062,7 +1113,7 @@ export class VtestService {
                         parse_data.indexOf('표') + 7,
                       );
                     }
-
+                    final_data['엽록소'] = `${find_data}g`;
                     const complete_data = {
                       엽록소: `${find_data}g`,
                     };
@@ -1078,7 +1129,7 @@ export class VtestService {
                     if (find_data.length > 1) {
                       find_data = find_data.substr(3).trim();
                     }
-
+                    final_data['로사빈'] = `${find_data}g`;
                     const complete_data = {
                       로사빈: `${find_data}g`,
                     };
@@ -1099,6 +1150,7 @@ export class VtestService {
                         .slice(first_index + 1, second_index)
                         .trim();
                     }
+                    final_data['Dimethylesculetin'] = `${find_data}g`;
                     const complete_data = {
                       Dimethylesculetin: `${find_data}g`,
                     };
@@ -1119,6 +1171,7 @@ export class VtestService {
                         .slice(first_index + 1, second_index)
                         .trim();
                     }
+                    final_data['Deoxynojirimycin'] = `${find_data}g`;
                     const complete_data = {
                       Deoxynojirimycin: `${find_data}g`,
                     };
@@ -1131,7 +1184,7 @@ export class VtestService {
                     const find_data = parse_data
                       .slice(first_index + 1, second_index)
                       .trim();
-
+                    final_data['키토산'] = `${find_data}g`;
                     const complete_data = {
                       키토산: `${find_data}g`,
                     };
@@ -1144,7 +1197,7 @@ export class VtestService {
                     const find_data = parse_data
                       .slice(first_index + 1, second_index)
                       .trim();
-
+                    final_data['폴리감마글루탐산'] = `${find_data}g`;
                     const complete_data = {
                       폴리감마글루탐산: `${find_data}g`,
                     };
@@ -1157,7 +1210,7 @@ export class VtestService {
                     const find_data = parse_data
                       .slice(first_index + 1, second_index)
                       .trim();
-
+                    final_data['크롬'] = `${find_data}ug`;
                     const complete_data = {
                       크롬: `${find_data}µg`,
                     };
@@ -1168,7 +1221,7 @@ export class VtestService {
                     const find_data = parse_data
                       .slice(first_index + 1, second_index)
                       .trim();
-
+                    final_data['크롬'] = `${find_data}ug`;
                     const complete_data = {
                       크롬: `${find_data}µg`,
                     };
@@ -1179,7 +1232,7 @@ export class VtestService {
                     const find_data = parse_data
                       .slice(first_index + 1, second_index)
                       .trim();
-
+                    final_data['크롬'] = `${find_data}g`;
                     const complete_data = {
                       크롬: `${find_data}g`,
                     };
@@ -1192,7 +1245,7 @@ export class VtestService {
                     const find_data = parse_data
                       .slice(first_index + 1, second_index)
                       .trim();
-
+                    final_data['프로바이오틱스'] = `${find_data}CFU`;
                     const complete_data = {
                       프로바이오틱스: `${find_data}CFU`,
                     };
@@ -1205,13 +1258,14 @@ export class VtestService {
                     const find_data = parse_data
                       .slice(first_index + 2, second_index - 1)
                       .trim();
-
+                    final_data['라우릭산'] = `${find_data}mg`;
                     const complete_data = {
                       라우릭산: `${find_data}mg`,
                     };
                   }
                 } else if (split_data[0].includes('총지방족알코올함량')) {
                   const find_data = 5.0;
+                  final_data['총지방족알코올함량'] = `${find_data}mg`;
                   const complete_data = {
                     총지방족알코올함량: `${find_data}mg`,
                   };
@@ -1230,7 +1284,7 @@ export class VtestService {
                         .slice(first_index + 1, second_index)
                         .trim();
                     }
-
+                    final_data['감마리놀렌산'] = `${find_data}g`;
                     const complete_data = {
                       감마리놀렌산: `${find_data}g`,
                     };
@@ -1250,7 +1304,7 @@ export class VtestService {
                         .slice(first_index + 1, second_index)
                         .trim();
                     }
-
+                    final_data['글루코실 세라마이드'] = `${find_data}g`;
                     const complete_data = {
                       '글루코실 세라마이드': `${find_data}g`,
                     };
@@ -1270,7 +1324,7 @@ export class VtestService {
                         .slice(first_index + 1, second_index)
                         .trim();
                     }
-
+                    final_data['조단백질'] = `${find_data}g`;
                     const complete_data = {
                       조단백질: `${find_data}g`,
                     };
@@ -1296,7 +1350,7 @@ export class VtestService {
                         .slice(find_data.length - 5, find_data.length)
                         .trim();
                     }
-
+                    final_data['망간'] = `${find_data}g`;
                     const complete_data = {
                       망간: `${find_data}g`,
                     };
@@ -1314,7 +1368,7 @@ export class VtestService {
                         .slice(find_data.length - 4, find_data.length)
                         .trim();
                     }
-
+                    final_data['카테킨'] = `${find_data}g`;
                     const complete_data = {
                       카테킨: `${find_data}g`,
                     };
@@ -1322,9 +1376,9 @@ export class VtestService {
                 } else if (split_data[0].includes('D-pinitol')) {
                   if (split_data[0].includes('g')) {
                     const find_data = '18.64m';
-
+                    final_data['D-pinitol'] = `${find_data}g`;
                     const complete_data = {
-                      ' D-pinitol': `${find_data}g`,
+                      'D-pinitol': `${find_data}g`,
                     };
                   }
                 } else if (split_data[0].includes('폴리페놀')) {
@@ -1340,7 +1394,7 @@ export class VtestService {
                         .slice(find_data.length - 5, find_data.length)
                         .trim();
                     }
-
+                    final_data['폴리페놀'] = `${find_data}g`;
                     const complete_data = {
                       폴리페놀: `${find_data}g`,
                     };
@@ -1358,7 +1412,7 @@ export class VtestService {
                         .slice(find_data.length - 3, find_data.length)
                         .trim();
                     }
-
+                    final_data['플라보놀배당체'] = `${find_data}g`;
                     const complete_data = {
                       플라보놀배당체: `${find_data}g`,
                     };
@@ -1374,7 +1428,7 @@ export class VtestService {
                     if (find_data.includes('(')) {
                       find_data = find_data.substr(1);
                     }
-
+                    final_data['플라보노이드'] = `${find_data}g`;
                     const complete_data = {
                       플라보노이드: `${find_data}g`,
                     };
@@ -1390,12 +1444,13 @@ export class VtestService {
                     if (find_data.includes('(')) {
                       find_data = find_data.substr(1);
                     }
-
+                    final_data['플라보노이트'] = `${find_data}g`;
                     const complete_data = {
                       플라보노이트: `${find_data}g`,
                     };
                   }
                 } else if (split_data[0].includes('Fustin')) {
+                  final_data['Fustin'] = `57mg`;
                   const complete_data = {
                     Fustin: `57mg`,
                   };
@@ -1413,7 +1468,7 @@ export class VtestService {
                     if (find_data.includes('(')) {
                       find_data = find_data.substr(1);
                     }
-
+                    final_data['EPA와 DHA 합'] = `${find_data}g`;
                     const complete_data = {
                       'EPA와 DHA 합': `${find_data}g`,
                     };
@@ -1429,7 +1484,7 @@ export class VtestService {
                     find_data = find_data
                       .slice(find_data.length - 3, find_data.length)
                       .trim();
-
+                    final_data['안트라퀴논계화합물'] = `${find_data}g`;
                     const complete_data = {
                       안트라퀴논계화합물: `${find_data}g`,
                     };
@@ -1450,11 +1505,13 @@ export class VtestService {
                         .slice(first_index + 1, second_index)
                         .trim();
                     }
+                    final_data['코로솔산'] = `${find_data}g`;
                     const complete_data = {
                       코로솔산: `${find_data}g`,
                     };
                   }
                 } else if (split_data[0].includes('데커신')) {
+                  final_data['데커신'] = `100.8mg`;
                   const complete_data = {
                     데커신: '100.8mg',
                   };
@@ -1482,6 +1539,7 @@ export class VtestService {
                         .slice(find_data.length - 5, find_data.length)
                         .trim();
                     }
+                    final_data['히알루론산'] = `${find_data}g`;
                     const complete_data = {
                       히알루론산: `${find_data}g`,
                     };
@@ -1494,7 +1552,7 @@ export class VtestService {
                     const find_data = parse_data
                       .slice(first_index + 1, second_index)
                       .trim();
-
+                    final_data['스쿠알렌'] = `${find_data}g`;
                     const complete_data = {
                       스쿠알렌: `${find_data}g`,
                     };
@@ -1521,7 +1579,7 @@ export class VtestService {
                         .slice(first_index + 1, second_index)
                         .trim();
                     }
-
+                    final_data['Rosmarinic acid'] = `${find_data}g`;
                     const complete_data = {
                       "Rosmarinic acid'": `${find_data}g`,
                     };
@@ -1585,7 +1643,7 @@ export class VtestService {
                       }
                     }
                     find_data = find_data.trim();
-
+                    final_data['HCA'] = `${find_data}g`;
                     const complete_data = {
                       "HCA'": `${find_data}g`,
                     };
@@ -1599,7 +1657,7 @@ export class VtestService {
                     const find_data = parse_data
                       .slice(first_index + 1, second_index)
                       .trim();
-
+                    final_data['쉬잔드린'] = `${find_data}g`;
                     const complete_data = {
                       쉬잔드린: `${find_data}g`,
                     };
@@ -1615,7 +1673,7 @@ export class VtestService {
                     if (!find_data) {
                       find_data = '12m';
                     }
-
+                    final_data['철'] = `${find_data}g`;
                     const complete_data = {
                       철: `${find_data}g`,
                     };
@@ -1633,7 +1691,7 @@ export class VtestService {
                         .slice(find_data.length - 6, find_data.length)
                         .trim();
                     }
-
+                    final_data['코엔자임'] = `${find_data}g`;
                     const complete_data = {
                       코엔자임: `${find_data}g`,
                     };
@@ -1651,7 +1709,7 @@ export class VtestService {
                         .slice(find_data.length - 2, find_data.length)
                         .trim();
                     }
-
+                    final_data['옥타코사놀'] = `${find_data}g`;
                     const complete_data = {
                       옥타코사놀: `${find_data}g`,
                     };
@@ -1670,6 +1728,7 @@ export class VtestService {
                         .slice(find_data.length - 2, find_data.length)
                         .trim();
                     }
+                    final_data['구리'] = `${find_data}g`;
                     const complete_data = {
                       구리: `${find_data}g`,
                     };
@@ -1682,7 +1741,7 @@ export class VtestService {
                     const find_data = parse_data
                       .slice(first_index + 1, second_index)
                       .trim();
-
+                    final_data['몰리브덴'] = `${find_data}ug`;
                     const complete_data = {
                       몰리브덴: `${find_data}µg`,
                     };
@@ -1696,7 +1755,7 @@ export class VtestService {
                     find_data = find_data
                       .slice(find_data.length - 4, find_data.length)
                       .trim();
-
+                    final_data['몰리브덴'] = `${find_data}ug`;
                     const complete_data = {
                       몰리브덴: `${find_data}µg`,
                     };
@@ -1710,7 +1769,7 @@ export class VtestService {
                     const find_data = parse_data
                       .slice(first_index + 1, second_index)
                       .trim();
-
+                    final_data['요오드'] = `${find_data}ug`;
                     const complete_data = {
                       요오드: `${find_data}µg`,
                     };
@@ -1723,7 +1782,7 @@ export class VtestService {
                     const find_data = parse_data
                       .slice(first_index + 1, second_index)
                       .trim();
-
+                    final_data['테아닌'] = `${find_data}g`;
                     const complete_data = {
                       테아닌: `${find_data}g`,
                     };
@@ -1736,7 +1795,7 @@ export class VtestService {
                     const find_data = parse_data
                       .slice(first_index + 1, second_index)
                       .trim();
-
+                    final_data['리놀렌산'] = `${find_data}g`;
                     const complete_data = {
                       리놀렌산: `${find_data}g`,
                     };
@@ -1754,7 +1813,7 @@ export class VtestService {
                         .slice(find_data.length - 5, find_data.length)
                         .trim();
                     }
-
+                    final_data['Chlorogenic acid'] = `${find_data}mg`;
                     const complete_data = {
                       "Chlorogenic acid'": `${find_data}mg`,
                     };
@@ -1767,7 +1826,7 @@ export class VtestService {
                     const find_data = parse_data
                       .slice(first_index + 1, second_index)
                       .trim();
-
+                    final_data['Salvianolic acid'] = `${find_data}mg`;
                     const complete_data = {
                       "Salvianolic acid'": `${find_data}mg`,
                     };
@@ -1785,7 +1844,7 @@ export class VtestService {
                         .slice(find_data.length - 4, find_data.length)
                         .trim();
                     }
-
+                    final_data['알콕시글리세롤'] = `${find_data}mg`;
                     const complete_data = {
                       알콕시글리세롤: `${find_data}mg`,
                     };
@@ -1798,7 +1857,7 @@ export class VtestService {
                     const find_data = parse_data
                       .slice(first_index + 1, second_index)
                       .trim();
-
+                    final_data['아스타잔틴'] = `${find_data}mg`;
                     const complete_data = {
                       아스타잔틴: `${find_data}mg`,
                     };
@@ -1811,7 +1870,7 @@ export class VtestService {
                     const find_data = parse_data
                       .slice(first_index + 1, second_index)
                       .trim();
-
+                    final_data['루테인'] = `${find_data}mg`;
                     const complete_data = {
                       루테인: `${find_data}mg`,
                     };
@@ -1825,7 +1884,7 @@ export class VtestService {
                     const find_data = parse_data
                       .slice(first_index + 1, second_index)
                       .trim();
-
+                    final_data['이소플라본'] = `${find_data}g`;
                     const complete_data = {
                       이소플라본: `${find_data}g`,
                     };
@@ -1839,7 +1898,7 @@ export class VtestService {
                     const find_data = parse_data
                       .slice(first_index + 4, second_index)
                       .trim();
-
+                    final_data['Cycloalliin'] = `${find_data}g`;
                     const complete_data = {
                       Cycloalliin: `${find_data}g`,
                     };
@@ -1852,7 +1911,7 @@ export class VtestService {
                     const find_data = parse_data
                       .slice(first_index + 1, second_index)
                       .trim();
-
+                    final_data['총다당체'] = `${find_data}g`;
                     const complete_data = {
                       총다당체: `${find_data}g`,
                     };
@@ -1865,7 +1924,7 @@ export class VtestService {
                     const find_data = parse_data
                       .slice(first_index + 1, second_index)
                       .trim();
-
+                    final_data['프라보놀배당체'] = `${find_data}g`;
                     const complete_data = {
                       프라보놀배당체: `${find_data}g`,
                     };
@@ -1878,7 +1937,7 @@ export class VtestService {
                     const find_data = parse_data
                       .slice(first_index + 1, second_index)
                       .trim();
-
+                    final_data['heptacosanol'] = `${find_data}g`;
                     const complete_data = {
                       heptacosanol: `${find_data}g`,
                     };
@@ -1891,7 +1950,7 @@ export class VtestService {
                     const find_data = parse_data
                       .slice(first_index + 1, second_index)
                       .trim();
-
+                    final_data['Octacosanol'] = `${find_data}g`;
                     const complete_data = {
                       Octacosanol: `${find_data}g`,
                     };
@@ -1904,7 +1963,7 @@ export class VtestService {
                     const find_data = parse_data
                       .slice(first_index + 1, second_index)
                       .trim();
-
+                    final_data['Nonacosanol'] = `${find_data}g`;
                     const complete_data = {
                       Nonacosanol: `${find_data}g`,
                     };
@@ -1917,7 +1976,7 @@ export class VtestService {
                     const find_data = parse_data
                       .slice(first_index + 1, second_index)
                       .trim();
-
+                    final_data['Triacontanol'] = `${find_data}g`;
                     const complete_data = {
                       Triacontanol: `${find_data}g`,
                     };
@@ -1930,7 +1989,7 @@ export class VtestService {
                     const find_data = parse_data
                       .slice(first_index + 1, second_index)
                       .trim();
-
+                    final_data['dotriacontanol'] = `${find_data}g`;
                     const complete_data = {
                       dotriacontanol: `${find_data}g`,
                     };
@@ -1943,7 +2002,7 @@ export class VtestService {
                     const find_data = parse_data
                       .slice(first_index + 1, second_index)
                       .trim();
-
+                    final_data['Tetratriacontanol'] = `${find_data}g`;
                     const complete_data = {
                       Tetratriacontanol: `${find_data}g`,
                     };
@@ -1956,7 +2015,7 @@ export class VtestService {
                     const find_data = parse_data
                       .slice(first_index + 1, second_index)
                       .trim();
-
+                    final_data['진세노사이드'] = `${find_data}g`;
                     const complete_data = {
                       진세노사이드: `${find_data}g`,
                     };
@@ -1969,13 +2028,14 @@ export class VtestService {
                     const find_data = parse_data
                       .slice(first_index + 1, second_index)
                       .trim();
-
+                    final_data['Gastrodin'] = `${find_data}g`;
                     const complete_data = {
                       Gastrodin: `${find_data}g`,
                     };
                   }
                 } else if (split_data[0].includes('Scopoletin')) {
-                  const complete_dta = {
+                  final_data['Scopoletin'] = `1.4mg`;
+                  const complete_data = {
                     Scopoletin: '1.4mg',
                   };
                 } else {
@@ -2063,9 +2123,11 @@ export class VtestService {
                       }
                     }
                     find_data = find_data.trim();
-
+                    final_data[
+                      '진세노사이드 Rg1, Rb1 및 Rg3의 합'
+                    ] = `${find_data}g`;
                     const complete_data = {
-                      '진세노사이드 Rg1, Rb1 및 Rg3의 합': find_data,
+                      '진세노사이드 Rg1, Rb1 및 Rg3의 합': `${find_data}g`,
                     };
                   } else if (split_data[1].includes('㎎')) {
                     const parse_data = split_data[1];
@@ -2075,7 +2137,9 @@ export class VtestService {
                       first_index + 1,
                       second_index,
                     )}m`.trim();
-
+                    final_data[
+                      '진세노사이드 Rg1, Rb1 및 Rg3의 합'
+                    ] = `${find_data}g`;
                     const complete_data = {
                       '진세노사이드 Rg1, Rb1 및 Rg3의 합': find_data,
                     };
@@ -2087,7 +2151,9 @@ export class VtestService {
                       first_index + 1,
                       second_index,
                     )}m`.trim();
-
+                    final_data[
+                      '진세노사이드 Rg1, Rb1 및 Rg3의 합'
+                    ] = `${find_data}g`;
                     const complete_data = {
                       '진세노사이드 Rg1, Rb1 및 Rg3의 합': find_data,
                     };
@@ -2098,7 +2164,9 @@ export class VtestService {
                       0,
                       second_index + 1,
                     )}`.trim();
-
+                    final_data[
+                      '진세노사이드 Rg1, Rb1 및 Rg3의 합'
+                    ] = `${find_data}g`;
                     const complete_data = {
                       '진세노사이드 Rg1, Rb1 및 Rg3의 합': find_data,
                     };
@@ -2124,6 +2192,9 @@ export class VtestService {
                           .trim();
                       }
                     }
+                    final_data[
+                      '진세노사이드 Rg1, Rb1 및 Rg3의 합'
+                    ] = `${find_data}g`;
                     const complete_data = {
                       '진세노사이드 Rg1, Rb1 및 Rg3의 합': find_data,
                     };
@@ -2141,6 +2212,10 @@ export class VtestService {
                     first_index + 1,
                     second_index + 2,
                   );
+                  final_data[
+                    '진세노사이드 Rg1, Rb1 및 Rg3의 합'
+                  ] = `${find_data}`;
+
                   const complete_data = {
                     '진세노사이드 Rg1, Rb1 및 Rg3의 합': find_data,
                   };
@@ -2181,6 +2256,9 @@ export class VtestService {
                         .slice(0, find_data.indexOf('㎎'))
                         .trim();
                     }
+                    final_data[
+                      '진세노사이드 Rg1과 Rb1 의 합'
+                    ] = `${find_data}mg`;
                     const complete_data = {
                       '진세노사이드 Rg1과 Rb1 의 합': `${find_data}mg`,
                     };
@@ -2206,11 +2284,17 @@ export class VtestService {
                     } else if (find_data.includes('표시량')) {
                       find_data = find_data.substr(4).trim();
                     }
+                    final_data[
+                      '진세노사이드 Rg1과 Rb1 의 합'
+                    ] = `${find_data}mg`;
                     const complete_data = {
                       '진세노사이드 Rg1과 Rb1 의 합': `${find_data}mg`,
                     };
                   } else if (split_data[1].includes('10')) {
                     const find_data = '10.00';
+                    final_data[
+                      '진세노사이드 Rg1과 Rb1 의 합'
+                    ] = `${find_data}mg`;
                     const complete_data = {
                       '진세노사이드 Rg1과 Rb1 의 합': `${find_data}mg`,
                     };
@@ -2221,6 +2305,9 @@ export class VtestService {
                     const find_data = parse_data
                       .slice(first_index + 1, second_index)
                       .trim();
+                    final_data[
+                      '진세노사이드 Rg1과 Rb1 의 합'
+                    ] = `${find_data}mg`;
                     const complete_data = {
                       '진세노사이드 Rg1과 Rb1 의 합': `${find_data}mg`,
                     };
@@ -2260,6 +2347,7 @@ export class VtestService {
                           }
                         }
                       }
+                      final_data['비타민C'] = `${find_data}mg`;
                       const complete_data = {
                         비타민C: `${find_data}mg`,
                       };
@@ -2292,7 +2380,7 @@ export class VtestService {
                           }
                         }
                       }
-
+                      final_data['비타민C'] = `${find_data}mg`;
                       const complete_data = {
                         비타민C: `${find_data}mg`,
                       };
@@ -2317,6 +2405,7 @@ export class VtestService {
                       } else if (find_data.includes('g')) {
                         find_data = `${find_data.substr(0, 1).trim()},000`;
                       }
+                      final_data['비타민C'] = `${find_data}mg`;
                       const complete_data = {
                         비타민C: `${find_data}mg`,
                       };
@@ -2330,7 +2419,7 @@ export class VtestService {
                       if (!find_data) {
                         find_data = '1500';
                       }
-
+                      final_data['비타민C'] = `${find_data}mg`;
                       const complete_data = {
                         비타민C: `${find_data}mg`,
                       };
@@ -2373,6 +2462,7 @@ export class VtestService {
                         }
                       } else {
                       }
+                      final_data['비타민A'] = `${find_data}ugRE`;
                       const complete_data = {
                         비타민A: `${find_data}ugRE`,
                       };
@@ -2417,6 +2507,7 @@ export class VtestService {
                         find_data = find_data.substr(1);
                       } else {
                       }
+                      final_data['비타민A'] = `${find_data}ugRE`;
                       const complete_data = {
                         비타민A: `${find_data}ugRE`,
                       };
@@ -2470,6 +2561,7 @@ export class VtestService {
                         find_data = find_data.substr(1);
                       } else {
                       }
+                      final_data['비타민A'] = `${find_data}ugRE`;
                       const complete_data = {
                         비타민A: `${find_data}ugRE`,
                       };
@@ -2492,6 +2584,7 @@ export class VtestService {
                           .trim();
                       } else {
                       }
+                      final_data['비타민A'] = `${find_data}ugRE`;
                       const complete_data = {
                         비타민A: `${find_data}ugRE`,
                       };
@@ -2522,6 +2615,7 @@ export class VtestService {
                           .trim();
                       } else {
                       }
+                      final_data['비타민A'] = `${find_data}mcgRE`;
                       const complete_data = {
                         비타민A: `${find_data}mcgRE`,
                       };
@@ -2549,6 +2643,7 @@ export class VtestService {
                         }
                       } else {
                       }
+                      final_data['비타민A'] = `${find_data}mgRE`;
                       const complete_data = {
                         비타민A: `${find_data}mgRE`,
                       };
@@ -2570,6 +2665,7 @@ export class VtestService {
                           .trim();
                       } else {
                       }
+                      final_data['비타민A'] = `${find_data}ugRE`;
 
                       const complete_data = {
                         비타민A: `${find_data}ugRE`,
@@ -2589,7 +2685,7 @@ export class VtestService {
                       if (find_data.includes('μ') || find_data.includes('㎍')) {
                         find_data = find_data.substr(0, 4).trim();
                       }
-
+                      final_data['비타민A'] = `${find_data}ugRE`;
                       const complete_data = {
                         비타민A: `${find_data}ugRE`,
                       };
@@ -2629,7 +2725,7 @@ export class VtestService {
                           } else {
                           }
                         }
-
+                        final_data['비타민B12'] = `${find_data}ug`;
                         const complete_data = {
                           비타민B12: `${find_data}ug`,
                         };
@@ -2666,6 +2762,7 @@ export class VtestService {
                           }
                         } else {
                         }
+                        final_data['비타민B12'] = `${find_data}ug`;
                         const complete_data = {
                           비타민B12: `${find_data}ug`,
                         };
@@ -2726,7 +2823,7 @@ export class VtestService {
                           }
                         } else {
                         }
-
+                        final_data['비타민B12'] = `${find_data}ug`;
                         const complete_data = {
                           비타민B12: `${find_data}ug`,
                         };
@@ -2789,7 +2886,7 @@ export class VtestService {
                           }
                         } else {
                         }
-
+                        final_data['비타민B12'] = `${find_data}ug`;
                         const complete_data = {
                           비타민B12: `${find_data}ug`,
                         };
@@ -2855,7 +2952,7 @@ export class VtestService {
                         if (find_data.includes('의')) {
                           find_data = find_data.substr(1).trim();
                         }
-
+                        final_data['비타민B12'] = `${find_data}mcg`;
                         const complete_data = {
                           비타민B12: `${find_data}mcg`,
                         };
@@ -2872,7 +2969,7 @@ export class VtestService {
                           const second_index = parse_data.indexOf('mg');
                           find_data = parse_data.slice(0, second_index).trim();
                         }
-
+                        final_data['비타민B12'] = `${find_data}mg`;
                         const complete_data = {
                           비타민B12: `${find_data}mg`,
                         };
@@ -2883,6 +2980,7 @@ export class VtestService {
                         const find_data = parse_data
                           .slice(first_index + 1, second_index)
                           .trim();
+                        final_data['비타민B12'] = `${find_data}mg`;
                         const complete_data = {
                           비타민B12: `${find_data}mg`,
                         };
@@ -2893,6 +2991,7 @@ export class VtestService {
                         const find_data = parse_data
                           .slice(first_index + 1, second_index)
                           .trim();
+                        final_data['비타민B12'] = `${find_data}ug`;
                         const complete_data = {
                           비타민B12: `${find_data}ug`,
                         };
@@ -2920,9 +3019,9 @@ export class VtestService {
                             .slice(0, find_data.indexOf('m'))
                             .trim();
                         }
-
+                        final_data['비타민B1'] = `${find_data}mg`;
                         const complete_data = {
-                          비타민B12: `${find_data}mg`,
+                          비타민B1: `${find_data}mg`,
                         };
                       } else if (split_data[1].includes('mg')) {
                         const parse_data = split_data[1];
@@ -3002,8 +3101,9 @@ export class VtestService {
                           }
                         } else {
                         }
+                        final_data['비타민B1'] = `${find_data}mg`;
                         const complete_data = {
-                          비타민B12: `${find_data}mg`,
+                          비타민B1: `${find_data}mg`,
                         };
                       } else if (split_data[1].includes('(')) {
                         const parse_data = split_data[1];
@@ -3020,8 +3120,9 @@ export class VtestService {
                             .slice(first_index + 1, second_index)
                             .trim();
                         }
+                        final_data['비타민B1'] = `${find_data}mg`;
                         const complete_data = {
-                          비타민B12: `${find_data}mg`,
+                          비타민B1: `${find_data}mg`,
                         };
                       } else if (
                         split_data[0]
@@ -3037,9 +3138,9 @@ export class VtestService {
                         const find_data = parse_data
                           .slice(first_index + 1, second_index)
                           .trim();
-
+                        final_data['비타민B1'] = `${find_data}mg`;
                         const complete_data = {
-                          비타민B12: `${find_data}mg`,
+                          비타민B1: `${find_data}mg`,
                         };
                       } else {
                       }
@@ -3068,7 +3169,7 @@ export class VtestService {
                             .trim();
                         } else {
                         }
-
+                        final_data['비타민B2'] = `${find_data}mg`;
                         const complete_data = {
                           비타민B2: `${find_data}mg`,
                         };
@@ -3153,6 +3254,7 @@ export class VtestService {
                             .trim();
                         } else {
                         }
+                        final_data['비타민B2'] = `${find_data}mg`;
                         const complete_data = {
                           비타민B2: `${find_data}mg`,
                         };
@@ -3172,6 +3274,7 @@ export class VtestService {
                             .slice(first_index + 1, second_index)
                             .trim();
                         }
+                        final_data['비타민B2'] = `${find_data}mg`;
                         const complete_data = {
                           비타민B2: `${find_data}mg`,
                         };
@@ -3189,7 +3292,7 @@ export class VtestService {
                         const find_data = parse_data
                           .slice(first_index + 1, second_index)
                           .trim();
-
+                        final_data['비타민B2'] = `${find_data}mg`;
                         const complete_data = {
                           비타민B2: `${find_data}mg`,
                         };
@@ -3220,7 +3323,7 @@ export class VtestService {
                             .trim();
                         } else {
                         }
-
+                        final_data['비타민B6'] = `${find_data}mg`;
                         const complete_data = {
                           비타민B6: `${find_data}mg`,
                         };
@@ -3315,6 +3418,7 @@ export class VtestService {
                           }
                         } else {
                         }
+                        final_data['비타민B6'] = `${find_data}mg`;
                         const complete_data = {
                           비타민B6: `${find_data}mg`,
                         };
@@ -3334,7 +3438,7 @@ export class VtestService {
                             .slice(first_index + 1, second_index)
                             .trim();
                         }
-
+                        final_data['비타민B6'] = `${find_data}mg`;
                         const complete_data = {
                           비타민B6: `${find_data}mg`,
                         };
@@ -3356,7 +3460,7 @@ export class VtestService {
                         if (find_data.includes('표시량')) {
                           find_data = find_data.substr(3).trim();
                         }
-
+                        final_data['비타민B6'] = `${find_data}mg`;
                         const complete_data = {
                           비타민B6: `${find_data}mg`,
                         };
@@ -3386,7 +3490,7 @@ export class VtestService {
                         find_data = find_data.substr(4).trim();
                       } else {
                       }
-
+                      final_data['비타민E'] = `${find_data}mgα-TE`;
                       const complete_data = {
                         비타민E: `${find_data}mgα-TE`,
                       };
@@ -3448,7 +3552,7 @@ export class VtestService {
                         find_data = find_data.substr(1).trim();
                       } else {
                       }
-
+                      final_data['비타민E'] = `${find_data}mgα-TE`;
                       const complete_data = {
                         비타민E: `${find_data}mgα-TE`,
                       };
@@ -3470,7 +3574,7 @@ export class VtestService {
                           .trim();
                       } else {
                       }
-
+                      final_data['비타민E'] = `${find_data}mgα-TE`;
                       const complete_data = {
                         비타민E: `${find_data}mgα-TE`,
                       };
@@ -3486,7 +3590,7 @@ export class VtestService {
                         find_data = find_data.substr(3).trim();
                       } else {
                       }
-
+                      final_data['비타민E'] = `${find_data}mgα-TE`;
                       const complete_data = {
                         비타민E: `${find_data}mgα-TE`,
                       };
@@ -3533,6 +3637,7 @@ export class VtestService {
                         }
                       } else {
                       }
+                      final_data['비타민D'] = `${find_data}ug`;
                       const complete_data = {
                         비타민D: `${find_data}ug`,
                       };
@@ -3577,6 +3682,7 @@ export class VtestService {
                         find_data = find_data.substr(1);
                       } else {
                       }
+                      final_data['비타민D'] = `${find_data}ug`;
                       const complete_data = {
                         비타민D: `${find_data}ug`,
                       };
@@ -3629,6 +3735,7 @@ export class VtestService {
                         find_data = find_data.substr(1);
                       } else {
                       }
+                      final_data['비타민D'] = `${find_data}ug`;
                       const complete_data = {
                         비타민D: `${find_data}ug`,
                       };
@@ -3670,7 +3777,7 @@ export class VtestService {
                         }
                       } else {
                       }
-
+                      final_data['비타민D'] = `${find_data}ug`;
                       const complete_data = {
                         비타민D: `${find_data}ug`,
                       };
@@ -3681,7 +3788,7 @@ export class VtestService {
                       const find_data = parse_data
                         .slice(first_index + 1, second_index)
                         .trim();
-
+                      final_data['비타민D'] = `${find_data}ug`;
                       const complete_data = {
                         비타민D: `${find_data}ug`,
                       };
@@ -3710,6 +3817,7 @@ export class VtestService {
                         }
                       } else {
                       }
+                      final_data['비타민D'] = `${find_data}mcg`;
 
                       const complete_data = {
                         비타민D: `${find_data}mcg`,
@@ -3728,7 +3836,7 @@ export class VtestService {
                         find_data = parse_data.slice(0, second_index).trim();
                       } else {
                       }
-
+                      final_data['비타민D'] = `${find_data}IU`;
                       const complete_data = {
                         비타민D: `${find_data}IU`,
                       };
@@ -3747,7 +3855,7 @@ export class VtestService {
                         find_data = parse_data.slice(0, second_index).trim();
                       } else {
                       }
-
+                      final_data['비타민D'] = `${find_data}mg`;
                       const complete_data = {
                         비타민D: `${find_data}mg`,
                       };
@@ -3758,7 +3866,7 @@ export class VtestService {
                       const find_data = parse_data
                         .slice(first_index + 1, second_index)
                         .trim();
-
+                      final_data['비타민D'] = `${find_data}um`;
                       const complete_data = {
                         비타민D: `${find_data}um`,
                       };
@@ -3769,7 +3877,7 @@ export class VtestService {
                       const find_data = parse_data
                         .slice(first_index + 1, second_index)
                         .trim();
-
+                      final_data['비타민D'] = `${find_data}g`;
                       const complete_data = {
                         비타민D: `${find_data}g`,
                       };
@@ -3780,7 +3888,7 @@ export class VtestService {
                       const find_data = parse_data
                         .slice(first_index + 1, second_index)
                         .trim();
-
+                      final_data['비타민D'] = `${find_data}ug`;
                       const complete_data = {
                         비타민D: `${find_data}ug`,
                       };
@@ -3805,7 +3913,7 @@ export class VtestService {
                       if (find_data.includes('u') || find_data.includes('μ')) {
                         find_data = find_data.substr(0, find_data.length - 1);
                       }
-
+                      final_data['비타민D'] = `${find_data}ug`;
                       const complete_data = {
                         비타민D: `${find_data}ug`,
                       };
@@ -3816,6 +3924,7 @@ export class VtestService {
                       const find_data = parse_data
                         .slice(first_index + 1, second_index)
                         .trim();
+                      final_data['비타민D'] = `${find_data}mg`;
                       const complete_data = {
                         비타민D: `${find_data}mg`,
                       };
@@ -3889,6 +3998,7 @@ export class VtestService {
                         }
                       } else {
                       }
+                      final_data['비타민K'] = `${find_data}ug`;
                       const complete_data = {
                         비타민K: `${find_data}ug`,
                       };
@@ -3968,6 +4078,7 @@ export class VtestService {
                         }
                       } else {
                       }
+                      final_data['비타민K'] = `${find_data}ug`;
                       const complete_data = {
                         비타민K: `${find_data}ug`,
                       };
@@ -4047,6 +4158,7 @@ export class VtestService {
                         }
                       } else {
                       }
+                      final_data['비타민K'] = `${find_data}ug`;
                       const complete_data = {
                         비타민K: `${find_data}ug`,
                       };
@@ -4126,7 +4238,7 @@ export class VtestService {
                         }
                       } else {
                       }
-
+                      final_data['비타민K'] = `${find_data}ug`;
                       const complete_data = {
                         비타민K: `${find_data}ug`,
                       };
@@ -4206,7 +4318,7 @@ export class VtestService {
                         }
                       } else {
                       }
-
+                      final_data['비타민K'] = `${find_data}mcg`;
                       const complete_data = {
                         비타민K: `${find_data}mcg`,
                       };
@@ -4286,7 +4398,7 @@ export class VtestService {
                         }
                       } else {
                       }
-
+                      final_data['비타민K'] = `${find_data}mg`;
                       const complete_data = {
                         비타민K: `${find_data}mg`,
                       };
@@ -4366,7 +4478,7 @@ export class VtestService {
                         }
                       } else {
                       }
-
+                      final_data['비타민K'] = `${find_data}ug`;
                       const complete_data = {
                         비타민K: `${find_data}ug`,
                       };
@@ -4446,7 +4558,7 @@ export class VtestService {
                       }
                     } else {
                     }
-
+                    final_data['엠에스엠'] = `${find_data}g`;
                     const complete_data = {
                       엠에스엠: `${find_data}g`,
                     };
@@ -4522,7 +4634,7 @@ export class VtestService {
                       }
                     } else {
                     }
-
+                    final_data['엠에스엠'] = `${find_data}g`;
                     const complete_data = {
                       엠에스엠: `${find_data}g`,
                     };
@@ -4598,7 +4710,7 @@ export class VtestService {
                       }
                     } else {
                     }
-
+                    final_data['엠에스엠'] = `${find_data}mg`;
                     const complete_data = {
                       엠에스엠: `${find_data}mg`,
                     };
@@ -4674,10 +4786,12 @@ export class VtestService {
                       }
                     } else {
                     }
+                    final_data['엠에스엠'] = `${find_data}mg`;
                     let complete_data = {
                       엠에스엠: `${find_data}mg`,
                     };
                     if (find_data.includes('.')) {
+                      final_data['엠에스엠'] = `${find_data}g`;
                       complete_data = {
                         엠에스엠: `${find_data}g`,
                       };
@@ -4760,6 +4874,7 @@ export class VtestService {
                       }
                     } else {
                     }
+                    final_data['아연'] = `${find_data}g`;
 
                     const complete_data = {
                       아연: `${find_data}g`,
@@ -4836,7 +4951,7 @@ export class VtestService {
                       }
                     } else {
                     }
-
+                    final_data['아연'] = `${find_data}mg`;
                     const complete_data = {
                       아연: `${find_data}mg`,
                     };
@@ -4912,7 +5027,7 @@ export class VtestService {
                       }
                     } else {
                     }
-
+                    final_data['아연'] = `${find_data}g`;
                     const complete_data = {
                       아연: `${find_data}g`,
                     };
@@ -4988,6 +5103,7 @@ export class VtestService {
                       }
                     } else {
                     }
+                    final_data['아연'] = `${find_data}mg`;
                     const complete_data = {
                       아연: `${find_data}mg`,
                     };
@@ -5025,7 +5141,9 @@ export class VtestService {
                         .slice(find_data.indexOf('(') + 1, find_data.length)
                         .trim();
                     }
+
                     if (find_data) {
+                      final_data['아연'] = `${find_data}mg`;
                       const complete_data = {
                         아연: `${find_data}mg`,
                       };
@@ -5108,6 +5226,7 @@ export class VtestService {
                       }
                     } else {
                     }
+                    final_data['셀렌'] = `${find_data}ug`;
 
                     const complete_data = {
                       셀렌: `${find_data}ug`,
@@ -5184,7 +5303,7 @@ export class VtestService {
                       }
                     } else {
                     }
-
+                    final_data['셀렌'] = `${find_data}ug`;
                     const complete_data = {
                       셀렌: `${find_data}ug`,
                     };
@@ -5260,7 +5379,7 @@ export class VtestService {
                       }
                     } else {
                     }
-
+                    final_data['셀렌'] = `${find_data}ug`;
                     const complete_data = {
                       셀렌: `${find_data}ug`,
                     };
@@ -5336,6 +5455,7 @@ export class VtestService {
                       }
                     } else {
                     }
+                    final_data['셀렌'] = `${find_data}ug`;
                     const complete_data = {
                       셀렌: `${find_data}ug`,
                     };
@@ -5391,6 +5511,7 @@ export class VtestService {
                         .trim();
                     }
                     if (find_data) {
+                      final_data['셀렌'] = `${find_data}mcg`;
                       const complete_data = {
                         셀렌: `${find_data}mcg`,
                       };
@@ -5448,6 +5569,7 @@ export class VtestService {
                     }
 
                     if (find_data) {
+                      final_data['셀렌'] = `${find_data}g`;
                       const complete_data = {
                         셀렌: `${find_data}g`,
                       };
@@ -5459,7 +5581,7 @@ export class VtestService {
                     const find_data = parse_data
                       .slice(first_index + 1, second_index)
                       .trim();
-
+                    final_data['셀렌'] = `${find_data}ug`;
                     const complete_data = {
                       셀렌: `${find_data}ug`,
                     };
@@ -5480,7 +5602,7 @@ export class VtestService {
                         .substr(0, find_data.length - 1)
                         .trim()}u`;
                     }
-
+                    final_data['셀렌'] = `${find_data}g`;
                     if (find_data.length > 1) {
                       const complete_data = {
                         셀렌: `${find_data}g`,
@@ -5563,7 +5685,7 @@ export class VtestService {
                       }
                     } else {
                     }
-
+                    final_data['엽산'] = `${find_data}ug`;
                     const complete_data = {
                       엽산: `${find_data}ug`,
                     };
@@ -5639,7 +5761,7 @@ export class VtestService {
                       }
                     } else {
                     }
-
+                    final_data['엽산'] = `${find_data}ug`;
                     const complete_data = {
                       엽산: `${find_data}ug`,
                     };
@@ -5715,7 +5837,7 @@ export class VtestService {
                       }
                     } else {
                     }
-
+                    final_data['엽산'] = `${find_data}ug`;
                     const complete_data = {
                       엽산: `${find_data}ug`,
                     };
@@ -5791,6 +5913,7 @@ export class VtestService {
                       }
                     } else {
                     }
+                    final_data['엽산'] = `${find_data}ug`;
                     const complete_data = {
                       엽산: `${find_data}ug`,
                     };
@@ -5846,6 +5969,7 @@ export class VtestService {
                         .trim();
                     }
                     if (find_data) {
+                      final_data['엽산'] = `${find_data}mcg`;
                       const complete_data = {
                         엽산: `${find_data}mcg`,
                       };
@@ -5904,6 +6028,7 @@ export class VtestService {
                     }
 
                     if (find_data) {
+                      final_data['엽산'] = `${find_data}g`;
                       const complete_data = {
                         엽산: `${find_data}g`,
                       };
@@ -5915,7 +6040,7 @@ export class VtestService {
                     const find_data = parse_data
                       .slice(first_index + 1, second_index)
                       .trim();
-
+                    final_data['엽산'] = `${find_data}ug`;
                     const complete_data = {
                       엽산: `${find_data}ug`,
                     };
@@ -5944,6 +6069,7 @@ export class VtestService {
                     }
 
                     if (find_data.length > 1) {
+                      final_data['엽산'] = `${find_data}g`;
                       const complete_data = {
                         엽산: `${find_data}g`,
                       };
@@ -6028,7 +6154,7 @@ export class VtestService {
                       }
                     } else {
                     }
-
+                    final_data['판토텐산'] = `${find_data}ug`;
                     const complete_data = {
                       판토텐산: `${find_data}ug`,
                     };
@@ -6109,7 +6235,7 @@ export class VtestService {
                         .slice(0, find_data.indexOf('mg'))
                         .trim();
                     }
-
+                    final_data['판토텐산'] = `${find_data}mg`;
                     const complete_data = {
                       판토텐산: `${find_data}mg`,
                     };
@@ -6185,7 +6311,7 @@ export class VtestService {
                       }
                     } else {
                     }
-
+                    final_data['판토텐산'] = `${find_data}mg`;
                     const complete_data = {
                       판토텐산: `${find_data}mg`,
                     };
@@ -6261,6 +6387,7 @@ export class VtestService {
                       }
                     } else {
                     }
+                    final_data['판토텐산'] = `${find_data}mg`;
                     const complete_data = {
                       판토텐산: `${find_data}mg`,
                     };
@@ -6288,6 +6415,7 @@ export class VtestService {
                         .slice(find_data.indexOf('량') + 1, find_data.length)
                         .trim();
                     }
+                    final_data['판토텐산'] = `${find_data}mg`;
 
                     const complete_data = {
                       판토텐산: `${find_data}mg`,
@@ -6377,6 +6505,7 @@ export class VtestService {
                         .slice(0, find_data.indexOf('mg'))
                         .trim();
                     }
+                    final_data['나이아신'] = `${find_data}mg`;
 
                     const complete_data = {
                       나이아신: `${find_data}mg`,
@@ -6458,6 +6587,7 @@ export class VtestService {
                         .slice(0, find_data.indexOf('NE'))
                         .trim();
                     }
+                    final_data['나이아신'] = `${find_data}mg`;
 
                     const complete_data = {
                       나이아신: `${find_data}mg`,
@@ -6534,6 +6664,7 @@ export class VtestService {
                       }
                     } else {
                     }
+                    final_data['나이아신'] = `${find_data}mg`;
                     const complete_data = {
                       나이아신: `${find_data}mg`,
                     };
@@ -6544,7 +6675,7 @@ export class VtestService {
                     const find_data = parse_data
                       .slice(first_index + 1, second_index)
                       .trim();
-
+                    final_data['나이아신'] = `${find_data}mg`;
                     const complete_data = {
                       나이아신: `${find_data}mg`,
                     };
@@ -6566,7 +6697,7 @@ export class VtestService {
                         .slice(find_data.indexOf('(') + 1, find_data.length)
                         .trim();
                     }
-
+                    final_data['나이아신'] = `${find_data}mg`;
                     const complete_data = {
                       나이아신: `${find_data}mg`,
                     };
@@ -6655,7 +6786,7 @@ export class VtestService {
                         .slice(0, find_data.indexOf('mg'))
                         .trim();
                     }
-
+                    final_data['실라마린'] = `${find_data}mg`;
                     const complete_data = {
                       실라마린: `${find_data}mg`,
                     };
@@ -6744,7 +6875,7 @@ export class VtestService {
                     if (find_data.includes('의')) {
                       find_data = find_data.substr(1).trim();
                     }
-
+                    final_data['실라마린'] = `${find_data}mg`;
                     const complete_data = {
                       실라마린: `${find_data}mg`,
                     };
@@ -6755,7 +6886,7 @@ export class VtestService {
                     const find_data = parse_data
                       .slice(first_index + 1, second_index)
                       .trim();
-
+                    final_data['실라마린'] = `${find_data}mg`;
                     const complete_data = {
                       실라마린: `${find_data}mg`,
                     };
@@ -6777,7 +6908,7 @@ export class VtestService {
                         .slice(find_data.indexOf('(') + 1, find_data.length)
                         .trim();
                     }
-
+                    final_data['실라마린'] = `${find_data}mg`;
                     const complete_data = {
                       실라마린: `${find_data}mg`,
                     };
@@ -6861,7 +6992,7 @@ export class VtestService {
                       }
                     } else {
                     }
-
+                    final_data['셀레늄'] = `${find_data}ug`;
                     const complete_data = {
                       셀레늄: `${find_data}ug`,
                     };
@@ -6937,7 +7068,7 @@ export class VtestService {
                       }
                     } else {
                     }
-
+                    final_data['셀레늄'] = `${find_data}ug`;
                     const complete_data = {
                       셀레늄: `${find_data}ug`,
                     };
@@ -7013,7 +7144,7 @@ export class VtestService {
                       }
                     } else {
                     }
-
+                    final_data['셀레늄'] = `${find_data}ug`;
                     const complete_data = {
                       셀레늄: `${find_data}ug`,
                     };
@@ -7089,7 +7220,7 @@ export class VtestService {
                       }
                     } else {
                     }
-
+                    final_data['셀레늄'] = `${find_data}ug`;
                     const complete_data = {
                       셀레늄: `${find_data}ug`,
                     };
@@ -7145,6 +7276,7 @@ export class VtestService {
                         .trim();
                     }
                     if (find_data) {
+                      final_data['셀레늄'] = `${find_data}mcg`;
                       const complete_data = {
                         셀레늄: `${find_data}mcg`,
                       };
@@ -7207,7 +7339,7 @@ export class VtestService {
                         .slice(0, find_data.indexOf('micro') - 1)
                         .trim()}mc`;
                     }
-
+                    final_data['셀레늄'] = `${find_data}g`;
                     const complete_data = {
                       셀레늄: `${find_data}g`,
                     };
@@ -7224,7 +7356,7 @@ export class VtestService {
                         .slice(0, find_data.indexOf('ɥg'))
                         .trim();
                     }
-
+                    final_data['셀레늄'] = `${find_data}ug`;
                     const complete_data = {
                       셀레늄: `${find_data}ug`,
                     };
@@ -7256,7 +7388,7 @@ export class VtestService {
                         .slice(find_data.indexOf('량') + 1, find_data.length)
                         .trim();
                     }
-
+                    final_data['셀레늄'] = `${find_data}g`;
                     const complete_data = {
                       셀레늄: `${find_data}g`,
                     };
@@ -7339,7 +7471,7 @@ export class VtestService {
                       }
                     } else {
                     }
-
+                    final_data['비오틴'] = `${find_data}ug`;
                     const complete_data = {
                       비오틴: `${find_data}ug`,
                     };
@@ -7415,7 +7547,7 @@ export class VtestService {
                       }
                     } else {
                     }
-
+                    final_data['비오틴'] = `${find_data}ug`;
                     const complete_data = {
                       비오틴: `${find_data}ug`,
                     };
@@ -7491,7 +7623,7 @@ export class VtestService {
                       }
                     } else {
                     }
-
+                    final_data['비오틴'] = `${find_data}ug`;
                     const complete_data = {
                       비오틴: `${find_data}ug`,
                     };
@@ -7567,7 +7699,7 @@ export class VtestService {
                       }
                     } else {
                     }
-
+                    final_data['비오틴'] = `${find_data}ug`;
                     const complete_data = {
                       비오틴: `${find_data}ug`,
                     };
@@ -7623,6 +7755,7 @@ export class VtestService {
                         .trim();
                     }
                     if (find_data) {
+                      final_data['비오틴'] = `${find_data}mcg`;
                       const complete_data = {
                         비오틴: `${find_data}mcg`,
                       };
@@ -7685,7 +7818,7 @@ export class VtestService {
                         .slice(0, find_data.indexOf('micro') - 1)
                         .trim()}mc`;
                     }
-
+                    final_data['비오틴'] = `${find_data}g`;
                     const complete_data = {
                       비오틴: `${find_data}g`,
                     };
@@ -7702,7 +7835,7 @@ export class VtestService {
                         .slice(0, find_data.indexOf('ɥg'))
                         .trim();
                     }
-
+                    final_data['비오틴'] = `${find_data}ug`;
                     const complete_data = {
                       비오틴: `${find_data}ug`,
                     };
@@ -7734,7 +7867,7 @@ export class VtestService {
                         .slice(find_data.indexOf('량') + 1, find_data.length)
                         .trim();
                     }
-
+                    final_data['비오틴'] = `${find_data}g`;
                     const complete_data = {
                       비오틴: `${find_data}g`,
                     };
@@ -7823,7 +7956,7 @@ export class VtestService {
                         .slice(0, find_data.indexOf('mg'))
                         .trim();
                     }
-
+                    final_data['마그네슘'] = `${find_data}mg`;
                     const complete_data = {
                       마그네슘: `${find_data}mg`,
                     };
@@ -7905,7 +8038,7 @@ export class VtestService {
                         .slice(0, find_data.indexOf('m'))
                         .trim();
                     }
-
+                    final_data['마그네슘'] = `${find_data}mg`;
                     const complete_data = {
                       마그네슘: `${find_data}mg`,
                     };
@@ -7916,7 +8049,7 @@ export class VtestService {
                     const find_data = parse_data
                       .slice(first_index + 1, second_index)
                       .trim();
-
+                    final_data['마그네슘'] = `${find_data}g`;
                     const complete_data = {
                       마그네슘: `${find_data}g`,
                     };
@@ -7943,7 +8076,7 @@ export class VtestService {
                         .slice(find_data.indexOf('슘') + 1, find_data.length)
                         .trim();
                     }
-
+                    final_data['마그네슘'] = `${find_data}mg`;
                     const complete_data = {
                       마그네슘: `${find_data}mg`,
                     };
@@ -8030,7 +8163,7 @@ export class VtestService {
                         .slice(0, find_data.indexOf('mg'))
                         .trim();
                     }
-
+                    final_data['칼슘'] = `${find_data}mg`;
                     const complete_data = {
                       칼슘: `${find_data}mg`,
                     };
@@ -8112,6 +8245,7 @@ export class VtestService {
                         .slice(0, find_data.indexOf('m'))
                         .trim();
                     }
+                    final_data['칼슘'] = `${find_data}mg`;
 
                     const complete_data = {
                       칼슘: `${find_data}mg`,
@@ -8123,6 +8257,7 @@ export class VtestService {
                     const find_data = parse_data
                       .slice(first_index + 1, second_index)
                       .trim();
+                    final_data['칼슘'] = `${find_data}g`;
                     const complete_data = {
                       칼슘: `${find_data}g`,
                     };
@@ -8141,7 +8276,7 @@ export class VtestService {
                         .slice(first_index + 1, second_index)
                         .trim();
                     }
-
+                    final_data['칼슘'] = `${find_data}mg`;
                     const complete_data = {
                       칼슘: `${find_data}mg`,
                     };
@@ -8168,7 +8303,7 @@ export class VtestService {
                         .slice(find_data.indexOf('슘') + 1, find_data.length)
                         .trim();
                     }
-
+                    final_data['칼슘'] = `${find_data}mg`;
                     const complete_data = {
                       칼슘: `${find_data}mg`,
                     };
@@ -8253,7 +8388,7 @@ export class VtestService {
                         .slice(0, find_data.indexOf('m'))
                         .trim();
                     }
-
+                    final_data['디메틸설폰'] = `${find_data}mg`;
                     const complete_data = {
                       디메틸설폰: `${find_data}mg`,
                     };
@@ -8264,6 +8399,7 @@ export class VtestService {
                     const find_data = parse_data
                       .slice(first_index + 1, second_index)
                       .trim();
+                    final_data['디메틸설폰'] = `${find_data}g`;
                     const complete_data = {
                       디메틸설폰: `${find_data}g`,
                     };
@@ -8282,7 +8418,7 @@ export class VtestService {
                         .slice(first_index + 1, second_index)
                         .trim();
                     }
-
+                    final_data['디메틸설폰'] = `${find_data}mg`;
                     const complete_data = {
                       디메틸설폰: `${find_data}mg`,
                     };
@@ -8372,8 +8508,9 @@ export class VtestService {
                         .slice(0, find_data.indexOf('m'))
                         .trim();
                     }
+                    final_data['로르산'] = `${find_data}mg`;
                     const complete_data = {
-                      디메틸설폰: `${find_data}mg`,
+                      로르산: `${find_data}mg`,
                     };
                   } else if (split_data[1].includes('㎎')) {
                     const parse_data = split_data[1];
@@ -8387,8 +8524,9 @@ export class VtestService {
                         .slice(find_data.indexOf('량') + 1, find_data.length)
                         .trim();
                     }
+                    final_data['로르산'] = `${find_data}mg`;
                     const complete_data = {
-                      디메틸설폰: `${find_data}mg`,
+                      로르산: `${find_data}mg`,
                     };
                   } else if (split_data[1].includes('(')) {
                     const parse_data = split_data[1];
@@ -8405,9 +8543,9 @@ export class VtestService {
                         .slice(first_index + 1, second_index)
                         .trim();
                     }
-
+                    final_data['로르산'] = `${find_data}mg`;
                     const complete_data = {
-                      디메틸설폰: `${find_data}mg`,
+                      로르산: `${find_data}mg`,
                     };
                   } else {
                     const parse_data = split_data[0];
@@ -8416,8 +8554,9 @@ export class VtestService {
                     const find_data = parse_data
                       .slice(first_index + 1, second_index)
                       .trim();
+                    final_data['로르산'] = `${find_data}mg`;
                     const complete_data = {
-                      디메틸설폰: `${find_data}mg`,
+                      로르산: `${find_data}mg`,
                     };
                   }
                 } else if (split_data[0].includes('프락토올리고당')) {
@@ -8498,7 +8637,7 @@ export class VtestService {
                         .slice(0, find_data.indexOf('mg'))
                         .trim();
                     }
-
+                    final_data['프락토올리고당'] = `${find_data}mg`;
                     const complete_data = {
                       프락토올리고당: `${find_data}mg`,
                     };
@@ -8580,6 +8719,7 @@ export class VtestService {
                         .slice(0, find_data.indexOf('m'))
                         .trim();
                     }
+                    final_data['프락토올리고당'] = `${find_data}mg`;
                     let complete_data = {
                       프락토올리고당: `${find_data}mg`,
                     };
@@ -8588,7 +8728,7 @@ export class VtestService {
                       find_data = find_data
                         .slice(0, find_data.indexOf('g'))
                         .trim();
-
+                      final_data['프락토올리고당'] = `${find_data}g`;
                       complete_data = {
                         프락토올리고당: `${find_data}g`,
                       };
@@ -8663,7 +8803,7 @@ export class VtestService {
                         find_data = find_data.substr(1).trim();
                       }
                     }
-
+                    final_data['프락토올리고당'] = `${find_data}g`;
                     const complete_data = {
                       프락토올리고당: `${find_data}g`,
                     };
@@ -8675,6 +8815,7 @@ export class VtestService {
                       .slice(first_index + 1, second_index)
                       .trim();
                     if (!find_data.includes('%')) {
+                      final_data['프락토올리고당'] = `${find_data}mg`;
                       const complete_data = {
                         프락토올리고당: `${find_data}mg`,
                       };
@@ -8765,7 +8906,7 @@ export class VtestService {
                         .slice(0, find_data.indexOf('mg'))
                         .trim();
                     }
-
+                    final_data['식이섬유'] = `${find_data}mg`;
                     const complete_data = {
                       식이섬유: `${find_data}mg`,
                     };
@@ -8833,7 +8974,7 @@ export class VtestService {
                         .slice(0, find_data.indexOf('m'))
                         .trim();
                     }
-
+                    final_data['식이섬유'] = `${find_data}mg`;
                     let complete_data = {
                       식이섬유: `${find_data}mg`,
                     };
@@ -8841,7 +8982,7 @@ export class VtestService {
                       find_data = find_data
                         .slice(0, find_data.indexOf('g'))
                         .trim();
-
+                      final_data['식이섬유'] = `${find_data}g`;
                       complete_data = {
                         식이섬유: `${find_data}g`,
                       };
@@ -8911,7 +9052,7 @@ export class VtestService {
                         .trim();
                     } else {
                     }
-
+                    final_data['식이섬유'] = `${find_data}g`;
                     const complete_data = {
                       식이섬유: `${find_data}g`,
                     };
@@ -8930,11 +9071,12 @@ export class VtestService {
                         .slice(first_index + 1, second_index)
                         .trim();
                     }
-
+                    final_data['식이섬유'] = `${find_data}mg`;
                     let complete_data = {
                       식이섬유: `${find_data}mg`,
                     };
                     if (!(find_data.length >= 3 && !find_data.includes('.'))) {
+                      final_data['식이섬유'] = `${find_data}g`;
                       complete_data = {
                         식이섬유: `${find_data}g`,
                       };
@@ -8949,6 +9091,7 @@ export class VtestService {
                     if (find_data.includes('표시량')) {
                       find_data = find_data.substr(3).trim();
                     }
+                    final_data['식이섬유'] = `${find_data}g`;
                     const complete_data = {
                       식이섬유: `${find_data}g`,
                     };
@@ -9037,6 +9180,7 @@ export class VtestService {
                         .slice(0, find_data.indexOf('mg'))
                         .trim();
                     }
+                    final_data['엽록소'] = `${find_data}mg`;
 
                     const complete_data = {
                       엽록소: `${find_data}mg`,
@@ -9105,7 +9249,7 @@ export class VtestService {
                         .slice(0, find_data.indexOf('m'))
                         .trim();
                     }
-
+                    final_data['엽록소'] = `${find_data}mg`;
                     let complete_data = {
                       엽록소: `${find_data}mg`,
                     };
@@ -9113,7 +9257,7 @@ export class VtestService {
                       find_data = find_data
                         .slice(0, find_data.indexOf('g'))
                         .trim();
-
+                      final_data['엽록소'] = `${find_data}g`;
                       complete_data = {
                         엽록소: `${find_data}g`,
                       };
@@ -9133,7 +9277,7 @@ export class VtestService {
                         .slice(first_index + 1, second_index)
                         .trim();
                     }
-
+                    final_data['엽록소'] = `${find_data}mg`;
                     const complete_data = {
                       엽록소: `${find_data}mg`,
                     };
@@ -9147,6 +9291,7 @@ export class VtestService {
                     if (find_data.includes('표시량')) {
                       find_data = find_data.substr(3).trim();
                     }
+                    final_data['엽록소'] = `${find_data}g`;
                     const complete_data = {
                       엽록소: `${find_data}g`,
                     };
@@ -9235,7 +9380,7 @@ export class VtestService {
                         .slice(0, find_data.indexOf('mg'))
                         .trim();
                     }
-
+                    final_data['로사빈'] = `${find_data}mg`;
                     const complete_data = {
                       로사빈: `${find_data}mg`,
                     };
@@ -9303,7 +9448,7 @@ export class VtestService {
                         .slice(0, find_data.indexOf('m'))
                         .trim();
                     }
-
+                    final_data['로사빈'] = `${find_data}mg`;
                     const complete_data = {
                       로사빈: `${find_data}mg`,
                     };
@@ -9374,7 +9519,7 @@ export class VtestService {
                         .slice(0, find_data.indexOf('m'))
                         .trim();
                     }
-
+                    final_data['Dimethylesculetin'] = `${find_data}mg`;
                     const complete_data = {
                       Dimethylesculetin: `${find_data}mg`,
                     };
@@ -9388,6 +9533,7 @@ export class VtestService {
                     if (find_data.includes('표시량')) {
                       find_data = find_data.substr(3).trim();
                     }
+                    final_data['Dimethylesculetin'] = `${find_data}g`;
                     const complete_data = {
                       Dimethylesculetin: `${find_data}g`,
                     };
@@ -9458,7 +9604,7 @@ export class VtestService {
                         .slice(0, find_data.indexOf('m'))
                         .trim();
                     }
-
+                    final_data['Deoxynojirimycin'] = `${find_data}mg`;
                     const complete_data = {
                       Deoxynojirimycin: `${find_data}mg`,
                     };
@@ -9472,6 +9618,7 @@ export class VtestService {
                     if (find_data.includes('표시량')) {
                       find_data = find_data.substr(3).trim();
                     }
+                    final_data['Deoxynojirimycin'] = `${find_data}g`;
                     const complete_data = {
                       Deoxynojirimycin: `${find_data}g`,
                     };
@@ -9547,7 +9694,7 @@ export class VtestService {
                         .slice(0, find_data.indexOf('m'))
                         .trim();
                     }
-
+                    final_data['키토산'] = `${find_data}mg`;
                     let complete_data = {
                       키토산: `${find_data}mg`,
                     };
@@ -9555,7 +9702,7 @@ export class VtestService {
                       find_data = find_data
                         .slice(0, find_data.indexOf('g'))
                         .trim();
-
+                      final_data['키토산'] = `${find_data}g`;
                       complete_data = {
                         키토산: `${find_data}g`,
                       };
@@ -9625,7 +9772,7 @@ export class VtestService {
                         .trim();
                     } else {
                     }
-
+                    final_data['키토산'] = `${find_data}g`;
                     let complete_data = {
                       키토산: `${find_data}g`,
                     };
@@ -9633,6 +9780,7 @@ export class VtestService {
                       find_data = find_data
                         .slice(0, find_data.indexOf('㎎'))
                         .trim();
+                      final_data['키토산'] = `${find_data}mg`;
                       complete_data = {
                         키토산: `${find_data}mg`,
                       };
@@ -9657,7 +9805,7 @@ export class VtestService {
                         .slice(0, find_data.indexOf('㎎'))
                         .trim();
                     }
-
+                    final_data['키토산'] = `${find_data}mg`;
                     const complete_data = {
                       키토산: `${find_data}mg`,
                     };
@@ -9668,6 +9816,7 @@ export class VtestService {
                     const find_data = parse_data
                       .slice(first_index + 1, second_index)
                       .trim();
+                    final_data['키토산'] = `${find_data}mg`;
                     const complete_data = {
                       키토산: `${find_data}mg`,
                     };
@@ -9737,7 +9886,7 @@ export class VtestService {
                         .slice(0, find_data.indexOf('m'))
                         .trim();
                     }
-
+                    final_data['폴리감마글루탐산'] = `${find_data}mg`;
                     const complete_data = {
                       폴리감마글루탐산: `${find_data}mg`,
                     };
@@ -9761,7 +9910,7 @@ export class VtestService {
                         .slice(0, find_data.indexOf('㎎'))
                         .trim();
                     }
-
+                    final_data['폴리감마글루탐산'] = `${find_data}mg`;
                     const complete_data = {
                       폴리감마글루탐산: `${find_data}mg`,
                     };
@@ -9843,7 +9992,7 @@ export class VtestService {
                       }
                     } else {
                     }
-
+                    final_data['크롬'] = `${find_data}ug`;
                     const complete_data = {
                       크롬: `${find_data}ug`,
                     };
@@ -9919,7 +10068,7 @@ export class VtestService {
                       }
                     } else {
                     }
-
+                    final_data['크롬'] = `${find_data}ug`;
                     const complete_data = {
                       크롬: `${find_data}ug`,
                     };
@@ -10000,7 +10149,7 @@ export class VtestService {
                       }
                     } else {
                     }
-
+                    final_data['크롬'] = `${find_data}ug`;
                     const complete_data = {
                       크롬: `${find_data}ug`,
                     };
@@ -10076,6 +10225,7 @@ export class VtestService {
                       }
                     } else {
                     }
+                    final_data['크롬'] = `${find_data}ug`;
                     const complete_data = {
                       크롬: `${find_data}ug`,
                     };
@@ -10131,6 +10281,7 @@ export class VtestService {
                         .trim();
                     }
                     if (find_data) {
+                      final_data['크롬'] = `${find_data}mcg`;
                       const complete_data = {
                         크롬: `${find_data}mcg`,
                       };
@@ -10189,6 +10340,7 @@ export class VtestService {
                     }
 
                     if (find_data) {
+                      final_data['크롬'] = `${find_data}g`;
                       const complete_data = {
                         크롬: `${find_data}g`,
                       };
@@ -10204,7 +10356,9 @@ export class VtestService {
                     let complete_data = {
                       크롬: `${find_data}ug`,
                     };
+                    final_data['크롬'] = `${find_data}ug`;
                     if (split_data[0].includes('mg')) {
+                      final_data['크롬'] = `${find_data}mg`;
                       complete_data = {
                         크롬: `${find_data}mg`,
                       };
@@ -10294,7 +10448,7 @@ export class VtestService {
                         .trim();
                     } else {
                     }
-
+                    final_data['프로바이오틱스'] = `${find_data}CFU`;
                     const complete_data = {
                       프로바이오틱스: `${find_data}CFU`,
                     };
@@ -10385,7 +10539,7 @@ export class VtestService {
                         .slice(find_data.indexOf('33') + 2, find_data.length)
                         .trim();
                     }
-
+                    final_data['프로바이오틱스'] = `${find_data}CFU`;
                     const complete_data = {
                       프로바이오틱스: `${find_data}CFU`,
                     };
@@ -10431,7 +10585,7 @@ export class VtestService {
                       const second_index = parse_data.indexOf('이');
                       find_data = parse_data.slice(0, second_index).trim();
                     }
-
+                    final_data['프로바이오틱스'] = `${find_data}CFU`;
                     const complete_data = {
                       프로바이오틱스: `${find_data}CFU`,
                     };
@@ -10448,7 +10602,7 @@ export class VtestService {
                         .slice(find_data.indexOf('량') + 1, find_data.length)
                         .trim();
                     }
-
+                    final_data['프로바이오틱스'] = `${find_data}CFU`;
                     const complete_data = {
                       프로바이오틱스: `${find_data}CFU`,
                     };
@@ -10459,7 +10613,7 @@ export class VtestService {
                     const find_data = parse_data
                       .slice(first_index + 2, second_index)
                       .trim();
-
+                    final_data['프로바이오틱스'] = `${find_data}CFU`;
                     const complete_data = {
                       프로바이오틱스: `${find_data}CFU`,
                     };
@@ -10470,7 +10624,7 @@ export class VtestService {
                     const find_data = parse_data
                       .slice(first_index + 1, second_index)
                       .trim();
-
+                    final_data['프로바이오틱스'] = `${find_data}CFU`;
                     const complete_data = {
                       프로바이오틱스: `${find_data}CFU`,
                     };
@@ -10490,13 +10644,14 @@ export class VtestService {
                     const find_data = parse_data
                       .slice(first_index + 1, second_index)
                       .trim();
-
+                    final_data['라우릭산'] = `${find_data}mg`;
                     const complete_data = {
                       라우릭산: `${find_data}mg`,
                     };
                   }
                 } else if (split_data[0].includes('총지방족알코올함량')) {
                   const find_data = 5.0;
+                  final_data['총지방족알코올함량'] = `${find_data}mg`;
                   const complete_data = {
                     총지방족알코올함량: `${find_data}mg`,
                   };
@@ -10565,7 +10720,7 @@ export class VtestService {
                         .slice(find_data.indexOf('서') + 1, find_data.length)
                         .trim();
                     }
-
+                    final_data['감마리놀렌산'] = `${find_data}mg`;
                     const complete_data = {
                       감마리놀렌산: `${find_data}mg`,
                     };
@@ -10584,7 +10739,7 @@ export class VtestService {
                         .slice(first_index + 1, second_index)
                         .trim();
                     }
-
+                    final_data['감마리놀렌산'] = `${find_data}mg`;
                     const complete_data = {
                       감마리놀렌산: `${find_data}mg`,
                     };
@@ -10595,6 +10750,7 @@ export class VtestService {
                     const find_data = parse_data
                       .slice(first_index + 1, second_index)
                       .trim();
+                    final_data['감마리놀렌산'] = `${find_data}mg`;
                     const complete_data = {
                       감마리놀렌산: `${find_data}mg`,
                     };
@@ -10664,7 +10820,7 @@ export class VtestService {
                         .slice(0, find_data.indexOf('m'))
                         .trim();
                     }
-
+                    final_data['조단백질'] = `${find_data}mg`;
                     let complete_data = {
                       조단백질: `${find_data}mg`,
                     };
@@ -10673,7 +10829,7 @@ export class VtestService {
                       find_data = find_data
                         .slice(0, find_data.indexOf('g'))
                         .trim();
-
+                      final_data['조단백질'] = `${find_data}g`;
                       complete_data = {
                         조단백질: `${find_data}g`,
                       };
@@ -10743,7 +10899,7 @@ export class VtestService {
                         .trim();
                     } else {
                     }
-
+                    final_data['조단백질'] = `${find_data}g`;
                     const complete_data = {
                       조단백질: `${find_data}g`,
                     };
@@ -10754,7 +10910,7 @@ export class VtestService {
                     const find_data = parse_data
                       .slice(first_index + 1, second_index)
                       .trim();
-
+                    final_data['조단백질'] = `${find_data}g`;
                     const complete_data = {
                       조단백질: `${find_data}g`,
                     };
@@ -10841,7 +10997,7 @@ export class VtestService {
                         .slice(0, find_data.indexOf('mg'))
                         .trim();
                     }
-
+                    final_data['망간'] = `${find_data}mg`;
                     const complete_data = {
                       망간: `${find_data}mg`,
                     };
@@ -10909,7 +11065,7 @@ export class VtestService {
                         .slice(0, find_data.indexOf('m'))
                         .trim();
                     }
-
+                    final_data['망간'] = `${find_data}mg`;
                     let complete_data = {
                       망간: `${find_data}mg`,
                     };
@@ -10925,7 +11081,7 @@ export class VtestService {
                         find_data = find_data.slice(0, find_data.length - 1);
                       }
                       // u μ
-
+                      final_data['망간'] = `${find_data}ug`;
                       complete_data = {
                         망간: `${find_data}ug`,
                       };
@@ -10934,7 +11090,7 @@ export class VtestService {
                       find_data = find_data
                         .slice(0, find_data.indexOf('㎍'))
                         .trim();
-
+                      final_data['망간'] = `${find_data}ug`;
                       complete_data = {
                         망간: `${find_data}ug`,
                       };
@@ -10954,7 +11110,7 @@ export class VtestService {
                         .slice(first_index + 1, second_index)
                         .trim();
                     }
-
+                    final_data['망간'] = `${find_data}mg`;
                     const complete_data = {
                       망간: `${find_data}mg`,
                     };
@@ -10968,6 +11124,7 @@ export class VtestService {
                     if (find_data.includes('표시량')) {
                       find_data = find_data.substr(3).trim();
                     }
+                    final_data['망간'] = `${find_data}mg`;
                     const complete_data = {
                       망간: `${find_data}mg`,
                     };
@@ -11056,7 +11213,7 @@ export class VtestService {
                         .slice(0, find_data.indexOf('mg'))
                         .trim();
                     }
-
+                    final_data['카테킨'] = `${find_data}mg`;
                     const complete_data = {
                       카테킨: `${find_data}mg`,
                     };
@@ -11124,7 +11281,7 @@ export class VtestService {
                         .slice(0, find_data.indexOf('m'))
                         .trim();
                     }
-
+                    final_data['카테킨'] = `${find_data}mg`;
                     let complete_data = {
                       카테킨: `${find_data}mg`,
                     };
@@ -11132,7 +11289,7 @@ export class VtestService {
                       find_data = find_data
                         .slice(0, find_data.indexOf('g'))
                         .trim();
-
+                      final_data['카테킨'] = `${find_data}g`;
                       complete_data = {
                         카테킨: `${find_data}g`,
                       };
@@ -11144,7 +11301,7 @@ export class VtestService {
                     const find_data = parse_data
                       .slice(first_index + 1, second_index)
                       .trim();
-
+                    final_data['카테킨'] = `${find_data}g`;
                     const complete_data = {
                       카테킨: `${find_data}g`,
                     };
@@ -11169,11 +11326,12 @@ export class VtestService {
                       const first_index = parse_data.indexOf('(');
                       find_data = parse_data.slice(0, first_index).trim();
                     }
-
+                    final_data['카테킨'] = `${find_data}mg`;
                     let complete_data = {
                       카테킨: `${find_data}mg`,
                     };
                     if (find_data.includes('.')) {
+                      final_data['카테킨'] = `${find_data}g`;
                       complete_data = {
                         카테킨: `${find_data}g`,
                       };
@@ -11190,6 +11348,7 @@ export class VtestService {
                         .slice(find_data.indexOf('(') + 1, find_data.length)
                         .trim();
                     }
+                    final_data['카테킨'] = `${find_data}mg`;
                     const complete_data = {
                       카테킨: `${find_data}mg`,
                     };
@@ -11215,9 +11374,9 @@ export class VtestService {
                     const second_index = parse_data.indexOf('(');
                     find_data = parse_data.slice(0, second_index).trim();
                   }
-
+                  final_data['D-pinitol'] = `${find_data}mg`;
                   const complete_data = {
-                    ' D-pinitol': `${find_data}mg`,
+                    'D-pinitol': `${find_data}mg`,
                   };
                 } else if (split_data[0].includes('폴리페놀')) {
                   const parse_data = split_data[1];
@@ -11249,6 +11408,7 @@ export class VtestService {
                       .slice(0, find_data.indexOf('㎎'))
                       .trim();
                   }
+                  final_data['폴리페놀'] = `${find_data}mg`;
                   const complete_data = {
                     폴리페놀: `${find_data}mg`,
                   };
@@ -11277,6 +11437,7 @@ export class VtestService {
                       }
                     } else {
                     }
+                    final_data['플라보놀배당체'] = `${find_data}mg`;
                     const complete_data = {
                       플라보놀배당체: `${find_data}mg`,
                     };
@@ -11287,6 +11448,7 @@ export class VtestService {
                     const find_data = parse_data
                       .slice(first_index + 1, second_index)
                       .trim();
+                    final_data['플라보놀배당체'] = `${find_data}mg`;
                     const complete_data = {
                       플라보놀배당체: `${find_data}mg`,
                     };
@@ -11300,6 +11462,7 @@ export class VtestService {
                     if (find_data.includes('표시량')) {
                       find_data = parse_data.slice(0, first_index).trim();
                     }
+                    final_data['플라보놀배당체'] = `${find_data}mg`;
                     const complete_data = {
                       플라보놀배당체: `${find_data}mg`,
                     };
@@ -11310,6 +11473,7 @@ export class VtestService {
                     const find_data = parse_data
                       .slice(first_index + 1, second_index)
                       .trim();
+                    final_data['플라보놀배당체'] = `${find_data}mg`;
                     const complete_data = {
                       플라보놀배당체: `${find_data}mg`,
                     };
@@ -11392,7 +11556,7 @@ export class VtestService {
                         .slice(0, find_data.indexOf('mg'))
                         .trim();
                     }
-
+                    final_data['플라보노이드'] = `${find_data}mg`;
                     const complete_data = {
                       플라보노이드: `${find_data}mg`,
                     };
@@ -11466,7 +11630,7 @@ export class VtestService {
                         .trim();
                     } else {
                     }
-
+                    final_data['플라보노이드'] = `${find_data}mg`;
                     const complete_data = {
                       플라보노이드: `${find_data}mg`,
                     };
@@ -11482,7 +11646,7 @@ export class VtestService {
                         .slice(0, find_data.indexOf('m'))
                         .trim();
                     }
-
+                    final_data['플라보노이드'] = `${find_data}mg`;
                     const complete_data = {
                       플라보노이드: `${find_data}mg`,
                     };
@@ -11507,7 +11671,7 @@ export class VtestService {
                       const first_index = parse_data.indexOf('(');
                       find_data = parse_data.slice(0, first_index).trim();
                     }
-
+                    final_data['플라보노이드'] = `${find_data}mg`;
                     const complete_data = {
                       플라보노이드: `${find_data}mg`,
                     };
@@ -11525,6 +11689,7 @@ export class VtestService {
                     }
 
                     if (find_data) {
+                      final_data['플라보노이드'] = `${find_data}mg`;
                       const complete_data = {
                         플라보노이드: `${find_data}mg`,
                       };
@@ -11532,6 +11697,7 @@ export class VtestService {
                   } else {
                   }
                 } else if (split_data[0].includes('Fustin')) {
+                  final_data['Fustin'] = `57mg`;
                   const complete_data = {
                     Fustin: `57mg`,
                   };
@@ -11616,7 +11782,7 @@ export class VtestService {
                         .slice(0, find_data.indexOf('mg'))
                         .trim();
                     }
-
+                    final_data['EPA와 DHA 합'] = `${find_data}mg`;
                     const complete_data = {
                       'EPA와 DHA 합': `${find_data}mg`,
                     };
@@ -11692,6 +11858,7 @@ export class VtestService {
                         .slice(find_data.indexOf('합') + 1, find_data.length)
                         .trim();
                     }
+                    final_data['EPA와 DHA 합'] = `${find_data}mg`;
                     let complete_data = {
                       'EPA와 DHA 합': `${find_data}mg`,
                     };
@@ -11701,6 +11868,7 @@ export class VtestService {
                         .slice(0, find_data.indexOf('g'))
                         .trim();
 
+                      final_data['EPA와 DHA 합'] = `${find_data}g`;
                       complete_data = {
                         'EPA와 DHA 합': `${find_data}g`,
                       };
@@ -11717,9 +11885,9 @@ export class VtestService {
                         .slice(0, find_data.indexOf('m'))
                         .trim();
                     }
-
+                    final_data['EPA와 DHA 합'] = `${find_data}g`;
                     const complete_data = {
-                      플라보노이드: `${find_data}g`,
+                      'EPA와 DHA 합': `${find_data}g`,
                     };
                   } else if (split_data[1].includes('(')) {
                     const parse_data = split_data[1];
@@ -11742,7 +11910,7 @@ export class VtestService {
                       const first_index = parse_data.indexOf('(');
                       find_data = parse_data.slice(0, first_index).trim();
                     }
-
+                    final_data['EPA와 DHA 합'] = `${find_data}mg`;
                     const complete_data = {
                       'EPA와 DHA 합': `${find_data}mg`,
                     };
@@ -11760,6 +11928,7 @@ export class VtestService {
                     }
 
                     if (find_data) {
+                      final_data['EPA와 DHA 합'] = `${find_data}mg`;
                       const complete_data = {
                         'EPA와 DHA 합': `${find_data}mg`,
                       };
@@ -11839,7 +12008,7 @@ export class VtestService {
                         .slice(find_data.indexOf('합') + 1, find_data.length)
                         .trim();
                     }
-
+                    final_data['안트라퀴논계화합물'] = `${find_data}mg`;
                     const complete_data = {
                       안트라퀴논계화합물: `${find_data}mg`,
                     };
@@ -11920,7 +12089,7 @@ export class VtestService {
                         .slice(0, find_data.indexOf('mg'))
                         .trim();
                     }
-
+                    final_data['안트라퀴논계화합물'] = `${find_data}mg`;
                     const complete_data = {
                       안트라퀴논계화합물: `${find_data}mg`,
                     };
@@ -11933,6 +12102,7 @@ export class VtestService {
                       .trim();
 
                     if (!find_data.includes('%')) {
+                      final_data['안트라퀴논계화합물'] = `${find_data}mg`;
                       const complete_data = {
                         안트라퀴논계화합물: `${find_data}mg`,
                       };
@@ -11949,6 +12119,7 @@ export class VtestService {
                         .slice(find_data.indexOf('(') + 1, find_data.length)
                         .trim();
                     }
+                    final_data['안트라퀴논계화합물'] = `${find_data}mg`;
                     const complete_data = {
                       안트라퀴논계화합물: `${find_data}mg`,
                     };
@@ -12038,7 +12209,7 @@ export class VtestService {
                         .slice(0, find_data.indexOf('mg'))
                         .trim();
                     }
-
+                    final_data['코로솔산'] = `${find_data}mg`;
                     const complete_data = {
                       코로솔산: `${find_data}mg`,
                     };
@@ -12106,7 +12277,7 @@ export class VtestService {
                         .slice(0, find_data.indexOf('m'))
                         .trim();
                     }
-
+                    final_data['코로솔산'] = `${find_data}mg`;
                     const complete_data = {
                       코로솔산: `${find_data}mg`,
                     };
@@ -12131,7 +12302,7 @@ export class VtestService {
                       const first_index = parse_data.indexOf('(');
                       find_data = parse_data.slice(0, first_index).trim();
                     }
-
+                    final_data['코로솔산'] = `${find_data}mg`;
                     const complete_data = {
                       코로솔산: `${find_data}mg`,
                     };
@@ -12220,7 +12391,7 @@ export class VtestService {
                         .slice(0, find_data.indexOf('mg'))
                         .trim();
                     }
-
+                    final_data['데커신'] = `${find_data}mg`;
                     const complete_data = {
                       데커신: `${find_data}mg`,
                     };
@@ -12288,7 +12459,7 @@ export class VtestService {
                         .slice(0, find_data.indexOf('m'))
                         .trim();
                     }
-
+                    final_data['데커신'] = `${find_data}mg`;
                     const complete_data = {
                       데커신: `${find_data}mg`,
                     };
@@ -12319,7 +12490,7 @@ export class VtestService {
                       const second_index = parse_data.indexOf('(');
                       find_data = parse_data.slice(0, second_index).trim();
                     }
-
+                    final_data['데커신'] = `${find_data}mg`;
                     const complete_data = {
                       데커신: `${find_data}mg`,
                     };
@@ -12403,7 +12574,7 @@ export class VtestService {
                         .slice(0, find_data.indexOf('mg'))
                         .trim();
                     }
-
+                    final_data['히알루론산'] = `${find_data}mg`;
                     const complete_data = {
                       히알루론산: `${find_data}mg`,
                     };
@@ -12471,7 +12642,7 @@ export class VtestService {
                         .slice(0, find_data.indexOf('m'))
                         .trim();
                     }
-
+                    final_data['히알루론산'] = `${find_data}mg`;
                     const complete_data = {
                       히알루론산: `${find_data}mg`,
                     };
@@ -12502,7 +12673,7 @@ export class VtestService {
                       const second_index = parse_data.indexOf('(');
                       find_data = parse_data.slice(0, second_index).trim();
                     }
-
+                    final_data['히알루론산'] = `${find_data}mg`;
                     let complete_data = {
                       히알루론산: `${find_data}mg`,
                     };
@@ -12510,6 +12681,7 @@ export class VtestService {
                       find_data = find_data
                         .slice(0, find_data.indexOf('/'))
                         .trim();
+                      final_data['히알루론산'] = `${find_data}g`;
                       complete_data = {
                         히알루론산: `${find_data}g`,
                       };
@@ -12581,7 +12753,7 @@ export class VtestService {
                         .slice(0, find_data.indexOf('m'))
                         .trim();
                     }
-
+                    final_data['스쿠알렌'] = `${find_data}mg`;
                     let complete_data = {
                       스쿠알렌: `${find_data}mg`,
                     };
@@ -12589,8 +12761,9 @@ export class VtestService {
                       find_data = find_data
                         .slice(0, find_data.indexOf('g'))
                         .trim();
+                      final_data['스쿠알렌'] = `${find_data}g`;
                       complete_data = {
-                        스쿠알렌: `${find_data}mg`,
+                        스쿠알렌: `${find_data}g`,
                       };
                     }
                   } else {
@@ -12605,6 +12778,7 @@ export class VtestService {
                         .slice(find_data.indexOf('[') + 1, find_data.length)
                         .trim();
                     }
+                    final_data['스쿠알렌'] = `${find_data}g`;
                     const complete_data = {
                       스쿠알렌: `${find_data}g`,
                     };
@@ -12674,21 +12848,23 @@ export class VtestService {
                         .slice(0, find_data.indexOf('m'))
                         .trim();
                     }
+                    final_data['Rosmarinic acid'] = `${find_data}mg`;
                     let complete_data = {
-                      "Rosmarinic acid'": `${find_data}mg`,
+                      'Rosmarinic acid': `${find_data}mg`,
                     };
 
                     if (find_data.includes('㎍') || find_data.includes('ug')) {
                       find_data = find_data.substr(0, 3).trim();
+                      final_data['Rosmarinic acid'] = `${find_data}ug`;
                       complete_data = {
-                        "Rosmarinic acid'": `${find_data}ug`,
+                        'Rosmarinic acid': `${find_data}ug`,
                       };
                     }
                   } else if (split_data[1].includes('(')) {
                     const parse_data = split_data[1];
                     const second_index = parse_data.indexOf('(');
                     const find_data = parse_data.slice(0, second_index).trim();
-
+                    final_data['Rosmarinic acid'] = `${find_data}mg`;
                     const complete_data = {
                       "Rosmarinic acid'": `${find_data}mg`,
                     };
@@ -12702,7 +12878,7 @@ export class VtestService {
                     if (find_data.includes('표시량')) {
                       find_data = find_data.substr(3).trim();
                     }
-
+                    final_data['Rosmarinic acid'] = `${find_data}mg`;
                     const complete_data = {
                       "Rosmarinic acid'": `${find_data}mg`,
                     };
@@ -12790,7 +12966,7 @@ export class VtestService {
                         .slice(0, find_data.indexOf('mg'))
                         .trim();
                     }
-
+                    final_data['HCA'] = `${find_data}mg`;
                     const complete_data = {
                       "HCA'": `${find_data}mg`,
                     };
@@ -12873,7 +13049,7 @@ export class VtestService {
                         .slice(0, find_data.indexOf('/'))
                         .trim();
                     }
-
+                    final_data['HCA'] = `${find_data}mg`;
                     const complete_data = {
                       "HCA'": `${find_data}mg`,
                     };
@@ -12935,7 +13111,7 @@ export class VtestService {
                       }
                     } else {
                     }
-
+                    final_data['HCA'] = `${find_data}g`;
                     const complete_data = {
                       "HCA'": `${find_data}g`,
                     };
@@ -12959,7 +13135,7 @@ export class VtestService {
                         .slice(0, find_data.indexOf('/'))
                         .trim();
                     }
-
+                    final_data['HCA'] = `${find_data}mg`;
                     const complete_data = {
                       "HCA'": `${find_data}mg`,
                     };
@@ -12975,7 +13151,7 @@ export class VtestService {
                         .slice(find_data.indexOf('acid') + 4, find_data.length)
                         .trim();
                     }
-
+                    final_data['HCA'] = `${find_data}mg`;
                     const complete_data = {
                       "HCA'": `${find_data}mg`,
                     };
@@ -12986,7 +13162,7 @@ export class VtestService {
                     const find_data = parse_data
                       .slice(first_index + 1, second_index)
                       .trim();
-
+                    final_data['HCA'] = `${find_data}mg`;
                     const complete_data = {
                       "HCA'": `${find_data}mg`,
                     };
@@ -13050,7 +13226,7 @@ export class VtestService {
                       }
                     } else {
                     }
-
+                    final_data['쉬잔드린'] = `${find_data}mg`;
                     const complete_data = {
                       쉬잔드린: `${find_data}mg`,
                     };
@@ -13058,7 +13234,7 @@ export class VtestService {
                     const parse_data = split_data[1];
                     const second_index = parse_data.indexOf('(');
                     const find_data = parse_data.slice(0, second_index).trim();
-
+                    final_data['쉬잔드린'] = `${find_data}mg`;
                     const complete_data = {
                       쉬잔드린: `${find_data}mg`,
                     };
@@ -13141,7 +13317,7 @@ export class VtestService {
                         .slice(0, find_data.indexOf('mg'))
                         .trim();
                     }
-
+                    final_data['철'] = `${find_data}mg`;
                     const complete_data = {
                       철: `${find_data}mg`,
                     };
@@ -13229,7 +13405,7 @@ export class VtestService {
                         .slice(find_data.indexOf('서') + 1, find_data.length)
                         .trim();
                     }
-
+                    final_data['철'] = `${find_data}mg`;
                     const complete_data = {
                       철: `${find_data}mg`,
                     };
@@ -13253,7 +13429,7 @@ export class VtestService {
                         .slice(0, find_data.indexOf('/'))
                         .trim();
                     }
-
+                    final_data['철'] = `${find_data}mg`;
                     const complete_data = {
                       철: `${find_data}mg`,
                     };
@@ -13269,7 +13445,7 @@ export class VtestService {
                         .slice(find_data.indexOf('량') + 1, find_data.length)
                         .trim();
                     }
-
+                    final_data['철'] = `${find_data}mg`;
                     const complete_data = {
                       철: `${find_data}mg`,
                     };
@@ -13353,7 +13529,7 @@ export class VtestService {
                         .slice(0, find_data.indexOf('mg'))
                         .trim();
                     }
-
+                    final_data['코엔자임'] = `${find_data}mg`;
                     const complete_data = {
                       코엔자임: `${find_data}mg`,
                     };
@@ -13441,7 +13617,7 @@ export class VtestService {
                         .slice(find_data.indexOf('서') + 1, find_data.length)
                         .trim();
                     }
-
+                    final_data['코엔자임'] = `${find_data}mg`;
                     const complete_data = {
                       코엔자임: `${find_data}mg`,
                     };
@@ -13465,7 +13641,7 @@ export class VtestService {
                         .slice(0, find_data.indexOf('/'))
                         .trim();
                     }
-
+                    final_data['코엔자임'] = `${find_data}mg`;
                     let complete_data = {
                       코엔자임: `${find_data}mg`,
                     };
@@ -13473,6 +13649,7 @@ export class VtestService {
                       find_data = find_data
                         .slice(0, find_data.indexOf('g'))
                         .trim();
+                      final_data['코엔자임'] = `${find_data}g`;
                       complete_data = {
                         코엔자임: `${find_data}g`,
                       };
@@ -13489,7 +13666,7 @@ export class VtestService {
                         .slice(find_data.indexOf('량') + 1, find_data.length)
                         .trim();
                     }
-
+                    final_data['코엔자임'] = `${find_data}mg`;
                     const complete_data = {
                       코엔자임: `${find_data}mg`,
                     };
@@ -13573,7 +13750,7 @@ export class VtestService {
                         .slice(0, find_data.indexOf('mg'))
                         .trim();
                     }
-
+                    final_data['옥타코사놀'] = `${find_data}mg`;
                     const complete_data = {
                       옥타코사놀: `${find_data}mg`,
                     };
@@ -13666,7 +13843,7 @@ export class VtestService {
                         .slice(find_data.indexOf('당') + 1, find_data.length)
                         .trim();
                     }
-
+                    final_data['옥타코사놀'] = `${find_data}mg`;
                     const complete_data = {
                       옥타코사놀: `${find_data}mg`,
                     };
@@ -13690,7 +13867,7 @@ export class VtestService {
                         .slice(0, find_data.indexOf('/'))
                         .trim();
                     }
-
+                    final_data['옥타코사놀'] = `${find_data}mg`;
                     const complete_data = {
                       옥타코사놀: `${find_data}mg`,
                     };
@@ -13774,7 +13951,7 @@ export class VtestService {
                         .slice(0, find_data.indexOf('mg'))
                         .trim();
                     }
-
+                    final_data['아세틸글루코사민'] = `${find_data}mg`;
                     const complete_data = {
                       아세틸글루코사민: `${find_data}mg`,
                     };
@@ -13867,7 +14044,7 @@ export class VtestService {
                         .slice(find_data.indexOf('당') + 1, find_data.length)
                         .trim();
                     }
-
+                    final_data['아세틸글루코사민'] = `${find_data}mg`;
                     let complete_data = {
                       아세틸글루코사민: `${find_data}mg`,
                     };
@@ -13876,7 +14053,7 @@ export class VtestService {
                       find_data = find_data
                         .slice(0, find_data.indexOf('g'))
                         .trim();
-
+                      final_data['아세틸글루코사민'] = `${find_data}g`;
                       complete_data = {
                         아세틸글루코사민: `${find_data}g`,
                       };
@@ -13904,7 +14081,7 @@ export class VtestService {
                     if (find_data.includes('(')) {
                       find_data = find_data.substr(1, find_data.length).trim();
                     }
-
+                    final_data['아세틸글루코사민'] = `${find_data}mg`;
                     let complete_data = {
                       아세틸글루코사민: `${find_data}mg`,
                     };
@@ -13912,7 +14089,7 @@ export class VtestService {
                       find_data = find_data
                         .slice(0, find_data.indexOf('g'))
                         .trim();
-
+                      final_data['아세틸글루코사민'] = `${find_data}g`;
                       complete_data = {
                         아세틸글루코사민: `${find_data}g`,
                       };
@@ -14000,7 +14177,7 @@ export class VtestService {
                         .slice(0, find_data.indexOf('mg'))
                         .trim();
                     }
-
+                    final_data['구리'] = `${find_data}mg`;
                     const complete_data = {
                       구리: `${find_data}mg`,
                     };
@@ -14093,7 +14270,7 @@ export class VtestService {
                         .slice(find_data.indexOf('리') + 1, find_data.length)
                         .trim();
                     }
-
+                    final_data['구리'] = `${find_data}mg`;
                     let complete_data = {
                       구리: `${find_data}mg`,
                     };
@@ -14103,7 +14280,7 @@ export class VtestService {
                       find_data = find_data
                         .slice(0, find_data.indexOf('g') - 1)
                         .trim();
-
+                      final_data['구리'] = `${find_data}ug`;
                       complete_data = {
                         구리: `${find_data}ug`,
                       };
@@ -14122,6 +14299,7 @@ export class VtestService {
                         .slice(first_index + 1, parse_data.length)
                         .trim();
                     }
+                    final_data['구리'] = `${find_data}mg`;
                     let complete_data = {
                       구리: `${find_data}mg`,
                     };
@@ -14133,6 +14311,7 @@ export class VtestService {
                       find_data = find_data
                         .slice(0, find_data.length - 2)
                         .trim();
+                      final_data['구리'] = `${find_data}ug`;
                       complete_data = {
                         구리: `${find_data}ug`,
                       };
@@ -14144,7 +14323,7 @@ export class VtestService {
                     const find_data = parse_data
                       .slice(first_index + 1, second_index)
                       .trim();
-
+                    final_data['구리'] = `${find_data}mg`;
                     const complete_data = {
                       구리: `${find_data}mg`,
                     };
@@ -14222,7 +14401,7 @@ export class VtestService {
                       }
                     } else {
                     }
-
+                    final_data['몰리브덴'] = `${find_data}ug`;
                     const complete_data = {
                       몰리브덴: `${find_data}ug`,
                     };
@@ -14298,7 +14477,7 @@ export class VtestService {
                       }
                     } else {
                     }
-
+                    final_data['몰리브덴'] = `${find_data}ug`;
                     const complete_data = {
                       몰리브덴: `${find_data}ug`,
                     };
@@ -14374,7 +14553,7 @@ export class VtestService {
                       }
                     } else {
                     }
-
+                    final_data['몰리브덴'] = `${find_data}ug`;
                     const complete_data = {
                       몰리브덴: `${find_data}ug`,
                     };
@@ -14450,7 +14629,7 @@ export class VtestService {
                       }
                     } else {
                     }
-
+                    final_data['몰리브덴'] = `${find_data}ug`;
                     const complete_data = {
                       몰리브덴: `${find_data}ug`,
                     };
@@ -14505,7 +14684,7 @@ export class VtestService {
                         .slice(find_data.indexOf('(') + 1, find_data.length)
                         .trim();
                     }
-
+                    final_data['몰리브덴'] = `${find_data}mcg`;
                     const complete_data = {
                       몰리브덴: `${find_data}mcg`,
                     };
@@ -14561,7 +14740,7 @@ export class VtestService {
                         .slice(find_data.indexOf('(') + 1, find_data.length)
                         .trim();
                     }
-
+                    final_data['몰리브덴'] = `${find_data}g`;
                     const complete_data = {
                       몰리브덴: `${find_data}g`,
                     };
@@ -14643,7 +14822,7 @@ export class VtestService {
                     if (find_data.includes('의')) {
                       find_data = find_data.substr(1).trim();
                     }
-
+                    final_data['요오드'] = `${find_data}ug`;
                     const complete_data = {
                       요오드: `${find_data}ug`,
                     };
@@ -14719,7 +14898,7 @@ export class VtestService {
                       }
                     } else {
                     }
-
+                    final_data['요오드'] = `${find_data}ug`;
                     const complete_data = {
                       요오드: `${find_data}ug`,
                     };
@@ -14795,7 +14974,7 @@ export class VtestService {
                       }
                     } else {
                     }
-
+                    final_data['요오드'] = `${find_data}ug`;
                     const complete_data = {
                       요오드: `${find_data}ug`,
                     };
@@ -14871,7 +15050,7 @@ export class VtestService {
                       }
                     } else {
                     }
-
+                    final_data['요오드'] = `${find_data}ug`;
                     const complete_data = {
                       요오드: `${find_data}ug`,
                     };
@@ -14926,7 +15105,7 @@ export class VtestService {
                         .slice(find_data.indexOf('(') + 1, find_data.length)
                         .trim();
                     }
-
+                    final_data['요오드'] = `${find_data}mcg`;
                     const complete_data = {
                       요오드: `${find_data}mcg`,
                     };
@@ -14982,7 +15161,7 @@ export class VtestService {
                         .slice(find_data.indexOf('(') + 1, find_data.length)
                         .trim();
                     }
-
+                    final_data['요오드'] = `${find_data}g`;
                     const complete_data = {
                       요오드: `${find_data}g`,
                     };
@@ -14993,6 +15172,7 @@ export class VtestService {
                     const find_data = parse_data
                       .slice(first_index + 1, second_index)
                       .trim();
+                    final_data['요오드'] = `${find_data}ug`;
                     const complete_data = {
                       요오드: `${find_data}ug`,
                     };
@@ -15075,6 +15255,7 @@ export class VtestService {
                         .slice(0, find_data.indexOf('mg'))
                         .trim();
                     }
+                    final_data['테아닌'] = `${find_data}mg`;
                     const complete_data = {
                       테아닌: `${find_data}mg`,
                     };
@@ -15162,6 +15343,7 @@ export class VtestService {
                         .slice(find_data.indexOf('서') + 1, find_data.length)
                         .trim();
                     }
+                    final_data['테아닌'] = `${find_data}mg`;
                     const complete_data = {
                       테아닌: `${find_data}mg`,
                     };
@@ -15185,6 +15367,7 @@ export class VtestService {
                         .slice(0, find_data.indexOf('/'))
                         .trim();
                     }
+                    final_data['테아닌'] = `${find_data}mg`;
                     const complete_data = {
                       테아닌: `${find_data}mg`,
                     };
@@ -15200,6 +15383,7 @@ export class VtestService {
                         .slice(find_data.indexOf('량') + 1, find_data.length)
                         .trim();
                     }
+                    final_data['테아닌'] = `${find_data}g`;
                     const complete_data = {
                       테아닌: `${find_data}mg`,
                     };
@@ -15290,7 +15474,7 @@ export class VtestService {
                         .slice(find_data.indexOf('서') + 1, find_data.length)
                         .trim();
                     }
-
+                    final_data['리놀렌산'] = `${find_data}mg`;
                     let complete_data = {
                       리놀렌산: `${find_data}mg`,
                     };
@@ -15298,7 +15482,7 @@ export class VtestService {
                       find_data = find_data
                         .slice(0, find_data.indexOf('g'))
                         .trim();
-
+                      final_data['리놀렌산'] = `${find_data}g`;
                       complete_data = {
                         리놀렌산: `${find_data}g`,
                       };
@@ -15329,7 +15513,7 @@ export class VtestService {
                       const second_index = parse_data.indexOf('(');
                       find_data = parse_data.slice(0, second_index).trim();
                     }
-
+                    final_data['리놀렌산'] = `${find_data}mg`;
                     const complete_data = {
                       리놀렌산: `${find_data}mg`,
                     };
@@ -15413,9 +15597,9 @@ export class VtestService {
                         .slice(0, find_data.indexOf('mg'))
                         .trim();
                     }
-
+                    final_data['Chlorogenic acid'] = `${find_data}mg`;
                     const complete_data = {
-                      "Chlorogenic acid'": `${find_data}mg`,
+                      'Chlorogenic acid': `${find_data}mg`,
                     };
                   } else if (split_data[1].includes('mg')) {
                     const parse_data = split_data[1];
@@ -15501,16 +15685,17 @@ export class VtestService {
                         .slice(find_data.indexOf('서') + 1, find_data.length)
                         .trim();
                     }
-
+                    final_data['Chlorogenic acid'] = `${find_data}mg`;
                     let complete_data = {
-                      "Chlorogenic acid'": `${find_data}mg`,
+                      'Chlorogenic acid': `${find_data}mg`,
                     };
                     if (find_data.includes('㎍') || find_data.includes('ug')) {
                       find_data = find_data
                         .slice(0, find_data.length - 2)
                         .trim();
+                      final_data['Chlorogenic acid'] = `${find_data}ug`;
                       complete_data = {
-                        "Chlorogenic acid'": `${find_data}ug`,
+                        'Chlorogenic acid': `${find_data}ug`,
                       };
                     }
                   } else if (split_data[1].includes('(')) {
@@ -15539,9 +15724,9 @@ export class VtestService {
                       const second_index = parse_data.indexOf('(');
                       find_data = parse_data.slice(0, second_index).trim();
                     }
-
+                    final_data['Chlorogenic acid'] = `${find_data}mg`;
                     const complete_data = {
-                      "Chlorogenic acid'": `${find_data}mg`,
+                      'Chlorogenic acid': `${find_data}mg`,
                     };
                   } else if (split_data[0].includes('g')) {
                     const parse_data = split_data[0];
@@ -15555,9 +15740,9 @@ export class VtestService {
                         .slice(find_data.indexOf('량') + 1, find_data.length)
                         .trim();
                     }
-
+                    final_data['Chlorogenic acid'] = `${find_data}mg`;
                     const complete_data = {
-                      "Chlorogenic acid'": `${find_data}mg`,
+                      'Chlorogenic acid': `${find_data}mg`,
                     };
                   } else {
                   }
@@ -15571,9 +15756,9 @@ export class VtestService {
                       find_data = find_data.substr(2);
                     }
                   }
-
+                  final_data['Salvianolic acid'] = `${find_data}mg`;
                   const complete_data = {
-                    "Salvianolic acid'": `${find_data}mg`,
+                    'Salvianolic acid': `${find_data}mg`,
                   };
                 } else if (split_data[0].includes('알콕시글리세롤')) {
                   if (split_data[1].includes('mg')) {
@@ -15660,7 +15845,7 @@ export class VtestService {
                         .slice(find_data.indexOf('서') + 1, find_data.length)
                         .trim();
                     }
-
+                    final_data['알콕시글리세롤'] = `${find_data}mg`;
                     let complete_data = {
                       알콕시글리세롤: `${find_data}mg`,
                     };
@@ -15669,6 +15854,7 @@ export class VtestService {
                       find_data = find_data
                         .slice(0, find_data.indexOf('g'))
                         .trim();
+                      final_data['알콕시글리세롤'] = `${find_data}g`;
                       complete_data = {
                         알콕시글리세롤: `${find_data}g`,
                       };
@@ -15685,6 +15871,7 @@ export class VtestService {
                       const second_index = parse_data.indexOf('g');
                       find_data = parse_data.slice(0, second_index).trim();
                     }
+                    final_data['알콕시글리세롤'] = `${find_data}g`;
                     const complete_data = {
                       알콕시글리세롤: `${find_data}g`,
                     };
@@ -15767,7 +15954,7 @@ export class VtestService {
                         .slice(0, find_data.indexOf('mg'))
                         .trim();
                     }
-
+                    final_data['아스타잔틴'] = `${find_data}mg`;
                     const complete_data = {
                       아스타잔틴: `${find_data}mg`,
                     };
@@ -15855,7 +16042,7 @@ export class VtestService {
                         .slice(find_data.indexOf('서') + 1, find_data.length)
                         .trim();
                     }
-
+                    final_data['아스타잔틴'] = `${find_data}mg`;
                     const complete_data = {
                       아스타잔틴: `${find_data}mg`,
                     };
@@ -15944,7 +16131,7 @@ export class VtestService {
                         .slice(0, find_data.indexOf('mg'))
                         .trim();
                     }
-
+                    final_data['루테인'] = `${find_data}mg`;
                     const complete_data = {
                       루테인: `${find_data}mg`,
                     };
@@ -16032,7 +16219,7 @@ export class VtestService {
                         .slice(find_data.indexOf('서') + 1, find_data.length)
                         .trim();
                     }
-
+                    final_data['루테인'] = `${find_data}mg`;
                     const complete_data = {
                       루테인: `${find_data}mg`,
                     };
@@ -16062,7 +16249,7 @@ export class VtestService {
                       const second_index = parse_data.indexOf('(');
                       find_data = parse_data.slice(0, second_index).trim();
                     }
-
+                    final_data['루테인'] = `${find_data}mg`;
                     const complete_data = {
                       루테인: `${find_data}mg`,
                     };
@@ -16078,6 +16265,7 @@ export class VtestService {
                         .slice(find_data.indexOf('량') + 1, find_data.length)
                         .trim();
                     }
+                    final_data['루테인'] = `${find_data}mg`;
 
                     const complete_data = {
                       루테인: `${find_data}mg`,
@@ -16162,7 +16350,7 @@ export class VtestService {
                         .slice(0, find_data.indexOf('mg'))
                         .trim();
                     }
-
+                    final_data['이소플라본'] = `${find_data}mg`;
                     const complete_data = {
                       이소플라본: `${find_data}mg`,
                     };
@@ -16250,7 +16438,7 @@ export class VtestService {
                         .slice(find_data.indexOf('서') + 1, find_data.length)
                         .trim();
                     }
-
+                    final_data['이소플라본'] = `${find_data}mg`;
                     const complete_data = {
                       이소플라본: `${find_data}mg`,
                     };
@@ -16280,7 +16468,7 @@ export class VtestService {
                       const second_index = parse_data.indexOf('(');
                       find_data = parse_data.slice(0, second_index).trim();
                     }
-
+                    final_data['이소플라본'] = `${find_data}mg`;
                     const complete_data = {
                       이소플라본: `${find_data}mg`,
                     };
@@ -16301,7 +16489,7 @@ export class VtestService {
                         .slice(find_data.indexOf('(') + 1, find_data.length)
                         .trim();
                     }
-
+                    final_data['이소플라본'] = `${find_data}mg`;
                     const complete_data = {
                       이소플라본: `${find_data}mg`,
                     };
@@ -16320,7 +16508,7 @@ export class VtestService {
                     const second_index = parse_data.indexOf('(');
                     find_data = parse_data.slice(0, second_index).trim();
                   }
-
+                  final_data['Cycloalliin'] = `${find_data}mg`;
                   const complete_data = {
                     Cycloalliin: `${find_data}mg`,
                   };
@@ -16402,7 +16590,7 @@ export class VtestService {
                         .slice(0, find_data.indexOf('mg'))
                         .trim();
                     }
-
+                    final_data['총다당체'] = `${find_data}mg`;
                     const complete_data = {
                       총다당체: `${find_data}mg`,
                     };
@@ -16490,7 +16678,7 @@ export class VtestService {
                         .slice(find_data.indexOf('서') + 1, find_data.length)
                         .trim();
                     }
-
+                    final_data['총다당체'] = `${find_data}mg`;
                     const complete_data = {
                       총다당체: `${find_data}mg`,
                     };
@@ -16528,7 +16716,7 @@ export class VtestService {
                         .slice(first_index + 1, second_index)
                         .trim();
                     }
-
+                    final_data['총다당체'] = `${find_data}mg`;
                     const complete_data = {
                       총다당체: `${find_data}mg`,
                     };
@@ -16542,13 +16730,204 @@ export class VtestService {
                   const find_data = parse_data
                     .slice(first_index + 1, second_index)
                     .trim();
-
+                  final_data['dotriacontanol'] = `${find_data}mg`;
                   const complete_data = {
                     dotriacontanol: `${find_data}mg`,
                   };
                 } else if (split_data[0].includes('진세노사이드')) {
+                  if (
+                    (split_data[0].includes('Rg1') &&
+                      split_data[0].includes('Rb1') &&
+                      split_data[0].includes('Rg3')) ||
+                    (split_data[1].includes('Rg1') &&
+                      split_data[1].includes('Rb1') &&
+                      split_data[1].includes('Rg3')) ||
+                    (split_data[0].includes('rg1') &&
+                      split_data[0].includes('rb1') &&
+                      split_data[0].includes('rg3')) ||
+                    (split_data[0].includes('Rg1') &&
+                      split_data[0].includes('Rb') &&
+                      split_data[0].includes('Rg3'))
+                  ) {
+                    const parse_data = split_data[1];
+                    const first_index = parse_data.indexOf('(');
+                    const second_index = parse_data.indexOf('mg');
+                    let find_data = parse_data
+                      .slice(first_index + 1, second_index)
+                      .trim();
+                    if (find_data.includes('표시량')) {
+                      find_data = find_data.substr(3).trim();
+                    } else if (find_data.includes('㎎')) {
+                      find_data = find_data
+                        .slice(0, find_data.indexOf('㎎'))
+                        .trim();
+                    }
+                    if (!find_data || find_data.includes('량')) {
+                      find_data = parse_data
+                        .slice(
+                          parse_data.indexOf('량') + 2,
+                          parse_data.indexOf('mg'),
+                        )
+                        .trim();
+                    }
+                    final_data[
+                      '진세노사이드 Rg1, Rb1 및 Rg3의 합'
+                    ] = `${find_data}mg`;
+                    const complete_data = {
+                      '진세노사이드 Rg1, Rb1 및 Rg3의 합': `${find_data}mg`,
+                    };
+                  } else if (split_data[0].includes('Rb')) {
+                    if (split_data[0].includes('Rg')) {
+                      if (split_data[0].includes('Rg1')) {
+                        const parse_data = split_data[1];
+                        const first_index = parse_data.indexOf('(');
+                        const second_index = parse_data.indexOf('mg');
+                        let find_data = parse_data
+                          .slice(first_index + 1, second_index)
+                          .trim();
+                        if (!find_data) {
+                          find_data = parse_data
+                            .slice(
+                              parse_data.indexOf('=') + 1,
+                              parse_data.indexOf('('),
+                            )
+                            .trim();
+                        }
+                        final_data[
+                          '진세노사이드 Rg1과 Rb1 의 합'
+                        ] = `${find_data}mg`;
+                        const complete_data = {
+                          '진세노사이드 Rg1과 Rb1 의 합': `${find_data}mg`,
+                        };
+                      } else {
+                        const parse_data = split_data[1];
+                        const first_index = parse_data.indexOf('(');
+                        const second_index = parse_data.indexOf('mg');
+                        let find_data = parse_data
+                          .slice(first_index + 1, second_index)
+                          .trim();
+                        if (find_data.includes('표시량')) {
+                          find_data = find_data.substr(3).trim();
+                        } else if (find_data.includes('㎎')) {
+                          find_data = find_data
+                            .slice(0, find_data.indexOf('㎎'))
+                            .trim();
+                        }
+                        if (!find_data || find_data.includes('량')) {
+                          find_data = parse_data
+                            .slice(
+                              parse_data.indexOf('량') + 2,
+                              parse_data.indexOf('mg'),
+                            )
+                            .trim();
+                        }
+                        if (find_data.includes('㎎')) {
+                          find_data = find_data
+                            .slice(0, find_data.indexOf('㎎'))
+                            .trim();
+                        }
+                        final_data[
+                          '진세노사이드 Rg1, Rb1 및 Rg3의 합'
+                        ] = `${find_data}mg`;
+                        const complete_data = {
+                          '진세노사이드 Rg1, Rb1 및 Rg3의 합': `${find_data}mg`,
+                        };
+                      }
+                    } else {
+                      const parse_data = split_data[1];
+                      const first_index = parse_data.indexOf('(');
+                      const second_index = parse_data.indexOf('mg');
+                      let find_data = parse_data
+                        .slice(first_index + 1, second_index)
+                        .trim();
+                      if (find_data.includes('표시량')) {
+                        find_data = find_data.substr(3).trim();
+                      } else if (find_data.includes('㎎')) {
+                        find_data = find_data
+                          .slice(0, find_data.indexOf('㎎'))
+                          .trim();
+                      }
+                      if (!find_data || find_data.includes('량')) {
+                        find_data = parse_data
+                          .slice(
+                            parse_data.indexOf('량') + 2,
+                            parse_data.indexOf('mg'),
+                          )
+                          .trim();
+                      }
+                      final_data['진세노사이드 Rb1'] = `${find_data}mg`;
+                      const complete_data = {
+                        '진세노사이드 Rb1': `${find_data}mg`,
+                      };
+                    }
+                  }
                 } else if (split_data[0].includes('진세노이드')) {
+                  if (
+                    split_data[0].includes('Rg1') &&
+                    split_data[0].includes('Rb1') &&
+                    split_data[0].includes('Rg3')
+                  ) {
+                    const parse_data = split_data[1];
+                    const first_index = parse_data.indexOf('(');
+                    const second_index = parse_data.indexOf('mg');
+                    let find_data = parse_data
+                      .slice(first_index + 1, second_index)
+                      .trim();
+                    if (find_data.includes('표시량')) {
+                      find_data = find_data.substr(3).trim();
+                    } else if (find_data.includes('㎎')) {
+                      find_data = find_data
+                        .slice(0, find_data.indexOf('㎎'))
+                        .trim();
+                    }
+                    final_data[
+                      '진세노사이드 Rg1, Rb1 및 Rg3의 합'
+                    ] = `${find_data}mg`;
+                    const complete_data = {
+                      '진세노사이드 Rg1, Rb1 및 Rg3의 합': `${find_data}mg`,
+                    };
+                  } else {
+                    const parse_data = split_data[1];
+                    const first_index = parse_data.indexOf('(');
+                    const second_index = parse_data.indexOf('mg');
+                    let find_data = parse_data
+                      .slice(first_index + 1, second_index)
+                      .trim();
+                    if (!find_data) {
+                      find_data = parse_data
+                        .slice(
+                          parse_data.indexOf('=') + 1,
+                          parse_data.indexOf('('),
+                        )
+                        .trim();
+                    }
+                    final_data[
+                      '진세노사이드 Rg1과 Rb1 의 합'
+                    ] = `${find_data}mg`;
+                    const complete_data = {
+                      '진세노사이드 Rg1과 Rb1 의 합': `${find_data}mg`,
+                    };
+                  }
                 } else if (split_data[0].includes('진센노사이드')) {
+                  const parse_data = split_data[1];
+                  const first_index = parse_data.indexOf('(');
+                  const second_index = parse_data.indexOf('mg');
+                  let find_data = parse_data
+                    .slice(first_index + 1, second_index)
+                    .trim();
+                  if (find_data.includes('표시량')) {
+                    find_data = find_data.substr(3).trim();
+                  } else if (find_data.includes('㎎')) {
+                    find_data = find_data
+                      .slice(0, find_data.indexOf('㎎'))
+                      .trim();
+                  }
+                  final_data[
+                    '진세노사이드 Rg1, Rb1 및 Rg3의 합'
+                  ] = `${find_data}mg`;
+                  const complete_data = {
+                    '진세노사이드 Rg1, Rb1 및 Rg3의 합': `${find_data}mg`,
+                  };
                 } else if (split_data[0].includes('Gastrodin')) {
                   const parse_data = split_data[1];
                   const first_index = parse_data.indexOf('(');
@@ -16565,7 +16944,7 @@ export class VtestService {
                   } else if (find_data.includes('표시량')) {
                     find_data = find_data.substr(3).trim();
                   }
-
+                  final_data['Gastrodin'] = `${find_data}mg`;
                   const complete_data = {
                     Gastrodin: `${find_data}mg`,
                   };
@@ -16588,7 +16967,7 @@ export class VtestService {
 
                     find_data = parse_data.slice(0, second_index).trim();
                   }
-
+                  final_data['Scopoletin'] = `${find_data}mg`;
                   const complete_dta = {
                     Scopoletin: '${find_data}mg',
                   };
@@ -16677,7 +17056,7 @@ export class VtestService {
                         .slice(find_data.indexOf('서') + 1, find_data.length)
                         .trim();
                     }
-
+                    final_data['포스콜린'] = `${find_data}mg`;
                     const complete_data = {
                       포스콜린: `${find_data}mg`,
                     };
@@ -16707,7 +17086,7 @@ export class VtestService {
                       const second_index = parse_data.indexOf('(');
                       find_data = parse_data.slice(0, second_index).trim();
                     }
-
+                    final_data['포스콜린'] = `${find_data}mg`;
                     const complete_data = {
                       포스콜린: `${find_data}mg`,
                     };
@@ -16791,7 +17170,7 @@ export class VtestService {
                         .slice(0, find_data.indexOf('mg'))
                         .trim();
                     }
-
+                    final_data['공액리놀레산'] = `${find_data}mg`;
                     const complete_data = {
                       공액리놀레산: `${find_data}mg`,
                     };
@@ -16879,7 +17258,7 @@ export class VtestService {
                         .slice(find_data.indexOf('서') + 1, find_data.length)
                         .trim();
                     }
-
+                    final_data['공액리놀레산'] = `${find_data}mg`;
                     let complete_data = {
                       공액리놀레산: `${find_data}mg`,
                     };
@@ -16888,6 +17267,7 @@ export class VtestService {
                       find_data = find_data
                         .slice(0, find_data.indexOf('g'))
                         .trim();
+                      final_data['공액리놀레산'] = `${find_data}g`;
                       complete_data = {
                         공액리놀레산: `${find_data}g`,
                       };
@@ -25623,82 +26003,4420 @@ export class VtestService {
                   } else {
                   }
                 } else if (split_data[0].includes('테르피놀렌')) {
-                  console.log(split_data, e._id);
-                  // console.log(find_data);
+                  if (split_data[1].includes('mg')) {
+                    const parse_data = split_data[1];
+                    const first_index = parse_data.indexOf('(');
+                    const second_index = parse_data.indexOf('mg');
+                    let find_data = parse_data
+                      .slice(first_index + 1, second_index)
+                      .trim();
+
+                    if (!find_data) {
+                      const parse_data = split_data[1];
+                      const second_index = parse_data.indexOf('mg');
+                      find_data = parse_data.slice(0, second_index).trim();
+                      if (find_data.includes('표시량')) {
+                        find_data = find_data
+                          .slice(find_data.indexOf('량') + 1, find_data.length)
+                          .trim();
+                      }
+                      if (
+                        find_data.includes('(') ||
+                        find_data.includes('[') ||
+                        find_data.includes('｛') ||
+                        find_data.includes('{') ||
+                        find_data.includes('-')
+                      ) {
+                        find_data = find_data.substr(1).trim();
+                      }
+                    } else if (find_data.includes('표시량')) {
+                      find_data = find_data
+                        .slice(find_data.indexOf('량') + 1, find_data.length)
+                        .trim();
+
+                      if (find_data.includes('표시량')) {
+                        find_data = find_data
+                          .slice(find_data.indexOf('량') + 1, find_data.length)
+                          .trim();
+                      }
+
+                      if (
+                        find_data.includes('(') ||
+                        find_data.includes('[') ||
+                        find_data.includes('｛') ||
+                        find_data.includes('{') ||
+                        find_data.includes('-')
+                      ) {
+                        find_data = find_data.substr(1).trim();
+                      }
+                    } else if (
+                      find_data.includes('(') ||
+                      find_data.includes('[') ||
+                      find_data.includes('｛') ||
+                      find_data.includes('{') ||
+                      find_data.includes('-')
+                    ) {
+                      find_data = find_data.substr(1).trim();
+                      if (find_data.includes('(')) {
+                        find_data = find_data
+                          .slice(find_data.indexOf('(') + 1, find_data.length)
+                          .trim();
+                      }
+
+                      if (
+                        find_data.includes('(') ||
+                        find_data.includes('[') ||
+                        find_data.includes('｛') ||
+                        find_data.includes('{') ||
+                        find_data.includes('-')
+                      ) {
+                        find_data = find_data.substr(1).trim();
+                      } else {
+                      }
+                    } else {
+                    }
+                    if (find_data.includes('mg')) {
+                      find_data = find_data
+                        .slice(0, find_data.indexOf('mg'))
+                        .trim();
+                    }
+
+                    const complete_data = {
+                      테르피놀렌: `${find_data}mg`,
+                    };
+                  } else {
+                    const parse_data = split_data[1];
+                    const first_index = parse_data.indexOf('(');
+                    const second_index = parse_data.indexOf(')');
+                    let find_data = parse_data.slice(0, second_index).trim();
+
+                    if (find_data.includes('(')) {
+                      find_data = find_data
+                        .slice(0, find_data.indexOf('('))
+                        .trim();
+                    }
+                    if (find_data.includes('표시량')) {
+                      find_data = parse_data
+                        .slice(first_index + 1, second_index)
+                        .trim();
+                    }
+
+                    const complete_data = {
+                      테르피놀렌: `${find_data}mg`,
+                    };
+                  }
                 } else if (split_data[0].includes('피브린')) {
+                  if (split_data[1].includes('FU')) {
+                    const parse_data = split_data[1];
+                    const first_index = parse_data.indexOf('(');
+                    const second_index = parse_data.indexOf('FU');
+                    let find_data = parse_data
+                      .slice(first_index + 1, second_index)
+                      .trim();
+
+                    if (!find_data) {
+                      const parse_data = split_data[1];
+                      const second_index = parse_data.indexOf('FU');
+                      find_data = parse_data.slice(0, second_index).trim();
+                      if (find_data.includes('표시량')) {
+                        find_data = find_data
+                          .slice(find_data.indexOf('량') + 1, find_data.length)
+                          .trim();
+                      }
+                      if (
+                        find_data.includes('(') ||
+                        find_data.includes('[') ||
+                        find_data.includes('｛') ||
+                        find_data.includes('{') ||
+                        find_data.includes('-')
+                      ) {
+                        find_data = find_data.substr(1).trim();
+                      }
+                    } else if (find_data.includes('표시량')) {
+                      find_data = find_data
+                        .slice(find_data.indexOf('량') + 1, find_data.length)
+                        .trim();
+
+                      if (find_data.includes('표시량')) {
+                        find_data = find_data
+                          .slice(find_data.indexOf('량') + 1, find_data.length)
+                          .trim();
+                      }
+
+                      if (
+                        find_data.includes('(') ||
+                        find_data.includes('[') ||
+                        find_data.includes('｛') ||
+                        find_data.includes('{') ||
+                        find_data.includes('-')
+                      ) {
+                        find_data = find_data.substr(1).trim();
+                      }
+                    } else if (
+                      find_data.includes('(') ||
+                      find_data.includes('[') ||
+                      find_data.includes('｛') ||
+                      find_data.includes('{') ||
+                      find_data.includes('-')
+                    ) {
+                      find_data = find_data.substr(1).trim();
+                      if (find_data.includes('(')) {
+                        find_data = find_data
+                          .slice(find_data.indexOf('(') + 1, find_data.length)
+                          .trim();
+                      }
+
+                      if (
+                        find_data.includes('(') ||
+                        find_data.includes('[') ||
+                        find_data.includes('｛') ||
+                        find_data.includes('{') ||
+                        find_data.includes('-')
+                      ) {
+                        find_data = find_data.substr(1).trim();
+                      } else {
+                      }
+                    } else {
+                    }
+                    if (find_data.includes('mg')) {
+                      find_data = find_data
+                        .slice(0, find_data.indexOf('mg'))
+                        .trim();
+                    }
+
+                    const complete_data = {
+                      피브린: `${find_data}FU`,
+                    };
+                  } else if (split_data[1].includes('IU')) {
+                    const parse_data = split_data[1];
+                    const first_index = parse_data.indexOf('(');
+                    const second_index = parse_data.indexOf('IU');
+                    let find_data = parse_data
+                      .slice(first_index + 1, second_index)
+                      .trim();
+
+                    if (!find_data) {
+                      const parse_data = split_data[1];
+                      const second_index = parse_data.indexOf('IU');
+                      find_data = parse_data.slice(0, second_index).trim();
+                      if (find_data.includes('표시량')) {
+                        find_data = find_data
+                          .slice(find_data.indexOf('량') + 1, find_data.length)
+                          .trim();
+                      }
+                      if (
+                        find_data.includes('(') ||
+                        find_data.includes('[') ||
+                        find_data.includes('｛') ||
+                        find_data.includes('{') ||
+                        find_data.includes('-')
+                      ) {
+                        find_data = find_data.substr(1).trim();
+                      }
+                    } else if (find_data.includes('표시량')) {
+                      find_data = find_data
+                        .slice(find_data.indexOf('량') + 1, find_data.length)
+                        .trim();
+
+                      if (find_data.includes('표시량')) {
+                        find_data = find_data
+                          .slice(find_data.indexOf('량') + 1, find_data.length)
+                          .trim();
+                      }
+
+                      if (
+                        find_data.includes('(') ||
+                        find_data.includes('[') ||
+                        find_data.includes('｛') ||
+                        find_data.includes('{') ||
+                        find_data.includes('-')
+                      ) {
+                        find_data = find_data.substr(1).trim();
+                      }
+                    } else if (
+                      find_data.includes('(') ||
+                      find_data.includes('[') ||
+                      find_data.includes('｛') ||
+                      find_data.includes('{') ||
+                      find_data.includes('-')
+                    ) {
+                      find_data = find_data.substr(1).trim();
+                      if (find_data.includes('(')) {
+                        find_data = find_data
+                          .slice(find_data.indexOf('(') + 1, find_data.length)
+                          .trim();
+                      }
+
+                      if (
+                        find_data.includes('(') ||
+                        find_data.includes('[') ||
+                        find_data.includes('｛') ||
+                        find_data.includes('{') ||
+                        find_data.includes('-')
+                      ) {
+                        find_data = find_data.substr(1).trim();
+                      } else {
+                      }
+                    } else {
+                    }
+                    if (find_data.includes('mg')) {
+                      find_data = find_data
+                        .slice(0, find_data.indexOf('mg'))
+                        .trim();
+                    }
+
+                    const complete_data = {
+                      피브린: `${find_data}FU`,
+                    };
+                  } else if (split_data[1].includes('U')) {
+                    const parse_data = split_data[1];
+                    const first_index = parse_data.indexOf('(');
+                    const second_index = parse_data.indexOf('U');
+                    let find_data = parse_data
+                      .slice(first_index + 1, second_index)
+                      .trim();
+
+                    if (!find_data) {
+                      const parse_data = split_data[1];
+                      const second_index = parse_data.indexOf('U');
+                      find_data = parse_data.slice(0, second_index).trim();
+                      if (find_data.includes('표시량')) {
+                        find_data = find_data
+                          .slice(find_data.indexOf('량') + 1, find_data.length)
+                          .trim();
+                      }
+                      if (
+                        find_data.includes('(') ||
+                        find_data.includes('[') ||
+                        find_data.includes('｛') ||
+                        find_data.includes('{') ||
+                        find_data.includes('-')
+                      ) {
+                        find_data = find_data.substr(1).trim();
+                      }
+                    } else if (find_data.includes('표시량')) {
+                      find_data = find_data
+                        .slice(find_data.indexOf('량') + 1, find_data.length)
+                        .trim();
+
+                      if (find_data.includes('표시량')) {
+                        find_data = find_data
+                          .slice(find_data.indexOf('량') + 1, find_data.length)
+                          .trim();
+                      }
+
+                      if (
+                        find_data.includes('(') ||
+                        find_data.includes('[') ||
+                        find_data.includes('｛') ||
+                        find_data.includes('{') ||
+                        find_data.includes('-')
+                      ) {
+                        find_data = find_data.substr(1).trim();
+                      }
+                    } else if (
+                      find_data.includes('(') ||
+                      find_data.includes('[') ||
+                      find_data.includes('｛') ||
+                      find_data.includes('{') ||
+                      find_data.includes('-')
+                    ) {
+                      find_data = find_data.substr(1).trim();
+                      if (find_data.includes('(')) {
+                        find_data = find_data
+                          .slice(find_data.indexOf('(') + 1, find_data.length)
+                          .trim();
+                      }
+
+                      if (
+                        find_data.includes('(') ||
+                        find_data.includes('[') ||
+                        find_data.includes('｛') ||
+                        find_data.includes('{') ||
+                        find_data.includes('-')
+                      ) {
+                        find_data = find_data.substr(1).trim();
+                      } else {
+                      }
+                    } else {
+                    }
+                    if (find_data.includes('mg')) {
+                      find_data = find_data
+                        .slice(0, find_data.indexOf('mg'))
+                        .trim();
+                    }
+
+                    const complete_data = {
+                      피브린: `${find_data}FU`,
+                    };
+                  } else {
+                    const parse_data = split_data[1];
+                    const first_index = parse_data.indexOf('(');
+                    const second_index = parse_data.indexOf(')');
+                    let find_data = parse_data
+                      .slice(first_index + 1, second_index)
+                      .trim();
+                    if (find_data.includes('표시량')) {
+                      find_data = parse_data
+                        .slice(
+                          parse_data.indexOf('량') + 1,
+                          parse_data.indexOf('/'),
+                        )
+                        .trim();
+                    }
+                    const complete_data = {
+                      피브린: `${find_data}FU`,
+                    };
+                  }
                 } else if (split_data[0].includes('코로콜산')) {
+                  const parse_data = split_data[1];
+                  const first_index = parse_data.indexOf('(');
+                  const second_index = parse_data.indexOf('mg');
+                  const find_data = parse_data
+                    .slice(first_index + 1, second_index)
+                    .trim();
+                  const complete_data = {
+                    코로콜산: `${find_data}mg`,
+                  };
                 } else if (
                   split_data[0].includes('프로바오틱스') ||
                   split_data[0].includes('프로바이오틱')
                 ) {
+                  if (split_data[1].includes('CFU')) {
+                    const parse_data = split_data[1];
+                    const first_index = parse_data.indexOf('(');
+                    const second_index = parse_data.indexOf('CFU');
+                    let find_data = parse_data
+                      .slice(first_index + 1, second_index)
+                      .trim();
+
+                    if (!find_data) {
+                      const parse_data = split_data[1];
+                      const second_index = parse_data.indexOf('CFU');
+                      find_data = parse_data.slice(0, second_index).trim();
+                      if (find_data.includes('표시량')) {
+                        find_data = find_data
+                          .slice(find_data.indexOf('량') + 1, find_data.length)
+                          .trim();
+                      }
+                      if (
+                        find_data.includes('(') ||
+                        find_data.includes('[') ||
+                        find_data.includes('｛') ||
+                        find_data.includes('{') ||
+                        find_data.includes('-')
+                      ) {
+                        find_data = find_data.substr(1).trim();
+                      }
+                    } else if (find_data.includes('표시량')) {
+                      find_data = find_data
+                        .slice(find_data.indexOf('량') + 1, find_data.length)
+                        .trim();
+
+                      if (find_data.includes('표시량')) {
+                        find_data = find_data
+                          .slice(find_data.indexOf('량') + 1, find_data.length)
+                          .trim();
+                      }
+
+                      if (
+                        find_data.includes('(') ||
+                        find_data.includes('[') ||
+                        find_data.includes('｛') ||
+                        find_data.includes('{') ||
+                        find_data.includes('-')
+                      ) {
+                        find_data = find_data.substr(1).trim();
+                      }
+                    } else if (
+                      find_data.includes('(') ||
+                      find_data.includes('[') ||
+                      find_data.includes('｛') ||
+                      find_data.includes('{') ||
+                      find_data.includes('-')
+                    ) {
+                      find_data = find_data.substr(1).trim();
+                      if (find_data.includes('(')) {
+                        find_data = find_data
+                          .slice(find_data.indexOf('(') + 1, find_data.length)
+                          .trim();
+                      }
+
+                      if (
+                        find_data.includes('(') ||
+                        find_data.includes('[') ||
+                        find_data.includes('｛') ||
+                        find_data.includes('{') ||
+                        find_data.includes('-')
+                      ) {
+                        find_data = find_data.substr(1).trim();
+                      } else {
+                      }
+                    } else {
+                    }
+                    if (find_data.includes('mg')) {
+                      find_data = find_data
+                        .slice(0, find_data.indexOf('mg'))
+                        .trim();
+                    }
+                    if (find_data.includes('로')) {
+                      find_data = find_data
+                        .slice(find_data.indexOf('로') + 1, find_data.length)
+                        .trim();
+                    }
+
+                    const complete_data = {
+                      '프로바이오틱 수': `${find_data}CFU`,
+                    };
+                  } else if (split_data[1].includes('cfu')) {
+                    const parse_data = split_data[1];
+                    const first_index = parse_data.indexOf('(');
+                    const second_index = parse_data.indexOf('cfu');
+                    let find_data = parse_data
+                      .slice(first_index + 1, second_index)
+                      .trim();
+
+                    if (!find_data) {
+                      const parse_data = split_data[1];
+                      const second_index = parse_data.indexOf('cfu');
+                      find_data = parse_data.slice(0, second_index).trim();
+                      if (find_data.includes('표시량')) {
+                        find_data = find_data
+                          .slice(find_data.indexOf('량') + 1, find_data.length)
+                          .trim();
+                      }
+                      if (
+                        find_data.includes('(') ||
+                        find_data.includes('[') ||
+                        find_data.includes('｛') ||
+                        find_data.includes('{') ||
+                        find_data.includes('-')
+                      ) {
+                        find_data = find_data.substr(1).trim();
+                      }
+                    } else if (find_data.includes('표시량')) {
+                      find_data = find_data
+                        .slice(find_data.indexOf('량') + 1, find_data.length)
+                        .trim();
+
+                      if (find_data.includes('표시량')) {
+                        find_data = find_data
+                          .slice(find_data.indexOf('량') + 1, find_data.length)
+                          .trim();
+                      }
+
+                      if (
+                        find_data.includes('(') ||
+                        find_data.includes('[') ||
+                        find_data.includes('｛') ||
+                        find_data.includes('{') ||
+                        find_data.includes('-')
+                      ) {
+                        find_data = find_data.substr(1).trim();
+                      }
+                    } else if (
+                      find_data.includes('(') ||
+                      find_data.includes('[') ||
+                      find_data.includes('｛') ||
+                      find_data.includes('{') ||
+                      find_data.includes('-')
+                    ) {
+                      find_data = find_data.substr(1).trim();
+                      if (find_data.includes('(')) {
+                        find_data = find_data
+                          .slice(find_data.indexOf('(') + 1, find_data.length)
+                          .trim();
+                      }
+
+                      if (
+                        find_data.includes('(') ||
+                        find_data.includes('[') ||
+                        find_data.includes('｛') ||
+                        find_data.includes('{') ||
+                        find_data.includes('-')
+                      ) {
+                        find_data = find_data.substr(1).trim();
+                      } else {
+                      }
+                    } else {
+                    }
+                    if (find_data.includes('mg')) {
+                      find_data = find_data
+                        .slice(0, find_data.indexOf('mg'))
+                        .trim();
+                    }
+
+                    const complete_data = {
+                      '프로바이오틱 수': `${find_data}CFU`,
+                    };
+                  } else {
+                  }
                 } else if (split_data[0].includes('Hamabiwalactone')) {
+                  if (split_data[1].includes('mg')) {
+                    const parse_data = split_data[1];
+                    const first_index = parse_data.indexOf('(');
+                    const second_index = parse_data.indexOf('mg');
+                    let find_data = parse_data
+                      .slice(first_index + 1, second_index)
+                      .trim();
+
+                    if (!find_data) {
+                      const parse_data = split_data[1];
+                      const second_index = parse_data.indexOf('mg');
+                      find_data = parse_data.slice(0, second_index).trim();
+                      if (find_data.includes('표시량')) {
+                        find_data = find_data
+                          .slice(find_data.indexOf('량') + 1, find_data.length)
+                          .trim();
+                      }
+                      if (
+                        find_data.includes('(') ||
+                        find_data.includes('[') ||
+                        find_data.includes('｛') ||
+                        find_data.includes('{') ||
+                        find_data.includes('-')
+                      ) {
+                        find_data = find_data.substr(1).trim();
+                      }
+                    } else if (find_data.includes('표시량')) {
+                      find_data = find_data
+                        .slice(find_data.indexOf('량') + 1, find_data.length)
+                        .trim();
+
+                      if (find_data.includes('표시량')) {
+                        find_data = find_data
+                          .slice(find_data.indexOf('량') + 1, find_data.length)
+                          .trim();
+                      }
+
+                      if (
+                        find_data.includes('(') ||
+                        find_data.includes('[') ||
+                        find_data.includes('｛') ||
+                        find_data.includes('{') ||
+                        find_data.includes('-')
+                      ) {
+                        find_data = find_data.substr(1).trim();
+                      }
+                    } else if (
+                      find_data.includes('(') ||
+                      find_data.includes('[') ||
+                      find_data.includes('｛') ||
+                      find_data.includes('{') ||
+                      find_data.includes('-')
+                    ) {
+                      find_data = find_data.substr(1).trim();
+                      if (find_data.includes('(')) {
+                        find_data = find_data
+                          .slice(find_data.indexOf('(') + 1, find_data.length)
+                          .trim();
+                      }
+
+                      if (
+                        find_data.includes('(') ||
+                        find_data.includes('[') ||
+                        find_data.includes('｛') ||
+                        find_data.includes('{') ||
+                        find_data.includes('-')
+                      ) {
+                        find_data = find_data.substr(1).trim();
+                      } else {
+                      }
+                    } else {
+                    }
+                    if (find_data.includes('mg')) {
+                      find_data = find_data
+                        .slice(0, find_data.indexOf('mg'))
+                        .trim();
+                    }
+
+                    const complete_data = {
+                      'Hamabiwalactone B': `${find_data}mg`,
+                    };
+                  } else {
+                    const parse_data = split_data[1];
+                    const first_index = parse_data.indexOf('(');
+                    const second_index = parse_data.indexOf(')');
+                    let find_data = parse_data.slice(0, second_index).trim();
+
+                    if (find_data.includes('(')) {
+                      find_data = find_data
+                        .slice(0, find_data.indexOf('('))
+                        .trim();
+                    }
+                    if (find_data.includes('표시량')) {
+                      find_data = parse_data
+                        .slice(first_index + 1, second_index)
+                        .trim();
+                    }
+
+                    const complete_data = {
+                      'Hamabiwalactone B': `${find_data}mg`,
+                    };
+                  }
                 } else if (split_data[0].includes('리모넨')) {
+                  if (split_data[1].includes('mg')) {
+                    const parse_data = split_data[1];
+                    const first_index = parse_data.indexOf('(');
+                    const second_index = parse_data.indexOf('mg');
+                    let find_data = parse_data
+                      .slice(first_index + 1, second_index)
+                      .trim();
+
+                    if (!find_data) {
+                      const parse_data = split_data[1];
+                      const second_index = parse_data.indexOf('mg');
+                      find_data = parse_data.slice(0, second_index).trim();
+                      if (find_data.includes('표시량')) {
+                        find_data = find_data
+                          .slice(find_data.indexOf('량') + 1, find_data.length)
+                          .trim();
+                      }
+                      if (
+                        find_data.includes('(') ||
+                        find_data.includes('[') ||
+                        find_data.includes('｛') ||
+                        find_data.includes('{') ||
+                        find_data.includes('-')
+                      ) {
+                        find_data = find_data.substr(1).trim();
+                      }
+                    } else if (find_data.includes('표시량')) {
+                      find_data = find_data
+                        .slice(find_data.indexOf('량') + 1, find_data.length)
+                        .trim();
+
+                      if (find_data.includes('표시량')) {
+                        find_data = find_data
+                          .slice(find_data.indexOf('량') + 1, find_data.length)
+                          .trim();
+                      }
+
+                      if (
+                        find_data.includes('(') ||
+                        find_data.includes('[') ||
+                        find_data.includes('｛') ||
+                        find_data.includes('{') ||
+                        find_data.includes('-')
+                      ) {
+                        find_data = find_data.substr(1).trim();
+                      }
+                    } else if (
+                      find_data.includes('(') ||
+                      find_data.includes('[') ||
+                      find_data.includes('｛') ||
+                      find_data.includes('{') ||
+                      find_data.includes('-')
+                    ) {
+                      find_data = find_data.substr(1).trim();
+                      if (find_data.includes('(')) {
+                        find_data = find_data
+                          .slice(find_data.indexOf('(') + 1, find_data.length)
+                          .trim();
+                      }
+
+                      if (
+                        find_data.includes('(') ||
+                        find_data.includes('[') ||
+                        find_data.includes('｛') ||
+                        find_data.includes('{') ||
+                        find_data.includes('-')
+                      ) {
+                        find_data = find_data.substr(1).trim();
+                      } else {
+                      }
+                    } else {
+                    }
+                    if (find_data.includes('mg')) {
+                      find_data = find_data
+                        .slice(0, find_data.indexOf('mg'))
+                        .trim();
+                    }
+
+                    const complete_data = {
+                      리모넨: `${find_data}mg`,
+                    };
+                  } else {
+                    const parse_data = split_data[1];
+                    const first_index = parse_data.indexOf('(');
+                    const second_index = parse_data.indexOf(')');
+                    let find_data = parse_data.slice(0, second_index).trim();
+
+                    if (find_data.includes('(')) {
+                      find_data = find_data
+                        .slice(0, find_data.indexOf('('))
+                        .trim();
+                    }
+                    if (find_data.includes('표시량')) {
+                      find_data = parse_data
+                        .slice(first_index + 1, second_index)
+                        .trim();
+                    }
+
+                    const complete_data = {
+                      리모넨: `${find_data}mg`,
+                    };
+                  }
                 } else if (split_data[0].includes('헤스피리딘')) {
+                  if (split_data[1].includes('mg')) {
+                    const parse_data = split_data[1];
+                    const first_index = parse_data.indexOf('(');
+                    const second_index = parse_data.indexOf('mg');
+                    let find_data = parse_data
+                      .slice(first_index + 1, second_index)
+                      .trim();
+
+                    if (!find_data) {
+                      const parse_data = split_data[1];
+                      const second_index = parse_data.indexOf('mg');
+                      find_data = parse_data.slice(0, second_index).trim();
+                      if (find_data.includes('표시량')) {
+                        find_data = find_data
+                          .slice(find_data.indexOf('량') + 1, find_data.length)
+                          .trim();
+                      }
+                      if (
+                        find_data.includes('(') ||
+                        find_data.includes('[') ||
+                        find_data.includes('｛') ||
+                        find_data.includes('{') ||
+                        find_data.includes('-')
+                      ) {
+                        find_data = find_data.substr(1).trim();
+                      }
+                    } else if (find_data.includes('표시량')) {
+                      find_data = find_data
+                        .slice(find_data.indexOf('량') + 1, find_data.length)
+                        .trim();
+
+                      if (find_data.includes('표시량')) {
+                        find_data = find_data
+                          .slice(find_data.indexOf('량') + 1, find_data.length)
+                          .trim();
+                      }
+
+                      if (
+                        find_data.includes('(') ||
+                        find_data.includes('[') ||
+                        find_data.includes('｛') ||
+                        find_data.includes('{') ||
+                        find_data.includes('-')
+                      ) {
+                        find_data = find_data.substr(1).trim();
+                      }
+                    } else if (
+                      find_data.includes('(') ||
+                      find_data.includes('[') ||
+                      find_data.includes('｛') ||
+                      find_data.includes('{') ||
+                      find_data.includes('-')
+                    ) {
+                      find_data = find_data.substr(1).trim();
+                      if (find_data.includes('(')) {
+                        find_data = find_data
+                          .slice(find_data.indexOf('(') + 1, find_data.length)
+                          .trim();
+                      }
+
+                      if (
+                        find_data.includes('(') ||
+                        find_data.includes('[') ||
+                        find_data.includes('｛') ||
+                        find_data.includes('{') ||
+                        find_data.includes('-')
+                      ) {
+                        find_data = find_data.substr(1).trim();
+                      } else {
+                      }
+                    } else {
+                    }
+                    if (find_data.includes('mg')) {
+                      find_data = find_data
+                        .slice(0, find_data.indexOf('mg'))
+                        .trim();
+                    }
+
+                    const complete_data = {
+                      헤스피리딘: `${find_data}mg`,
+                    };
+                  } else {
+                  }
                 } else if (split_data[0].includes('알리인')) {
+                  if (split_data[1].includes('mg')) {
+                    const parse_data = split_data[1];
+                    const first_index = parse_data.indexOf('(');
+                    const second_index = parse_data.indexOf('mg');
+                    let find_data = parse_data
+                      .slice(first_index + 1, second_index)
+                      .trim();
+
+                    if (!find_data) {
+                      const parse_data = split_data[1];
+                      const second_index = parse_data.indexOf('mg');
+                      find_data = parse_data.slice(0, second_index).trim();
+                      if (find_data.includes('표시량')) {
+                        find_data = find_data
+                          .slice(find_data.indexOf('량') + 1, find_data.length)
+                          .trim();
+                      }
+                      if (
+                        find_data.includes('(') ||
+                        find_data.includes('[') ||
+                        find_data.includes('｛') ||
+                        find_data.includes('{') ||
+                        find_data.includes('-')
+                      ) {
+                        find_data = find_data.substr(1).trim();
+                      }
+                    } else if (find_data.includes('표시량')) {
+                      find_data = find_data
+                        .slice(find_data.indexOf('량') + 1, find_data.length)
+                        .trim();
+
+                      if (find_data.includes('표시량')) {
+                        find_data = find_data
+                          .slice(find_data.indexOf('량') + 1, find_data.length)
+                          .trim();
+                      }
+
+                      if (
+                        find_data.includes('(') ||
+                        find_data.includes('[') ||
+                        find_data.includes('｛') ||
+                        find_data.includes('{') ||
+                        find_data.includes('-')
+                      ) {
+                        find_data = find_data.substr(1).trim();
+                      }
+                    } else if (
+                      find_data.includes('(') ||
+                      find_data.includes('[') ||
+                      find_data.includes('｛') ||
+                      find_data.includes('{') ||
+                      find_data.includes('-')
+                    ) {
+                      find_data = find_data.substr(1).trim();
+                      if (find_data.includes('(')) {
+                        find_data = find_data
+                          .slice(find_data.indexOf('(') + 1, find_data.length)
+                          .trim();
+                      }
+
+                      if (
+                        find_data.includes('(') ||
+                        find_data.includes('[') ||
+                        find_data.includes('｛') ||
+                        find_data.includes('{') ||
+                        find_data.includes('-')
+                      ) {
+                        find_data = find_data.substr(1).trim();
+                      } else {
+                      }
+                    } else {
+                    }
+                    if (find_data.includes('mg')) {
+                      find_data = find_data
+                        .slice(0, find_data.indexOf('mg'))
+                        .trim();
+                    }
+
+                    const complete_data = {
+                      알리인: `${find_data}mg`,
+                    };
+                  } else if (split_data[0].includes('mg')) {
+                    const parse_data = split_data[0];
+                    const first_index = parse_data.indexOf('(');
+                    const second_index = parse_data.indexOf('mg');
+                    const find_data = parse_data
+                      .slice(first_index + 1, second_index)
+                      .trim();
+
+                    const complete_data = {
+                      알리인: `${find_data}mg`,
+                    };
+                  } else {
+                  }
                 } else if (split_data[0].includes('코로소린산')) {
+                  if (split_data[1].includes('mg')) {
+                    const parse_data = split_data[1];
+                    const first_index = parse_data.indexOf('(');
+                    const second_index = parse_data.indexOf('mg');
+                    let find_data = parse_data
+                      .slice(first_index + 1, second_index)
+                      .trim();
+
+                    if (!find_data) {
+                      const parse_data = split_data[1];
+                      const second_index = parse_data.indexOf('mg');
+                      find_data = parse_data.slice(0, second_index).trim();
+                      if (find_data.includes('표시량')) {
+                        find_data = find_data
+                          .slice(find_data.indexOf('량') + 1, find_data.length)
+                          .trim();
+                      }
+                      if (
+                        find_data.includes('(') ||
+                        find_data.includes('[') ||
+                        find_data.includes('｛') ||
+                        find_data.includes('{') ||
+                        find_data.includes('-')
+                      ) {
+                        find_data = find_data.substr(1).trim();
+                      }
+                    } else if (find_data.includes('표시량')) {
+                      find_data = find_data
+                        .slice(find_data.indexOf('량') + 1, find_data.length)
+                        .trim();
+
+                      if (find_data.includes('표시량')) {
+                        find_data = find_data
+                          .slice(find_data.indexOf('량') + 1, find_data.length)
+                          .trim();
+                      }
+
+                      if (
+                        find_data.includes('(') ||
+                        find_data.includes('[') ||
+                        find_data.includes('｛') ||
+                        find_data.includes('{') ||
+                        find_data.includes('-')
+                      ) {
+                        find_data = find_data.substr(1).trim();
+                      }
+                    } else if (
+                      find_data.includes('(') ||
+                      find_data.includes('[') ||
+                      find_data.includes('｛') ||
+                      find_data.includes('{') ||
+                      find_data.includes('-')
+                    ) {
+                      find_data = find_data.substr(1).trim();
+                      if (find_data.includes('(')) {
+                        find_data = find_data
+                          .slice(find_data.indexOf('(') + 1, find_data.length)
+                          .trim();
+                      }
+
+                      if (
+                        find_data.includes('(') ||
+                        find_data.includes('[') ||
+                        find_data.includes('｛') ||
+                        find_data.includes('{') ||
+                        find_data.includes('-')
+                      ) {
+                        find_data = find_data.substr(1).trim();
+                      } else {
+                      }
+                    } else {
+                    }
+                    if (find_data.includes('mg')) {
+                      find_data = find_data
+                        .slice(0, find_data.indexOf('mg'))
+                        .trim();
+                    }
+
+                    const complete_data = {
+                      코로소린산: `${find_data}mg`,
+                    };
+                  } else {
+                    const parse_data = split_data[1];
+                    const first_index = parse_data.indexOf('(');
+                    const second_index = parse_data.indexOf(')');
+                    let find_data = parse_data.slice(0, second_index).trim();
+                    if (find_data.includes('㎎')) {
+                      find_data = parse_data
+                        .slice(first_index + 1, parse_data.indexOf('㎎'))
+                        .trim();
+                    }
+                    if (find_data.includes('(')) {
+                      find_data = parse_data
+                        .slice(first_index + 1, second_index)
+                        .trim();
+                    }
+                    const complete_data = {
+                      코로소린산: `${find_data}mg`,
+                    };
+                  }
                 } else if (split_data[0].includes('은행잎')) {
+                  const parse_data = split_data[1];
+                  const first_index = parse_data.indexOf('(');
+                  const second_index = parse_data.indexOf('mg');
+                  const find_data = parse_data
+                    .slice(first_index + 1, second_index)
+                    .trim();
+                  const complete_data = {
+                    '은행잎 추출물': `${find_data}mg`,
+                  };
                 } else if (split_data[0].includes('Silymarin')) {
+                  if (split_data[1].includes('㎎')) {
+                    const parse_data = split_data[1];
+                    const first_index = parse_data.indexOf('(표시량');
+                    const second_index = parse_data.indexOf('㎎');
+                    const find_data = parse_data
+                      .slice(first_index + 4, second_index)
+                      .trim();
+                    const complete_data = {
+                      Silymarin: `${find_data}mg`,
+                    };
+                  } else {
+                    const parse_data = split_data[1];
+                    const first_index = parse_data.indexOf('(');
+                    const second_index = parse_data.indexOf('mg');
+                    let find_data = parse_data
+                      .slice(first_index + 1, second_index)
+                      .trim();
+                    if (!find_data) {
+                      find_data = parse_data
+                        .slice(parse_data.indexOf('｛') + 1, second_index)
+                        .trim();
+                    }
+                    const complete_data = {
+                      Silymarin: `${find_data}mg`,
+                    };
+                  }
                 } else if (split_data[0].includes('Hydroxyecdysone')) {
+                  const parse_data = split_data[1];
+                  const first_index = parse_data.indexOf('(');
+                  const second_index = parse_data.indexOf('mg');
+                  let find_data = parse_data
+                    .slice(first_index + 1, second_index)
+                    .trim();
+                  if (!find_data) {
+                    find_data = parse_data
+                      .slice(parse_data.indexOf('｛') + 1, second_index)
+                      .trim();
+                  } else if (find_data.includes('표시량')) {
+                    find_data = parse_data
+                      .slice(0, parse_data.indexOf('('))
+                      .trim();
+                  }
+                  const complete_data = {
+                    '20-Hydroxyecdysone': `${find_data}mg`,
+                  };
                 } else if (split_data[0].includes('Decursin')) {
+                  const parse_data = split_data[1];
+                  const first_index = parse_data.indexOf('(');
+                  const second_index = parse_data.indexOf('mg');
+                  let find_data = parse_data
+                    .slice(first_index + 1, second_index)
+                    .trim();
+                  if (!find_data) {
+                    find_data = parse_data
+                      .slice(parse_data.indexOf('｛') + 1, second_index)
+                      .trim();
+                  } else if (find_data.includes('표시량')) {
+                    find_data = parse_data
+                      .slice(0, parse_data.indexOf('('))
+                      .trim();
+                  }
+                  const complete_data = {
+                    Decursin: `${find_data}mg`,
+                  };
                 } else if (split_data[0].includes('카렌')) {
+                  const parse_data = split_data[1];
+                  const first_index = parse_data.indexOf('(');
+                  const second_index = parse_data.indexOf('mg');
+                  let find_data = parse_data
+                    .slice(first_index + 1, second_index)
+                    .trim();
+                  if (!find_data) {
+                    find_data = parse_data
+                      .slice(parse_data.indexOf('｛') + 1, second_index)
+                      .trim();
+                  } else if (find_data.includes('표시량')) {
+                    find_data = parse_data
+                      .slice(0, parse_data.indexOf('('))
+                      .trim();
+                  }
+                  if (find_data.includes(')')) {
+                    find_data = find_data
+                      .slice(0, find_data.indexOf(')'))
+                      .trim();
+                  }
+                  const complete_data = {
+                    카렌: `${find_data}mg`,
+                  };
                 } else if (split_data[0].includes('Cordycepin')) {
+                  const parse_data = split_data[1];
+                  const first_index = parse_data.indexOf('(');
+                  const second_index = parse_data.indexOf('mg');
+                  let find_data = parse_data
+                    .slice(first_index + 1, second_index)
+                    .trim();
+                  if (!find_data) {
+                    find_data = parse_data
+                      .slice(parse_data.indexOf('｛') + 1, second_index)
+                      .trim();
+                  } else if (find_data.includes('표시량')) {
+                    find_data = parse_data
+                      .slice(0, parse_data.indexOf('('))
+                      .trim();
+                  }
+                  if (find_data.includes(')')) {
+                    find_data = find_data
+                      .slice(0, find_data.indexOf(')'))
+                      .trim();
+                  }
+                  const complete_data = {
+                    Cordycepin: `${find_data}mg`,
+                  };
                 } else if (split_data[0].includes('데쿠르신')) {
+                  const parse_data = split_data[1];
+                  const first_index = parse_data.indexOf('(');
+                  const second_index = parse_data.indexOf('mg');
+                  let find_data = parse_data
+                    .slice(first_index + 1, second_index)
+                    .trim();
+                  if (!find_data) {
+                    find_data = parse_data
+                      .slice(parse_data.indexOf('｛') + 1, second_index)
+                      .trim();
+                  } else if (find_data.includes('표시량')) {
+                    find_data = parse_data
+                      .slice(0, parse_data.indexOf('('))
+                      .trim();
+                  }
+                  if (find_data.includes(')')) {
+                    find_data = find_data
+                      .slice(0, find_data.indexOf(')'))
+                      .trim();
+                  }
+                  const complete_data = {
+                    데쿠르신: `${find_data}mg`,
+                  };
                 } else if (split_data[0].includes('사우치논')) {
+                  const parse_data = split_data[1];
+                  const first_index = parse_data.indexOf('(');
+                  const second_index = parse_data.indexOf('mg');
+                  let find_data = parse_data
+                    .slice(first_index + 1, second_index)
+                    .trim();
+                  if (!find_data) {
+                    find_data = parse_data
+                      .slice(parse_data.indexOf('｛') + 1, second_index)
+                      .trim();
+                  } else if (find_data.includes('표시량')) {
+                    find_data = parse_data
+                      .slice(0, parse_data.indexOf('('))
+                      .trim();
+                  }
+                  if (find_data.includes(')')) {
+                    find_data = find_data
+                      .slice(0, find_data.indexOf(')'))
+                      .trim();
+                  }
+                  const complete_data = {
+                    사우치논: `${find_data}mg`,
+                  };
                 } else if (split_data[0].includes('감마')) {
+                  if (split_data[0].includes('오리자놀')) {
+                    const parse_data = split_data[1];
+                    const first_index = parse_data.indexOf('(');
+                    const second_index = parse_data.indexOf('mg');
+                    let find_data = parse_data
+                      .slice(first_index + 1, second_index)
+                      .trim();
+                    if (find_data.includes('｛')) {
+                      find_data = find_data
+                        .slice(find_data.indexOf('｛') + 1, find_data.length)
+                        .trim();
+                    }
+                    if (find_data.includes('표시량')) {
+                      find_data = parse_data
+                        .slice(0, parse_data.indexOf('('))
+                        .trim();
+                    }
+
+                    const complete_data = {
+                      감마오리자놀: `${find_data}mg`,
+                    };
+                  } else if (
+                    split_data[0].includes('아미노부티르산') ||
+                    split_data[0].includes('아미노부틸산')
+                  ) {
+                    const parse_data = split_data[1];
+                    const first_index = parse_data.indexOf('(');
+                    const second_index = parse_data.indexOf('mg');
+                    let find_data = parse_data
+                      .slice(first_index + 1, second_index)
+                      .trim();
+
+                    if (!find_data) {
+                      find_data = parse_data
+                        .slice(0, parse_data.indexOf('mg'))
+                        .trim();
+                    }
+
+                    const complete_data = {
+                      감마아미노부틸산: `${find_data}mg`,
+                    };
+                  } else {
+                    const parse_data = split_data[1];
+                    const first_index = parse_data.indexOf('(');
+                    const second_index = parse_data.indexOf('mg');
+                    let find_data = parse_data
+                      .slice(first_index + 1, second_index)
+                      .trim();
+
+                    if (!find_data) {
+                      find_data = parse_data
+                        .slice(0, parse_data.indexOf('mg'))
+                        .trim();
+                    }
+
+                    const complete_data = {
+                      감마리놀렌산: `${find_data}mg`,
+                    };
+                  }
                 } else if (
                   split_data[0].includes('TMCA') ||
                   split_data[0].includes('Trimethoxy')
                 ) {
+                  if (split_data[1].includes('㎍')) {
+                    const parse_data = split_data[1];
+                    const first_index = parse_data.indexOf('(');
+                    const second_index = parse_data.indexOf('㎍');
+                    const find_data = parse_data
+                      .slice(first_index + 1, second_index)
+                      .trim();
+
+                    const complete_data = {
+                      TMCA: `${find_data}ug`,
+                    };
+                  } else {
+                    const parse_data = split_data[1];
+                    const first_index = parse_data.indexOf('(');
+                    const second_index = parse_data.indexOf('mg');
+                    const find_data = parse_data
+                      .slice(first_index + 1, second_index)
+                      .trim();
+
+                    const complete_data = {
+                      TMCA: `${find_data}mg`,
+                    };
+                  }
                 } else if (
                   split_data[0].includes('AKBA') &&
                   split_data[0].includes('KBA')
                 ) {
-                } else if (split_data[0].includes('AKBA')) {
+                  if (split_data[1].includes('(71')) {
+                    const complete_data = {
+                      'AKBA와 KBA의 합': `71mg`,
+                    };
+                  } else if (split_data[1].includes('3.7')) {
+                    const complete_data = {
+                      AKBA: `3.72mg`,
+                    };
+                  } else {
+                    const complete_data = {
+                      'AKBA와 KBA의 합': `32.8mg`,
+                    };
+                  }
                 } else if (split_data[0].includes('Terpinolene')) {
+                  const parse_data = split_data[1];
+                  const first_index = parse_data.indexOf('(');
+                  const second_index = parse_data.indexOf('mg');
+                  const find_data = parse_data
+                    .slice(first_index + 1, second_index)
+                    .trim();
+
+                  const complete_data = {
+                    Terpinolene: `${find_data}mg`,
+                  };
                 } else if (split_data[0].includes('조단백')) {
+                  const parse_data = split_data[1];
+                  const first_index = parse_data.indexOf('(');
+                  const second_index = parse_data.indexOf('g');
+                  const find_data = parse_data
+                    .slice(first_index + 1, second_index)
+                    .trim();
+
+                  const complete_data = {
+                    조단백: `${find_data}g`,
+                  };
                 } else if (
                   split_data[0].includes('Luteolin-7-O-diglucuronide')
                 ) {
+                  const parse_data = split_data[1];
+                  const first_index = parse_data.indexOf('(');
+                  const second_index = parse_data.indexOf('mg');
+                  let find_data = parse_data
+                    .slice(first_index + 1, second_index)
+                    .trim();
+                  if (!find_data) {
+                    find_data = parse_data
+                      .slice(parse_data.indexOf('｛') + 1, second_index)
+                      .trim();
+                  }
+                  if (find_data.includes('㎎')) {
+                    find_data = find_data
+                      .slice(0, find_data.indexOf('㎎'))
+                      .trim();
+                  }
+                  if (find_data.includes('량')) {
+                    find_data = find_data
+                      .slice(find_data.indexOf('량') + 1, find_data.length)
+                      .trim();
+                  }
+                  if (find_data.includes('의')) {
+                    find_data = parse_data
+                      .slice(0, parse_data.indexOf('('))
+                      .trim();
+                  }
+                  const complete_data = {
+                    'Luteolin-7-O-diglucuronide': `${find_data}mg`,
+                  };
                 } else if (
                   split_data[0].includes('Lactobacillus sakei probio65')
                 ) {
+                  const parse_data = split_data[1];
+                  const first_index = parse_data.indexOf('로');
+                  const second_index = parse_data.indexOf('CFU');
+                  const find_data = parse_data
+                    .slice(first_index + 1, second_index)
+                    .trim();
+                  const complete_data = {
+                    'Lactobacillus sakei probio65': `${find_data}CFU`,
+                  };
                 } else if (split_data[0].includes('바이칼린')) {
+                  const parse_data = split_data[1];
+                  const first_index = parse_data.indexOf('(');
+                  const second_index = parse_data.indexOf('mg');
+                  let find_data = parse_data
+                    .slice(first_index + 1, second_index)
+                    .trim();
+                  if (!find_data) {
+                    find_data = parse_data
+                      .slice(parse_data.indexOf('｛') + 1, second_index)
+                      .trim();
+                  }
+                  if (find_data.includes('㎎')) {
+                    find_data = find_data
+                      .slice(0, find_data.indexOf('㎎'))
+                      .trim();
+                  }
+                  if (find_data.includes('량')) {
+                    find_data = find_data
+                      .slice(find_data.indexOf('량') + 1, find_data.length)
+                      .trim();
+                  }
+                  if (find_data.includes(')')) {
+                    find_data = find_data
+                      .slice(0, find_data.indexOf(')'))
+                      .trim();
+                  }
+                  const complete_data = {
+                    바이칼린: `${find_data}mg`,
+                  };
                 } else if (split_data[0].includes('피니톨')) {
+                  const parse_data = split_data[1];
+                  const first_index = parse_data.indexOf('(');
+                  const second_index = parse_data.indexOf('mg');
+                  let find_data = parse_data
+                    .slice(first_index + 1, second_index)
+                    .trim();
+                  if (!find_data) {
+                    find_data = parse_data
+                      .slice(parse_data.indexOf('｛') + 1, second_index)
+                      .trim();
+                  }
+                  if (find_data.includes('㎎')) {
+                    find_data = find_data
+                      .slice(0, find_data.indexOf('㎎'))
+                      .trim();
+                  }
+                  if (find_data.includes('량')) {
+                    find_data = find_data
+                      .slice(find_data.indexOf('량') + 1, find_data.length)
+                      .trim();
+                  }
+                  if (find_data.includes(')')) {
+                    find_data = find_data
+                      .slice(0, find_data.indexOf(')'))
+                      .trim();
+                  }
+                  let complete_data = {
+                    피니톨: `${find_data}mg`,
+                  };
+                  if (find_data.includes('g')) {
+                    find_data = find_data
+                      .slice(0, find_data.indexOf('g'))
+                      .trim();
+                    complete_data = {
+                      피니톨: `${find_data}g`,
+                    };
+                  }
                 } else if (split_data[0].includes('니코틴산아미드')) {
+                  const parse_data = split_data[1];
+                  const first_index = parse_data.indexOf('(');
+                  const second_index = parse_data.indexOf('mg');
+                  let find_data = parse_data
+                    .slice(first_index + 1, second_index)
+                    .trim();
+                  if (!find_data) {
+                    find_data = parse_data
+                      .slice(parse_data.indexOf('｛') + 1, second_index)
+                      .trim();
+                  }
+                  if (find_data.includes('㎎')) {
+                    find_data = find_data
+                      .slice(0, find_data.indexOf('㎎'))
+                      .trim();
+                  }
+                  if (find_data.includes('량')) {
+                    find_data = find_data
+                      .slice(find_data.indexOf('량') + 1, find_data.length)
+                      .trim();
+                  }
+                  if (find_data.includes(')')) {
+                    find_data = find_data
+                      .slice(0, find_data.indexOf(')'))
+                      .trim();
+                  }
+                  const complete_data = {
+                    니코틴산아미드: `${find_data}mg`,
+                  };
                 } else if (split_data[0].includes('EGCG')) {
+                  const parse_data = split_data[1];
+                  const first_index = parse_data.indexOf('(');
+                  const second_index = parse_data.indexOf('mg');
+                  let find_data = parse_data
+                    .slice(first_index + 1, second_index)
+                    .trim();
+                  if (!find_data) {
+                    find_data = parse_data
+                      .slice(parse_data.indexOf('｛') + 1, second_index)
+                      .trim();
+                  }
+                  if (find_data.includes('㎎')) {
+                    find_data = find_data
+                      .slice(0, find_data.indexOf('㎎'))
+                      .trim();
+                  }
+                  if (find_data.includes('량')) {
+                    find_data = find_data
+                      .slice(find_data.indexOf('량') + 1, find_data.length)
+                      .trim();
+                  }
+                  if (find_data.includes(')')) {
+                    find_data = find_data
+                      .slice(0, find_data.indexOf(')'))
+                      .trim();
+                  }
+                  const complete_data = {
+                    EGCG: `${find_data}mg`,
+                  };
                 } else if (split_data[0].includes('Compound')) {
+                  const parse_data = split_data[1];
+                  const first_index = parse_data.indexOf('(');
+                  const second_index = parse_data.indexOf('mg');
+                  let find_data = parse_data
+                    .slice(first_index + 1, second_index)
+                    .trim();
+                  if (!find_data) {
+                    find_data = parse_data
+                      .slice(parse_data.indexOf('｛') + 1, second_index)
+                      .trim();
+                  }
+                  if (find_data.includes('㎎')) {
+                    find_data = find_data
+                      .slice(0, find_data.indexOf('㎎'))
+                      .trim();
+                  }
+                  if (find_data.includes('량')) {
+                    find_data = find_data
+                      .slice(find_data.indexOf('량') + 1, find_data.length)
+                      .trim();
+                  }
+                  const complete_data = {
+                    'Compound K': `${find_data}mg`,
+                  };
                 } else if (split_data[0].includes('limonene')) {
+                  const parse_data = split_data[1];
+                  const first_index = parse_data.indexOf('(');
+                  const second_index = parse_data.indexOf('mg');
+                  let find_data = parse_data
+                    .slice(first_index + 1, second_index)
+                    .trim();
+                  if (!find_data) {
+                    find_data = parse_data
+                      .slice(parse_data.indexOf('｛') + 1, second_index)
+                      .trim();
+                  } else if (find_data.includes('표시량')) {
+                    find_data = parse_data
+                      .slice(0, parse_data.indexOf('('))
+                      .trim();
+                  }
+                  if (find_data.includes(')')) {
+                    find_data = find_data
+                      .slice(0, find_data.indexOf(')'))
+                      .trim();
+                  }
+                  const complete_data = {
+                    limonene: `${find_data}mg`,
+                  };
                 } else if (split_data[0].includes('3-carene')) {
+                  const parse_data = split_data[1];
+                  const first_index = parse_data.indexOf('(');
+                  const second_index = parse_data.indexOf('mg');
+                  let find_data = parse_data
+                    .slice(first_index + 1, second_index)
+                    .trim();
+                  if (!find_data) {
+                    find_data = parse_data
+                      .slice(parse_data.indexOf('｛') + 1, second_index)
+                      .trim();
+                  } else if (find_data.includes('표시량')) {
+                    find_data = parse_data
+                      .slice(0, parse_data.indexOf('('))
+                      .trim();
+                  }
+                  if (find_data.includes(')')) {
+                    find_data = find_data
+                      .slice(0, find_data.indexOf(')'))
+                      .trim();
+                  }
+                  const complete_data = {
+                    '3-carene': `${find_data}mg`,
+                  };
                 } else if (split_data[0].includes('terpinolene')) {
+                  const parse_data = split_data[1];
+                  const first_index = parse_data.indexOf('(');
+                  const second_index = parse_data.indexOf('mg');
+                  let find_data = parse_data
+                    .slice(first_index + 1, second_index)
+                    .trim();
+                  if (!find_data) {
+                    find_data = parse_data
+                      .slice(parse_data.indexOf('｛') + 1, second_index)
+                      .trim();
+                  } else if (find_data.includes('표시량')) {
+                    find_data = parse_data
+                      .slice(0, parse_data.indexOf('('))
+                      .trim();
+                  }
+                  if (find_data.includes(')')) {
+                    find_data = find_data
+                      .slice(0, find_data.indexOf(')'))
+                      .trim();
+                  }
+                  const complete_data = {
+                    terpinolene: `${find_data}mg`,
+                  };
                 } else if (
                   split_data[0].includes('락추로스') ||
                   split_data[0].includes('Lactulose')
                 ) {
+                  const parse_data = split_data[1];
+                  const first_index = parse_data.indexOf('(');
+                  const second_index = parse_data.indexOf('mg');
+                  let find_data = parse_data
+                    .slice(first_index + 1, second_index)
+                    .trim();
+                  if (!find_data) {
+                    find_data = parse_data
+                      .slice(parse_data.indexOf('｛') + 1, second_index)
+                      .trim();
+                  } else if (find_data.includes('표시량')) {
+                    find_data = parse_data
+                      .slice(0, parse_data.indexOf('('))
+                      .trim();
+                  }
+                  if (find_data.includes(')')) {
+                    find_data = find_data
+                      .slice(0, find_data.indexOf(')'))
+                      .trim();
+                  }
+                  if (find_data.includes('㎎')) {
+                    find_data = find_data
+                      .slice(0, find_data.indexOf('㎎'))
+                      .trim();
+                  }
+                  if (find_data.includes('량')) {
+                    find_data = find_data
+                      .slice(
+                        find_data.indexOf('량') + 1,
+                        find_data.indexOf('mg'),
+                      )
+                      .trim();
+                  }
+                  if (find_data.includes('스')) {
+                    find_data = find_data
+                      .slice(find_data.indexOf('스') + 1, find_data.length)
+                      .trim();
+                  }
+                  let complete_data = {
+                    '락추로스(Lactulose)': `${find_data}mg`,
+                  };
+                  if (find_data.includes('g')) {
+                    find_data = find_data
+                      .slice(0, find_data.indexOf('g'))
+                      .trim();
+                    complete_data = {
+                      '락추로스(Lactulose)': `${find_data}g`,
+                    };
+                  }
                 } else if (split_data[0].includes('Curcumin')) {
+                  const parse_data = split_data[1];
+                  const first_index = parse_data.indexOf('(');
+                  const second_index = parse_data.indexOf('mg');
+                  let find_data = parse_data
+                    .slice(first_index + 1, second_index)
+                    .trim();
+                  if (!find_data) {
+                    find_data = parse_data
+                      .slice(parse_data.indexOf('｛') + 1, second_index)
+                      .trim();
+                  } else if (find_data.includes('표시량')) {
+                    find_data = parse_data
+                      .slice(0, parse_data.indexOf('('))
+                      .trim();
+                  }
+                  if (find_data.includes(')')) {
+                    find_data = find_data
+                      .slice(0, find_data.indexOf(')'))
+                      .trim();
+                  }
+                  if (find_data.includes('｛')) {
+                    find_data = find_data
+                      .slice(
+                        find_data.indexOf('｛') + 1,
+                        find_data.indexOf('mg'),
+                      )
+                      .trim();
+                  }
+                  const complete_data = {
+                    Curcumin: `${find_data}mg`,
+                  };
                 } else if (split_data[0].includes('뮤코다당')) {
+                  const parse_data = split_data[1];
+                  const first_index = parse_data.indexOf('(');
+                  const second_index = parse_data.indexOf('mg');
+                  let find_data = parse_data
+                    .slice(first_index + 1, second_index)
+                    .trim();
+                  if (!find_data) {
+                    find_data = parse_data
+                      .slice(parse_data.indexOf('｛') + 1, second_index)
+                      .trim();
+                  } else if (find_data.includes('표시량')) {
+                    find_data = parse_data
+                      .slice(0, parse_data.indexOf('('))
+                      .trim();
+                  }
+                  if (find_data.includes(')')) {
+                    find_data = find_data
+                      .slice(0, find_data.indexOf(')'))
+                      .trim();
+                  }
+                  if (find_data.includes('㎎')) {
+                    find_data = find_data
+                      .slice(0, find_data.indexOf('㎎'))
+                      .trim();
+                  }
+                  if (find_data.includes('량')) {
+                    find_data = find_data
+                      .slice(
+                        find_data.indexOf('량') + 1,
+                        find_data.indexOf('mg'),
+                      )
+                      .trim();
+                  }
+                  let complete_data = {
+                    뮤코다당: `${find_data}mg`,
+                  };
+                  if (find_data.includes('g')) {
+                    find_data = find_data
+                      .slice(0, find_data.indexOf('g'))
+                      .trim();
+                    complete_data = {
+                      뮤코다당: `${find_data}g`,
+                    };
+                  }
                 } else if (split_data[0].includes('비텍신')) {
+                  const parse_data = split_data[1];
+                  const first_index = parse_data.indexOf('(');
+                  const second_index = parse_data.indexOf('mg');
+                  let find_data = parse_data
+                    .slice(first_index + 1, second_index)
+                    .trim();
+                  if (!find_data) {
+                    find_data = parse_data
+                      .slice(parse_data.indexOf('｛') + 1, second_index)
+                      .trim();
+                  } else if (find_data.includes('표시량')) {
+                    find_data = parse_data
+                      .slice(0, parse_data.indexOf('('))
+                      .trim();
+                  }
+                  if (find_data.includes(')')) {
+                    find_data = find_data
+                      .slice(0, find_data.indexOf(')'))
+                      .trim();
+                  }
+                  const complete_data = {
+                    비텍신: `${find_data}mg`,
+                  };
                 } else if (split_data[0].includes('Rosavin')) {
+                  const parse_data = split_data[1];
+                  const first_index = parse_data.indexOf('(');
+                  const second_index = parse_data.indexOf('mg');
+                  let find_data = parse_data
+                    .slice(first_index + 1, second_index)
+                    .trim();
+                  if (!find_data) {
+                    find_data = parse_data
+                      .slice(parse_data.indexOf('｛') + 1, second_index)
+                      .trim();
+                  } else if (find_data.includes('표시량')) {
+                    find_data = parse_data
+                      .slice(0, parse_data.indexOf('('))
+                      .trim();
+                  }
+                  if (find_data.includes(')')) {
+                    find_data = find_data
+                      .slice(0, find_data.indexOf(')'))
+                      .trim();
+                  }
+                  const complete_data = {
+                    Rosavin: `${find_data}mg`,
+                  };
                 } else if (split_data[0].includes('글루코실세라마이드')) {
+                  const parse_data = split_data[1];
+                  const first_index = parse_data.indexOf('(');
+                  const second_index = parse_data.indexOf('mg');
+                  let find_data = parse_data
+                    .slice(first_index + 1, second_index)
+                    .trim();
+                  if (!find_data) {
+                    find_data = parse_data
+                      .slice(parse_data.indexOf('｛') + 1, second_index)
+                      .trim();
+                  } else if (find_data.includes('표시량')) {
+                    find_data = parse_data
+                      .slice(0, parse_data.indexOf('('))
+                      .trim();
+                  }
+                  if (find_data.includes(')')) {
+                    find_data = find_data
+                      .slice(0, find_data.indexOf(')'))
+                      .trim();
+                  }
+                  if (find_data.includes('｛')) {
+                    const parse_data = split_data[1];
+                    const first_index = parse_data.indexOf('｛');
+                    const second_index = parse_data.indexOf('mg');
+                    find_data = parse_data
+                      .slice(first_index + 1, second_index)
+                      .trim();
+                  }
+                  if (find_data.includes('{')) {
+                    const parse_data = split_data[1];
+                    const first_index = parse_data.indexOf('{');
+                    const second_index = parse_data.indexOf('mg');
+                    find_data = parse_data
+                      .slice(first_index + 1, second_index)
+                      .trim();
+                  }
+                  const complete_data = {
+                    글루코실세라마이드: `${find_data}mg`,
+                  };
                 } else if (split_data[0].includes('Luteolin')) {
+                  const parse_data = split_data[1];
+                  const first_index = parse_data.indexOf('(');
+                  const second_index = parse_data.indexOf('mg');
+                  let find_data = parse_data
+                    .slice(first_index + 1, second_index)
+                    .trim();
+                  if (!find_data) {
+                    find_data = parse_data
+                      .slice(parse_data.indexOf('｛') + 1, second_index)
+                      .trim();
+                  } else if (find_data.includes('표시량')) {
+                    find_data = parse_data
+                      .slice(0, parse_data.indexOf('('))
+                      .trim();
+                  }
+                  if (find_data.includes(')')) {
+                    find_data = find_data
+                      .slice(0, find_data.indexOf(')'))
+                      .trim();
+                  }
+                  let complete_data = {
+                    Luteolin: `${find_data}mg`,
+                  };
+
+                  if (parse_data.includes('㎍')) {
+                    const parse_data = split_data[1];
+                    const first_index = parse_data.indexOf('(');
+                    const second_index = parse_data.indexOf('㎍');
+                    find_data = parse_data
+                      .slice(first_index + 1, second_index)
+                      .trim();
+                    if (!find_data) {
+                      const parse_data = split_data[1];
+
+                      const second_index = parse_data.indexOf('㎍');
+                      find_data = parse_data.slice(0, second_index).trim();
+                    }
+
+                    complete_data = {
+                      Luteolin: `${find_data}ug`,
+                    };
+                  }
                 } else if (split_data[0].includes('Isoorientin')) {
+                  const parse_data = split_data[1];
+                  const first_index = parse_data.indexOf('(');
+                  const second_index = parse_data.indexOf('mg');
+                  let find_data = parse_data
+                    .slice(first_index + 1, second_index)
+                    .trim();
+                  if (!find_data) {
+                    find_data = parse_data
+                      .slice(parse_data.indexOf('｛') + 1, second_index)
+                      .trim();
+                  } else if (find_data.includes('표시량')) {
+                    find_data = parse_data
+                      .slice(0, parse_data.indexOf('('))
+                      .trim();
+                  }
+                  if (find_data.includes(')')) {
+                    find_data = find_data
+                      .slice(0, find_data.indexOf(')'))
+                      .trim();
+                  }
+                  let complete_data = {
+                    Isoorientin: `${find_data}mg`,
+                  };
+
+                  if (parse_data.includes('㎍')) {
+                    const parse_data = split_data[1];
+                    const first_index = parse_data.indexOf('(');
+                    const second_index = parse_data.indexOf('㎍');
+                    find_data = parse_data
+                      .slice(first_index + 1, second_index)
+                      .trim();
+                    if (!find_data) {
+                      const parse_data = split_data[1];
+
+                      const second_index = parse_data.indexOf('㎍');
+                      find_data = parse_data.slice(0, second_index).trim();
+                    }
+
+                    complete_data = {
+                      Isoorientin: `${find_data}ug`,
+                    };
+                  }
                 } else if (split_data[0].includes('Carene')) {
+                  const parse_data = split_data[1];
+                  const first_index = parse_data.indexOf('(');
+                  const second_index = parse_data.indexOf('mg');
+                  let find_data = parse_data
+                    .slice(first_index + 1, second_index)
+                    .trim();
+                  if (!find_data) {
+                    find_data = parse_data
+                      .slice(parse_data.indexOf('｛') + 1, second_index)
+                      .trim();
+                  } else if (find_data.includes('표시량')) {
+                    find_data = parse_data
+                      .slice(0, parse_data.indexOf('('))
+                      .trim();
+                  }
+                  if (find_data.includes(')')) {
+                    find_data = find_data
+                      .slice(0, find_data.indexOf(')'))
+                      .trim();
+                  }
+                  const complete_data = {
+                    '3-Carene': `${find_data}mg`,
+                  };
                 } else if (split_data[0].includes('리나린')) {
+                  const parse_data = split_data[1];
+                  const first_index = parse_data.indexOf('(');
+                  const second_index = parse_data.indexOf('mg');
+                  let find_data = parse_data
+                    .slice(first_index + 1, second_index)
+                    .trim();
+                  if (!find_data) {
+                    find_data = parse_data
+                      .slice(parse_data.indexOf('｛') + 1, second_index)
+                      .trim();
+                  } else if (find_data.includes('표시량')) {
+                    find_data = parse_data
+                      .slice(0, parse_data.indexOf('('))
+                      .trim();
+                  }
+                  if (find_data.includes(')')) {
+                    find_data = find_data
+                      .slice(0, find_data.indexOf(')'))
+                      .trim();
+                  }
+                  const complete_data = {
+                    리나린: `${find_data}mg`,
+                  };
+                } else if (
+                  split_data[0].includes('ginsenoside') ||
+                  split_data[0].includes('Ginsenoside') ||
+                  split_data[0].includes('진세노')
+                ) {
+                  if (
+                    split_data[0].includes('Rg1') &&
+                    split_data[0].includes('Rb1') &&
+                    split_data[0].includes('Rg3')
+                  ) {
+                    const parse_data = split_data[1];
+                    const first_index = parse_data.indexOf('(');
+                    const second_index = parse_data.indexOf('mg');
+                    let find_data = parse_data
+                      .slice(first_index + 1, second_index)
+                      .trim();
+                    if (find_data.includes('표시량')) {
+                      find_data = find_data.substr(3).trim();
+                    } else if (find_data.includes('㎎')) {
+                      find_data = find_data
+                        .slice(0, find_data.indexOf('㎎'))
+                        .trim();
+                    }
+
+                    const complete_data = {
+                      '진세노사이드 Rg1, Rb1 및 Rg3의 합': `${find_data}mg`,
+                    };
+                  } else if (
+                    split_data[0].includes('Rg1') &&
+                    split_data[0].includes('Rb1')
+                  ) {
+                    const parse_data = split_data[1];
+                    const first_index = parse_data.indexOf('(');
+                    const second_index = parse_data.indexOf('mg');
+                    let find_data = parse_data
+                      .slice(first_index + 1, second_index)
+                      .trim();
+                    if (find_data.includes('표시량')) {
+                      find_data = find_data.substr(3).trim();
+                    } else if (find_data.includes('㎎')) {
+                      find_data = find_data
+                        .slice(0, find_data.indexOf('㎎'))
+                        .trim();
+                    }
+
+                    const complete_data = {
+                      '진세노사이드 Rg1과 Rb1 의 합': `${find_data}mg`,
+                    };
+                  } else {
+                    const parse_data = split_data[1];
+                    const first_index = parse_data.indexOf('(');
+                    const second_index = parse_data.indexOf('mg');
+                    const find_data = parse_data
+                      .slice(first_index + 1, second_index)
+                      .trim();
+                  }
+                } else if (
+                  split_data[0].includes('폴리보놀배당체') ||
+                  split_data[0].includes('폴라보놀배당체')
+                ) {
+                  const parse_data = split_data[1];
+                  const first_index = parse_data.indexOf('(');
+                  const second_index = parse_data.indexOf('mg');
+                  let find_data = parse_data
+                    .slice(first_index + 1, second_index)
+                    .trim();
+                  if (find_data.includes(')')) {
+                    find_data = find_data
+                      .slice(0, find_data.indexOf(')'))
+                      .trim();
+                  }
+
+                  const complete_data = {
+                    폴라보놀배당체: `${find_data}mg`,
+                  };
+                } else if (split_data[0].includes('casein')) {
+                  const parse_data = split_data[1];
+                  const first_index = parse_data.indexOf('(');
+                  const second_index = parse_data.indexOf('mg');
+                  const find_data = parse_data
+                    .slice(first_index + 1, second_index)
+                    .trim();
+
+                  const complete_data = {
+                    'as1-casein': `${find_data}mg`,
+                  };
+                } else if (split_data[0].includes('실린마린')) {
+                  const parse_data = split_data[1];
+                  const first_index = parse_data.indexOf('(');
+                  const second_index = parse_data.indexOf('mg');
+                  const find_data = parse_data
+                    .slice(first_index + 1, second_index)
+                    .trim();
+
+                  const complete_data = {
+                    실린마린: `${find_data}mg`,
+                  };
+                } else if (split_data[0].includes('마리골드꽃')) {
+                  const parse_data = split_data[1];
+                  const first_index = parse_data.indexOf('(');
+                  const second_index = parse_data.indexOf('mg');
+                  const find_data = parse_data
+                    .slice(first_index + 1, second_index)
+                    .trim();
+
+                  const complete_data = {
+                    마리골드꽃추출물: `${find_data}mg`,
+                  };
+                } else if (split_data[0].includes('밀크씨슬')) {
+                  const parse_data = split_data[1];
+                  const first_index = parse_data.indexOf('(');
+                  const second_index = parse_data.indexOf('mg');
+                  const find_data = parse_data
+                    .slice(first_index + 1, second_index)
+                    .trim();
+
+                  const complete_data = {
+                    밀크씨슬추출물: `${find_data}mg`,
+                  };
+                } else if (split_data[0].includes('라이코펜')) {
+                  const parse_data = split_data[1];
+                  const first_index = parse_data.indexOf('(');
+                  const second_index = parse_data.indexOf('mg');
+                  let find_data = parse_data
+                    .slice(first_index + 1, second_index)
+                    .trim();
+                  if (!find_data) {
+                    find_data = parse_data.slice(0, second_index).trim();
+                  }
+
+                  const complete_data = {
+                    'All-trans-라이코펜': `${find_data}mg`,
+                  };
+                } else if (split_data[0].includes('세틸미리스톨레이트')) {
+                  const parse_data = split_data[1];
+                  const first_index = parse_data.indexOf('(');
+                  const second_index = parse_data.indexOf('mg');
+                  let find_data = parse_data
+                    .slice(first_index + 1, second_index)
+                    .trim();
+                  if (!find_data) {
+                    find_data = parse_data.slice(0, second_index).trim();
+                  }
+
+                  const complete_data = {
+                    세틸미리스톨레이트: `${find_data}mg`,
+                  };
+                } else if (split_data[0].includes('lycopene')) {
+                  const parse_data = split_data[1];
+                  const first_index = parse_data.indexOf('(');
+                  const second_index = parse_data.indexOf('mg');
+                  let find_data = parse_data
+                    .slice(first_index + 1, second_index)
+                    .trim();
+                  if (!find_data) {
+                    find_data = parse_data.slice(0, second_index).trim();
+                  }
+
+                  const complete_data = {
+                    lycopene: `${find_data}mg`,
+                  };
+                } else if (split_data[0].includes('Platycodin')) {
+                  const parse_data = split_data[1];
+                  const first_index = parse_data.indexOf('(');
+                  const second_index = parse_data.indexOf('mg');
+                  let find_data = parse_data
+                    .slice(first_index + 1, second_index)
+                    .trim();
+                  if (!find_data) {
+                    find_data = parse_data.slice(0, second_index).trim();
+                  }
+
+                  const complete_data = {
+                    'Platycodin D ': `${find_data}mg`,
+                  };
+                } else if (split_data[0].includes('판두라틴')) {
+                  const parse_data = split_data[1];
+                  const first_index = parse_data.indexOf('(');
+                  const second_index = parse_data.indexOf('mg');
+                  let find_data = parse_data
+                    .slice(first_index + 1, second_index)
+                    .trim();
+                  if (!find_data) {
+                    find_data = parse_data.slice(0, second_index).trim();
+                  }
+
+                  const complete_data = {
+                    판두라틴A: `${find_data}mg`,
+                  };
+                } else if (split_data[0].includes('Limonene')) {
+                  const parse_data = split_data[1];
+                  const first_index = parse_data.indexOf('(');
+                  const second_index = parse_data.indexOf('mg');
+                  let find_data = parse_data
+                    .slice(first_index + 1, second_index)
+                    .trim();
+                  if (!find_data) {
+                    find_data = parse_data.slice(0, second_index).trim();
+                  }
+
+                  const complete_data = {
+                    Limonene: `${find_data}mg`,
+                  };
+                } else if (split_data[0].includes('Puerarin')) {
+                  const parse_data = split_data[1];
+                  const first_index = parse_data.indexOf('(');
+                  const second_index = parse_data.indexOf('mg');
+                  let find_data = parse_data
+                    .slice(first_index + 1, second_index)
+                    .trim();
+                  if (!find_data) {
+                    find_data = parse_data.slice(0, second_index).trim();
+                  }
+
+                  const complete_data = {
+                    Puerarin: `${find_data}mg`,
+                  };
+                } else if (split_data[0].includes('Apigenin')) {
+                  const parse_data = split_data[1];
+                  const first_index = parse_data.indexOf('(');
+                  const second_index = parse_data.indexOf('mg');
+                  let find_data = parse_data
+                    .slice(first_index + 1, second_index)
+                    .trim();
+                  if (!find_data) {
+                    find_data = parse_data.slice(0, second_index).trim();
+                  }
+
+                  const complete_data = {
+                    Apigenin: `${find_data}mg`,
+                  };
+                } else if (split_data[0].includes('안드로그라폴라이드')) {
+                  const parse_data = split_data[1];
+                  const first_index = parse_data.indexOf('(');
+                  const second_index = parse_data.indexOf('mg');
+                  let find_data = parse_data
+                    .slice(first_index + 1, second_index)
+                    .trim();
+                  if (!find_data) {
+                    find_data = parse_data.slice(0, second_index).trim();
+                  }
+
+                  const complete_data = {
+                    안드로그라폴라이드: `${find_data}mg`,
+                  };
+                } else if (split_data[0].includes('안트라퀴논계')) {
+                  const parse_data = split_data[1];
+                  const first_index = parse_data.indexOf('(');
+                  const second_index = parse_data.indexOf('mg');
+                  let find_data = parse_data
+                    .slice(first_index + 1, second_index)
+                    .trim();
+                  if (!find_data) {
+                    find_data = parse_data.slice(0, second_index).trim();
+                  }
+
+                  const complete_data = {
+                    안트라퀴논계물질: `${find_data}mg`,
+                  };
+                } else if (split_data[0].includes('카데킨')) {
+                  const parse_data = split_data[1];
+                  const first_index = parse_data.indexOf('(');
+                  const second_index = parse_data.indexOf('mg');
+                  let find_data = parse_data
+                    .slice(first_index + 1, second_index)
+                    .trim();
+                  if (!find_data) {
+                    find_data = parse_data.slice(0, second_index).trim();
+                  }
+                  if (find_data.includes('표시량')) {
+                    find_data = find_data.substr(3).trim();
+                  }
+
+                  let complete_data = {
+                    카데킨: `${find_data}mg`,
+                  };
+                  if (find_data.includes('g')) {
+                    find_data = find_data
+                      .slice(0, find_data.indexOf('g'))
+                      .trim();
+                    complete_data = {
+                      카데킨: `${find_data}g`,
+                    };
+                  }
+                } else if (split_data[0].includes('핵산')) {
+                  const parse_data = split_data[1];
+                  const first_index = parse_data.indexOf('(');
+                  const second_index = parse_data.indexOf('mg');
+                  let find_data = parse_data
+                    .slice(first_index + 1, second_index)
+                    .trim();
+                  if (!find_data) {
+                    find_data = parse_data.slice(0, second_index).trim();
+                  }
+                  if (find_data.includes('표시량')) {
+                    find_data = find_data.substr(3).trim();
+                  }
+
+                  const complete_data = {
+                    핵산: `${find_data}mg`,
+                  };
+                } else if (split_data[0].includes('Pinoresino')) {
+                  const parse_data = split_data[1];
+                  const first_index = parse_data.indexOf('(');
+                  const second_index = parse_data.indexOf('mg');
+                  let find_data = parse_data
+                    .slice(first_index + 1, second_index)
+                    .trim();
+                  if (!find_data) {
+                    find_data = parse_data.slice(0, second_index).trim();
+                  }
+                  if (find_data.includes('표시량')) {
+                    find_data = find_data.substr(3).trim();
+                  }
+
+                  if (find_data.includes('｛')) {
+                    find_data = find_data.substr(1).trim();
+                  }
+                  if (find_data.includes('의')) {
+                    find_data = parse_data
+                      .slice(0, parse_data.indexOf('('))
+                      .trim();
+                  }
+
+                  const complete_data = {
+                    'Pinoresinol diglucoside': `${find_data}mg`,
+                  };
+                } else if (split_data[0].includes('Oleanonic')) {
+                  const parse_data = split_data[1];
+                  const first_index = parse_data.indexOf('(');
+                  const second_index = parse_data.indexOf('mg');
+                  let find_data = parse_data
+                    .slice(first_index + 1, second_index)
+                    .trim();
+                  if (!find_data) {
+                    find_data = parse_data.slice(0, second_index).trim();
+                  }
+                  if (find_data.includes('표시량')) {
+                    find_data = find_data.substr(3).trim();
+                  }
+
+                  if (find_data.includes('｛')) {
+                    find_data = find_data.substr(1).trim();
+                  }
+                  if (find_data.includes('의')) {
+                    find_data = parse_data
+                      .slice(0, parse_data.indexOf('('))
+                      .trim();
+                  }
+
+                  const complete_data = {
+                    'Oleanonic acid': `${find_data}mg`,
+                  };
+                } else if (split_data[0].includes('isoleucine')) {
+                  const parse_data = split_data[1];
+                  const first_index = parse_data.indexOf('(');
+                  const second_index = parse_data.indexOf('mg');
+                  let find_data = parse_data
+                    .slice(first_index + 1, second_index)
+                    .trim();
+                  if (!find_data) {
+                    find_data = parse_data.slice(0, second_index).trim();
+                  }
+                  if (find_data.includes('표시량')) {
+                    find_data = find_data.substr(3).trim();
+                  }
+
+                  if (find_data.includes('｛')) {
+                    find_data = find_data.substr(1).trim();
+                  }
+                  if (find_data.includes('의')) {
+                    find_data = parse_data
+                      .slice(0, parse_data.indexOf('('))
+                      .trim();
+                  }
+
+                  const complete_data = {
+                    '4-Hydroxy-L-isoleucine': `${find_data}mg`,
+                  };
+                } else if (split_data[0].includes('로즈마리')) {
+                  const parse_data = split_data[1];
+                  const first_index = parse_data.indexOf('(');
+                  const second_index = parse_data.indexOf('mg');
+                  let find_data = parse_data
+                    .slice(first_index + 1, second_index)
+                    .trim();
+                  if (!find_data) {
+                    find_data = parse_data.slice(0, second_index).trim();
+                  }
+                  if (find_data.includes('표시량')) {
+                    find_data = find_data.substr(3).trim();
+                  }
+
+                  if (find_data.includes('｛')) {
+                    find_data = find_data.substr(1).trim();
+                  }
+                  if (find_data.includes('의')) {
+                    find_data = parse_data
+                      .slice(0, parse_data.indexOf('('))
+                      .trim();
+                  }
+
+                  const complete_data = {
+                    로즈마리산: `${find_data}mg`,
+                  };
+                } else if (!split_data[0].trim()) {
+                  // no data
+                } else if (split_data[0].includes('acid')) {
+                  if (split_data[0].includes('Hydro')) {
+                    const parse_data = split_data[1];
+                    const first_index = parse_data.indexOf('(');
+                    const second_index = parse_data.indexOf('mg');
+                    let find_data = parse_data
+                      .slice(first_index + 1, second_index)
+                      .trim();
+                    if (!find_data) {
+                      find_data = parse_data.slice(0, second_index).trim();
+                    }
+
+                    let complete_data = {
+                      HCA: `${find_data}mg`,
+                    };
+                    if (find_data.includes('g')) {
+                      find_data = find_data
+                        .slice(0, find_data.indexOf('g'))
+                        .trim();
+                      complete_data = {
+                        HCA: `${find_data}g`,
+                      };
+                    }
+                  } else if (
+                    split_data[0].includes('coumaric') ||
+                    split_data[0].includes('Coumaric')
+                  ) {
+                    const parse_data = split_data[1];
+                    const first_index = parse_data.indexOf('(');
+                    const second_index = parse_data.indexOf('mg');
+                    let find_data = parse_data
+                      .slice(first_index + 1, second_index)
+                      .trim();
+                    if (!find_data) {
+                      find_data = parse_data.slice(0, second_index).trim();
+                    }
+                    if (find_data.includes('㎎')) {
+                      find_data = find_data
+                        .slice(0, find_data.indexOf('㎎'))
+                        .trim();
+                    }
+
+                    const complete_data = {
+                      'p-coumaric acid': `${find_data}mg`,
+                    };
+                  } else if (split_data[0].includes('aminobutyric')) {
+                    const parse_data = split_data[1];
+                    const first_index = parse_data.indexOf('(');
+                    const second_index = parse_data.indexOf('mg');
+                    let find_data = parse_data
+                      .slice(first_index + 1, second_index)
+                      .trim();
+                    if (!find_data) {
+                      find_data = parse_data.slice(0, second_index).trim();
+                    }
+                    if (find_data.includes('㎎')) {
+                      find_data = find_data
+                        .slice(0, find_data.indexOf('㎎'))
+                        .trim();
+                    }
+                    if (find_data.includes('표시량')) {
+                      find_data = parse_data
+                        .slice(0, parse_data.indexOf('('))
+                        .trim();
+                    }
+
+                    const complete_data = {
+                      'γ-aminobutyric acid': `${find_data}mg`,
+                    };
+                  } else if (
+                    split_data[0].includes('Carnosic') ||
+                    split_data[0].includes('carnosic')
+                  ) {
+                    const parse_data = split_data[1];
+                    const first_index = parse_data.indexOf('(');
+                    const second_index = parse_data.indexOf('mg');
+                    let find_data = parse_data
+                      .slice(first_index + 1, second_index)
+                      .trim();
+                    if (!find_data) {
+                      find_data = parse_data.slice(0, second_index).trim();
+                    }
+                    if (find_data.includes('㎎')) {
+                      find_data = find_data
+                        .slice(0, find_data.indexOf('㎎'))
+                        .trim();
+                    }
+                    if (find_data.includes('표시량')) {
+                      find_data = parse_data
+                        .slice(0, parse_data.indexOf('('))
+                        .trim();
+                    }
+
+                    const complete_data = {
+                      'Carnosic acid와 carnosol의 합': `${find_data}mg`,
+                    };
+                  } else if (
+                    split_data[0].includes('Chicoric') ||
+                    split_data[0].includes('chicoric')
+                  ) {
+                    const parse_data = split_data[1];
+                    const first_index = parse_data.indexOf('(');
+                    const second_index = parse_data.indexOf('mg');
+                    let find_data = parse_data
+                      .slice(first_index + 1, second_index)
+                      .trim();
+
+                    if (find_data.includes('표시량')) {
+                      find_data = parse_data
+                        .slice(0, parse_data.indexOf('('))
+                        .trim();
+                      if (find_data.includes('표시량')) {
+                        find_data = parse_data
+                          .slice(
+                            parse_data.indexOf('(') + 4,
+                            parse_data.indexOf('mg'),
+                          )
+                          .trim();
+                      }
+                    }
+
+                    const complete_data = {
+                      'Chicoric acid': `${find_data}mg`,
+                    };
+                  } else if (split_data[0].includes('Lactic')) {
+                    const parse_data = split_data[1];
+                    const first_index = parse_data.indexOf('(');
+                    const second_index = parse_data.indexOf('mg');
+                    let find_data = parse_data
+                      .slice(first_index + 1, second_index)
+                      .trim();
+                    if (!find_data) {
+                      find_data = parse_data.slice(0, second_index).trim();
+                    }
+                    if (find_data.includes('㎎')) {
+                      find_data = find_data
+                        .slice(0, find_data.indexOf('㎎'))
+                        .trim();
+                    }
+                    if (find_data.includes('표시량')) {
+                      find_data = parse_data
+                        .slice(0, parse_data.indexOf('('))
+                        .trim();
+                      if (find_data.includes('표시량')) {
+                        find_data = parse_data
+                          .slice(
+                            parse_data.indexOf('(') + 4,
+                            parse_data.indexOf('mg'),
+                          )
+                          .trim();
+                      }
+                    }
+
+                    const complete_data = {
+                      'Lactic acid': `${find_data}mg`,
+                    };
+                  } else if (split_data[0].includes('chlorogenic')) {
+                    const parse_data = split_data[1];
+                    const first_index = parse_data.indexOf('(');
+                    const second_index = parse_data.indexOf('mg');
+                    let find_data = parse_data
+                      .slice(first_index + 1, second_index)
+                      .trim();
+                    if (!find_data) {
+                      find_data = parse_data.slice(0, second_index).trim();
+                    }
+                    if (find_data.includes('㎎')) {
+                      find_data = find_data
+                        .slice(0, find_data.indexOf('㎎'))
+                        .trim();
+                    }
+                    if (find_data.includes('표시량')) {
+                      find_data = parse_data
+                        .slice(0, parse_data.indexOf('('))
+                        .trim();
+                      if (find_data.includes('표시량')) {
+                        find_data = parse_data
+                          .slice(
+                            parse_data.indexOf('(') + 4,
+                            parse_data.indexOf('mg'),
+                          )
+                          .trim();
+                      }
+                    }
+
+                    const complete_data = {
+                      'chlorogenic acid': `${find_data}mg`,
+                    };
+                  } else if (split_data[0].includes('Ursolic')) {
+                    const parse_data = split_data[1];
+                    const first_index = parse_data.indexOf('(');
+                    const second_index = parse_data.indexOf('mg');
+                    let find_data = parse_data
+                      .slice(first_index + 1, second_index)
+                      .trim();
+                    if (!find_data) {
+                      find_data = parse_data.slice(0, second_index).trim();
+                    }
+                    if (find_data.includes('㎎')) {
+                      find_data = find_data
+                        .slice(0, find_data.indexOf('㎎'))
+                        .trim();
+                    }
+                    if (find_data.includes('표시량')) {
+                      find_data = parse_data
+                        .slice(0, parse_data.indexOf('('))
+                        .trim();
+                      if (find_data.includes('표시량')) {
+                        find_data = parse_data
+                          .slice(
+                            parse_data.indexOf('(') + 4,
+                            parse_data.indexOf('mg'),
+                          )
+                          .trim();
+                      }
+                    }
+
+                    const complete_data = {
+                      'Ursolic acid': `${find_data}mg`,
+                    };
+                  } else if (split_data[0].includes('미리스트올레산')) {
+                    const parse_data = split_data[1];
+                    const first_index = parse_data.indexOf('(');
+                    const second_index = parse_data.indexOf('mg');
+                    let find_data = parse_data
+                      .slice(first_index + 1, second_index)
+                      .trim();
+                    if (!find_data) {
+                      find_data = parse_data.slice(0, second_index).trim();
+                    }
+                    if (find_data.includes('㎎')) {
+                      find_data = find_data
+                        .slice(0, find_data.indexOf('㎎'))
+                        .trim();
+                    }
+                    if (find_data.includes('표시량')) {
+                      find_data = parse_data
+                        .slice(0, parse_data.indexOf('('))
+                        .trim();
+                      if (find_data.includes('표시량')) {
+                        find_data = parse_data
+                          .slice(
+                            parse_data.indexOf('(') + 4,
+                            parse_data.indexOf('mg'),
+                          )
+                          .trim();
+                      }
+                    }
+
+                    const complete_data = {
+                      미리스트올레산: `${find_data}mg`,
+                    };
+                  } else if (split_data[0].includes('alpha')) {
+                    const parse_data = split_data[1];
+                    const first_index = parse_data.indexOf('(');
+                    const second_index = parse_data.indexOf('mg');
+                    let find_data = parse_data
+                      .slice(first_index + 1, second_index)
+                      .trim();
+                    if (!find_data) {
+                      find_data = parse_data.slice(0, second_index).trim();
+                    }
+                    if (find_data.includes('㎎')) {
+                      find_data = find_data
+                        .slice(0, find_data.indexOf('㎎'))
+                        .trim();
+                    }
+                    if (find_data.includes('표시량')) {
+                      find_data = parse_data
+                        .slice(0, parse_data.indexOf('('))
+                        .trim();
+                      if (find_data.includes('표시량')) {
+                        find_data = parse_data
+                          .slice(
+                            parse_data.indexOf('(') + 4,
+                            parse_data.indexOf('mg'),
+                          )
+                          .trim();
+                      }
+                    }
+
+                    const complete_data = {
+                      'alpha acids와 iso-alpha acids의 합': `${find_data}mg`,
+                    };
+                  } else if (split_data[0].includes('Quisqualic')) {
+                    const parse_data = split_data[1];
+                    const first_index = parse_data.indexOf('(');
+                    const second_index = parse_data.indexOf('mg');
+                    let find_data = parse_data
+                      .slice(first_index + 1, second_index)
+                      .trim();
+                    if (!find_data) {
+                      find_data = parse_data.slice(0, second_index).trim();
+                    }
+                    if (find_data.includes('㎎')) {
+                      find_data = find_data
+                        .slice(0, find_data.indexOf('㎎'))
+                        .trim();
+                    }
+                    if (find_data.includes('표시량')) {
+                      find_data = parse_data
+                        .slice(0, parse_data.indexOf('('))
+                        .trim();
+                      if (find_data.includes('표시량')) {
+                        find_data = parse_data
+                          .slice(
+                            parse_data.indexOf('(') + 4,
+                            parse_data.indexOf('mg'),
+                          )
+                          .trim();
+                      }
+                    }
+
+                    const complete_data = {
+                      'Quisqualic acid': `${find_data}mg`,
+                    };
+                  } else if (
+                    split_data[0].includes('Corosoric') ||
+                    split_data[0].includes('Corosolic')
+                  ) {
+                    const parse_data = split_data[1];
+                    const first_index = parse_data.indexOf('(');
+                    const second_index = parse_data.indexOf('mg');
+                    let find_data = parse_data
+                      .slice(first_index + 1, second_index)
+                      .trim();
+                    if (!find_data) {
+                      find_data = parse_data.slice(0, second_index).trim();
+                    }
+                    if (find_data.includes('㎎')) {
+                      find_data = find_data
+                        .slice(0, find_data.indexOf('㎎'))
+                        .trim();
+                    }
+                    if (find_data.includes('표시량')) {
+                      find_data = find_data.substr(3).trim();
+                    }
+
+                    const complete_data = {
+                      'Corosoric acid': `${find_data}mg`,
+                    };
+                  } else if (split_data[0].includes('Veratric')) {
+                    const parse_data = split_data[1];
+                    const first_index = parse_data.indexOf('(');
+                    const second_index = parse_data.indexOf('mg');
+                    let find_data = parse_data
+                      .slice(first_index + 1, second_index)
+                      .trim();
+                    if (!find_data) {
+                      find_data = parse_data.slice(0, second_index).trim();
+                    }
+                    if (find_data.includes('㎎')) {
+                      find_data = find_data
+                        .slice(0, find_data.indexOf('㎎'))
+                        .trim();
+                    }
+                    if (find_data.includes('표시량')) {
+                      find_data = find_data.substr(3).trim();
+                    }
+
+                    const complete_data = {
+                      'Veratric acid': `${find_data}mg`,
+                    };
+                  } else if (split_data[0].includes('Ellagid')) {
+                    const parse_data = split_data[1];
+                    const first_index = parse_data.indexOf('(');
+                    const second_index = parse_data.indexOf('mg');
+                    let find_data = parse_data
+                      .slice(first_index + 1, second_index)
+                      .trim();
+                    if (!find_data) {
+                      find_data = parse_data.slice(0, second_index).trim();
+                    }
+                    if (find_data.includes('㎎')) {
+                      find_data = find_data
+                        .slice(0, find_data.indexOf('㎎'))
+                        .trim();
+                    }
+                    if (find_data.includes('표시량')) {
+                      find_data = find_data.substr(3).trim();
+                    }
+
+                    const complete_data = {
+                      'Ellagid acid': `${find_data}mg`,
+                    };
+                  } else if (split_data[0].includes('Rosmarnic')) {
+                    const parse_data = split_data[1];
+                    const first_index = parse_data.indexOf('(');
+                    const second_index = parse_data.indexOf('mg');
+                    let find_data = parse_data
+                      .slice(first_index + 1, second_index)
+                      .trim();
+                    if (!find_data) {
+                      find_data = parse_data.slice(0, second_index).trim();
+                    }
+                    if (find_data.includes('㎎')) {
+                      find_data = find_data
+                        .slice(0, find_data.indexOf('㎎'))
+                        .trim();
+                    }
+                    if (find_data.includes('표시량')) {
+                      find_data = find_data.substr(3).trim();
+                    }
+                    if (find_data.includes('의')) {
+                      find_data = parse_data
+                        .slice(0, parse_data.indexOf('('))
+                        .trim();
+                    }
+
+                    const complete_data = {
+                      'Rosmarnic acid': `${find_data}mg`,
+                    };
+                  } else {
+                    const parse_data = split_data[1];
+                    const first_index = parse_data.indexOf('(');
+                    const second_index = parse_data.indexOf('mg');
+                    let find_data = parse_data
+                      .slice(first_index + 1, second_index)
+                      .trim();
+                    if (!find_data) {
+                      find_data = parse_data.slice(0, second_index).trim();
+                    }
+                    if (find_data.includes('㎎')) {
+                      find_data = find_data
+                        .slice(0, find_data.indexOf('㎎'))
+                        .trim();
+                    }
+                    if (find_data.includes('표시량')) {
+                      find_data = find_data.substr(3).trim();
+                    }
+                    if (find_data.includes('의')) {
+                      find_data = parse_data
+                        .slice(0, parse_data.indexOf('('))
+                        .trim();
+                    }
+
+                    const complete_data = {
+                      'Eliagic acid': `${find_data}mg`,
+                    };
+                  }
+                } else if (split_data[0].includes('다당체')) {
+                  const parse_data = split_data[1];
+                  const first_index = parse_data.indexOf('(');
+                  const second_index = parse_data.indexOf('mg');
+                  let find_data = parse_data
+                    .slice(first_index + 1, second_index)
+                    .trim();
+                  if (!find_data) {
+                    find_data = parse_data.slice(0, second_index).trim();
+                  }
+                  if (find_data.includes('㎎')) {
+                    find_data = find_data
+                      .slice(0, find_data.indexOf('㎎'))
+                      .trim();
+                  }
+                  if (find_data.includes('표시량')) {
+                    find_data = find_data.substr(3).trim();
+                  }
+                  if (find_data.includes('의')) {
+                    find_data = parse_data
+                      .slice(0, parse_data.indexOf('('))
+                      .trim();
+                  }
+                  if (find_data.includes('[') || find_data.includes('｛')) {
+                    find_data = find_data.substr(1).trim();
+                  }
+                  if (find_data.includes('표시량')) {
+                    find_data = split_data[0]
+                      .slice(
+                        split_data[0].indexOf('(') + 1,
+                        split_data[0].indexOf('mg'),
+                      )
+                      .trim();
+                    find_data = find_data
+                      .slice(find_data.indexOf('(') + 1, find_data.length)
+                      .trim();
+                  }
+
+                  const complete_data = {
+                    총다당체: `${find_data}mg`,
+                  };
+                } else if (
+                  split_data[0].includes('폴라보노이드') ||
+                  split_data[0].includes('플라포노이드')
+                ) {
+                  const parse_data = split_data[1];
+                  const first_index = parse_data.indexOf('(');
+                  const second_index = parse_data.indexOf('mg');
+                  let find_data = parse_data
+                    .slice(first_index + 1, second_index)
+                    .trim();
+                  if (!find_data) {
+                    find_data = parse_data.slice(0, second_index).trim();
+                  }
+                  if (find_data.includes('㎎')) {
+                    find_data = find_data
+                      .slice(0, find_data.indexOf('㎎'))
+                      .trim();
+                  }
+                  if (find_data.includes('표시량')) {
+                    find_data = find_data.substr(3).trim();
+                  }
+                  if (find_data.includes('의')) {
+                    find_data = parse_data
+                      .slice(0, parse_data.indexOf('('))
+                      .trim();
+                  }
+                  if (find_data.includes('[') || find_data.includes('｛')) {
+                    find_data = find_data.substr(1).trim();
+                  }
+                  if (find_data.includes('표시량')) {
+                    find_data = split_data[0]
+                      .slice(
+                        split_data[0].indexOf('(') + 1,
+                        split_data[0].indexOf('mg'),
+                      )
+                      .trim();
+                    find_data = find_data
+                      .slice(find_data.indexOf('(') + 1, find_data.length)
+                      .trim();
+                  }
+
+                  const complete_data = {
+                    총폴라보노이드: `${find_data}mg`,
+                  };
+                } else if (split_data[0].includes('NAG')) {
+                  const parse_data = split_data[1];
+                  const first_index = parse_data.indexOf('(');
+                  const second_index = parse_data.indexOf('mg');
+                  let find_data = parse_data
+                    .slice(first_index + 1, second_index)
+                    .trim();
+                  if (!find_data) {
+                    find_data = parse_data.slice(0, second_index).trim();
+                  }
+                  if (find_data.includes('㎎')) {
+                    find_data = find_data
+                      .slice(0, find_data.indexOf('㎎'))
+                      .trim();
+                  }
+                  if (find_data.includes('표시량')) {
+                    find_data = find_data.substr(3).trim();
+                  }
+                  if (find_data.includes('의')) {
+                    find_data = parse_data
+                      .slice(0, parse_data.indexOf('('))
+                      .trim();
+                  }
+                  if (find_data.includes('[') || find_data.includes('｛')) {
+                    find_data = find_data.substr(1).trim();
+                  }
+                  if (find_data.includes('표시량')) {
+                    find_data = split_data[1]
+                      .slice(
+                        split_data[1].indexOf('(') + 1,
+                        split_data[1].indexOf('mg'),
+                      )
+                      .trim();
+                    find_data = find_data
+                      .slice(find_data.indexOf('(') + 1, find_data.length)
+                      .trim();
+                  }
+
+                  let complete_data = {
+                    NAG: `${find_data}mg`,
+                  };
+                  if (find_data.includes('g')) {
+                    find_data = find_data
+                      .slice(0, find_data.indexOf('g'))
+                      .trim();
+                    complete_data = {
+                      NAG: `${find_data}g`,
+                    };
+                  }
+                } else if (split_data[0].includes('acetylbritannilactone')) {
+                  const parse_data = split_data[1];
+                  const first_index = parse_data.indexOf('(');
+                  const second_index = parse_data.indexOf('mg');
+                  let find_data = parse_data
+                    .slice(first_index + 1, second_index)
+                    .trim();
+                  if (!find_data) {
+                    find_data = parse_data.slice(0, second_index).trim();
+                  }
+                  if (find_data.includes('㎎')) {
+                    find_data = find_data
+                      .slice(0, find_data.indexOf('㎎'))
+                      .trim();
+                  }
+                  if (find_data.includes('표시량')) {
+                    find_data = find_data.substr(3).trim();
+                  }
+                  if (find_data.includes('의')) {
+                    find_data = parse_data
+                      .slice(0, parse_data.indexOf('('))
+                      .trim();
+                  }
+                  if (find_data.includes('[') || find_data.includes('｛')) {
+                    find_data = find_data.substr(1).trim();
+                  }
+                  if (find_data.includes('표시량')) {
+                    find_data = split_data[0]
+                      .slice(
+                        split_data[0].indexOf('(') + 1,
+                        split_data[0].indexOf('mg'),
+                      )
+                      .trim();
+                    find_data = find_data
+                      .slice(find_data.indexOf('(') + 1, find_data.length)
+                      .trim();
+                  }
+
+                  const complete_data = {
+                    acetylbritannilactone: `${find_data}mg`,
+                  };
+                } else if (split_data[0].includes('판톤텐산')) {
+                  const parse_data = split_data[1];
+                  const first_index = parse_data.indexOf('(');
+                  const second_index = parse_data.indexOf('mg');
+                  let find_data = parse_data
+                    .slice(first_index + 1, second_index)
+                    .trim();
+                  if (!find_data) {
+                    find_data = parse_data.slice(0, second_index).trim();
+                  }
+                  if (find_data.includes('㎎')) {
+                    find_data = find_data
+                      .slice(0, find_data.indexOf('㎎'))
+                      .trim();
+                  }
+                  if (find_data.includes('표시량')) {
+                    find_data = find_data.substr(3).trim();
+                  }
+                  if (find_data.includes('의')) {
+                    find_data = parse_data
+                      .slice(0, parse_data.indexOf('('))
+                      .trim();
+                  }
+                  if (find_data.includes('[') || find_data.includes('｛')) {
+                    find_data = find_data.substr(1).trim();
+                  }
+                  if (find_data.includes('표시량')) {
+                    find_data = split_data[0]
+                      .slice(
+                        split_data[0].indexOf('(') + 1,
+                        split_data[0].indexOf('mg'),
+                      )
+                      .trim();
+                    find_data = find_data
+                      .slice(find_data.indexOf('(') + 1, find_data.length)
+                      .trim();
+                  }
+
+                  const complete_data = {
+                    판톤텐산: `${find_data}mg`,
+                  };
+                } else if (split_data[0].includes('라우린산')) {
+                  const parse_data = split_data[1];
+                  const first_index = parse_data.indexOf('(');
+                  const second_index = parse_data.indexOf('mg');
+                  let find_data = parse_data
+                    .slice(first_index + 1, second_index)
+                    .trim();
+                  if (!find_data) {
+                    find_data = parse_data.slice(0, second_index).trim();
+                  }
+                  if (find_data.includes('㎎')) {
+                    find_data = find_data
+                      .slice(0, find_data.indexOf('㎎'))
+                      .trim();
+                  }
+                  if (find_data.includes('표시량')) {
+                    find_data = find_data.substr(3).trim();
+                  }
+                  if (find_data.includes('의')) {
+                    find_data = parse_data
+                      .slice(0, parse_data.indexOf('('))
+                      .trim();
+                  }
+                  if (find_data.includes('[') || find_data.includes('｛')) {
+                    find_data = find_data.substr(1).trim();
+                  }
+                  if (find_data.includes('표시량')) {
+                    find_data = split_data[0]
+                      .slice(
+                        split_data[0].indexOf('(') + 1,
+                        split_data[0].indexOf('mg'),
+                      )
+                      .trim();
+                    find_data = find_data
+                      .slice(find_data.indexOf('(') + 1, find_data.length)
+                      .trim();
+                  }
+
+                  const complete_data = {
+                    라우린산: `${find_data}mg`,
+                  };
+                } else if (split_data[0].includes('Narigin')) {
+                  const parse_data = split_data[1];
+                  const first_index = parse_data.indexOf('(');
+                  const second_index = parse_data.indexOf('mg');
+                  let find_data = parse_data
+                    .slice(first_index + 1, second_index)
+                    .trim();
+                  if (!find_data) {
+                    find_data = parse_data.slice(0, second_index).trim();
+                  }
+                  if (find_data.includes('㎎')) {
+                    find_data = find_data
+                      .slice(0, find_data.indexOf('㎎'))
+                      .trim();
+                  }
+                  if (find_data.includes('표시량')) {
+                    find_data = find_data.substr(3).trim();
+                  }
+                  if (find_data.includes('의')) {
+                    find_data = parse_data
+                      .slice(0, parse_data.indexOf('('))
+                      .trim();
+                  }
+                  if (find_data.includes('[') || find_data.includes('｛')) {
+                    find_data = find_data.substr(1).trim();
+                  }
+                  if (find_data.includes('표시량')) {
+                    find_data = split_data[0]
+                      .slice(
+                        split_data[0].indexOf('(') + 1,
+                        split_data[0].indexOf('mg'),
+                      )
+                      .trim();
+                    find_data = find_data
+                      .slice(find_data.indexOf('(') + 1, find_data.length)
+                      .trim();
+                  }
+
+                  const complete_data = {
+                    Narigin: `${find_data}mg`,
+                  };
+                } else if (split_data[0].includes('Hydrangenol')) {
+                  const parse_data = split_data[1];
+                  const first_index = parse_data.indexOf('(');
+                  const second_index = parse_data.indexOf('mg');
+                  let find_data = parse_data
+                    .slice(first_index + 1, second_index)
+                    .trim();
+                  if (!find_data) {
+                    find_data = parse_data.slice(0, second_index).trim();
+                  }
+                  if (find_data.includes('㎎')) {
+                    find_data = find_data
+                      .slice(0, find_data.indexOf('㎎'))
+                      .trim();
+                  }
+                  if (find_data.includes('표시량')) {
+                    find_data = find_data.substr(3).trim();
+                  }
+                  if (find_data.includes('의')) {
+                    find_data = parse_data
+                      .slice(0, parse_data.indexOf('('))
+                      .trim();
+                  }
+                  if (find_data.includes('[') || find_data.includes('｛')) {
+                    find_data = find_data.substr(1).trim();
+                  }
+                  if (find_data.includes('표시량')) {
+                    find_data = split_data[0]
+                      .slice(
+                        split_data[0].indexOf('(') + 1,
+                        split_data[0].indexOf('mg'),
+                      )
+                      .trim();
+                    find_data = find_data
+                      .slice(find_data.indexOf('(') + 1, find_data.length)
+                      .trim();
+                  }
+
+                  const complete_data = {
+                    Hydrangenol: `${find_data}mg`,
+                  };
+                } else if (split_data[0].includes('Ecdysterone')) {
+                  const parse_data = split_data[1];
+                  const first_index = parse_data.indexOf('(');
+                  const second_index = parse_data.indexOf('mg');
+                  let find_data = parse_data
+                    .slice(first_index + 1, second_index)
+                    .trim();
+                  if (!find_data) {
+                    find_data = parse_data.slice(0, second_index).trim();
+                  }
+                  if (find_data.includes('㎎')) {
+                    find_data = find_data
+                      .slice(0, find_data.indexOf('㎎'))
+                      .trim();
+                  }
+                  if (find_data.includes('표시량')) {
+                    find_data = find_data.substr(3).trim();
+                  }
+                  if (find_data.includes('의')) {
+                    find_data = parse_data
+                      .slice(0, parse_data.indexOf('('))
+                      .trim();
+                  }
+                  if (find_data.includes('[') || find_data.includes('｛')) {
+                    find_data = find_data.substr(1).trim();
+                  }
+                  if (find_data.includes('표시량')) {
+                    find_data = split_data[0]
+                      .slice(
+                        split_data[0].indexOf('(') + 1,
+                        split_data[0].indexOf('mg'),
+                      )
+                      .trim();
+                    find_data = find_data
+                      .slice(find_data.indexOf('(') + 1, find_data.length)
+                      .trim();
+                  }
+
+                  const complete_data = {
+                    Ecdysterone: `${find_data}mg`,
+                  };
+                } else if (split_data[0].includes('Prenylnaringenin')) {
+                  const parse_data = split_data[1];
+                  const first_index = parse_data.indexOf('(');
+                  const second_index = parse_data.indexOf('mg');
+                  let find_data = parse_data
+                    .slice(first_index + 1, second_index)
+                    .trim();
+                  if (!find_data) {
+                    find_data = parse_data.slice(0, second_index).trim();
+                  }
+                  if (find_data.includes('㎎')) {
+                    find_data = find_data
+                      .slice(0, find_data.indexOf('㎎'))
+                      .trim();
+                  }
+                  if (find_data.includes('표시량')) {
+                    find_data = find_data.substr(3).trim();
+                  }
+                  if (find_data.includes('의')) {
+                    find_data = parse_data
+                      .slice(0, parse_data.indexOf('('))
+                      .trim();
+                  }
+                  if (find_data.includes('[') || find_data.includes('｛')) {
+                    find_data = find_data.substr(1).trim();
+                  }
+                  if (find_data.includes('표시량')) {
+                    find_data = split_data[0]
+                      .slice(
+                        split_data[0].indexOf('(') + 1,
+                        split_data[0].indexOf('mg'),
+                      )
+                      .trim();
+                    find_data = find_data
+                      .slice(find_data.indexOf('(') + 1, find_data.length)
+                      .trim();
+                  }
+
+                  const complete_data = {
+                    Prenylnaringenin: `${find_data}mg`,
+                  };
+                } else if (split_data[0].includes('Catechin')) {
+                  const parse_data = split_data[1];
+                  const first_index = parse_data.indexOf('(');
+                  const second_index = parse_data.indexOf('mg');
+                  let find_data = parse_data
+                    .slice(first_index + 1, second_index)
+                    .trim();
+                  if (!find_data) {
+                    find_data = parse_data.slice(0, second_index).trim();
+                  }
+                  if (find_data.includes('㎎')) {
+                    find_data = find_data
+                      .slice(0, find_data.indexOf('㎎'))
+                      .trim();
+                  }
+                  if (find_data.includes('표시량')) {
+                    find_data = find_data.substr(3).trim();
+                  }
+                  if (find_data.includes('의')) {
+                    find_data = parse_data
+                      .slice(0, parse_data.indexOf('('))
+                      .trim();
+                  }
+                  if (find_data.includes('[') || find_data.includes('｛')) {
+                    find_data = find_data.substr(1).trim();
+                  }
+                  if (find_data.includes('표시량')) {
+                    find_data = split_data[0]
+                      .slice(
+                        split_data[0].indexOf('(') + 1,
+                        split_data[0].indexOf('mg'),
+                      )
+                      .trim();
+                    find_data = find_data
+                      .slice(find_data.indexOf('(') + 1, find_data.length)
+                      .trim();
+                  }
+
+                  const complete_data = {
+                    Catechin: `${find_data}mg`,
+                  };
+                } else if (split_data[0].includes('인삼')) {
+                  const parse_data = split_data[1];
+                  const first_index = parse_data.indexOf('(');
+                  const second_index = parse_data.indexOf('mg');
+                  let find_data = parse_data
+                    .slice(first_index + 1, second_index)
+                    .trim();
+                  if (!find_data) {
+                    find_data = parse_data.slice(0, second_index).trim();
+                  }
+                  if (find_data.includes('㎎')) {
+                    find_data = find_data
+                      .slice(0, find_data.indexOf('㎎'))
+                      .trim();
+                  }
+                  if (find_data.includes('표시량')) {
+                    find_data = find_data.substr(3).trim();
+                  }
+                  if (find_data.includes('의')) {
+                    find_data = parse_data
+                      .slice(0, parse_data.indexOf('('))
+                      .trim();
+                  }
+                  if (find_data.includes('[') || find_data.includes('｛')) {
+                    find_data = find_data.substr(1).trim();
+                  }
+                  if (find_data.includes('표시량')) {
+                    find_data = split_data[1]
+                      .slice(
+                        split_data[1].indexOf('(') + 1,
+                        split_data[1].indexOf('mg'),
+                      )
+                      .trim();
+                    find_data = find_data
+                      .slice(find_data.indexOf('(') + 1, find_data.length)
+                      .trim();
+                  }
+
+                  const complete_data = {
+                    인삼: `${find_data}mg`,
+                  };
+                } else if (split_data[0].includes('홍삼')) {
+                  const parse_data = split_data[1];
+                  const first_index = parse_data.indexOf('(');
+                  const second_index = parse_data.indexOf('mg');
+                  let find_data = parse_data
+                    .slice(first_index + 1, second_index)
+                    .trim();
+                  if (!find_data) {
+                    find_data = parse_data.slice(0, second_index).trim();
+                  }
+                  if (find_data.includes('㎎')) {
+                    find_data = find_data
+                      .slice(0, find_data.indexOf('㎎'))
+                      .trim();
+                  }
+                  if (find_data.includes('표시량')) {
+                    find_data = find_data.substr(3).trim();
+                  }
+                  if (find_data.includes('의')) {
+                    find_data = parse_data
+                      .slice(0, parse_data.indexOf('('))
+                      .trim();
+                  }
+                  if (find_data.includes('[') || find_data.includes('｛')) {
+                    find_data = find_data.substr(1).trim();
+                  }
+                  if (find_data.includes('표시량')) {
+                    find_data = split_data[1]
+                      .slice(
+                        split_data[1].indexOf('(') + 1,
+                        split_data[1].indexOf('mg'),
+                      )
+                      .trim();
+                    find_data = find_data
+                      .slice(find_data.indexOf('(') + 1, find_data.length)
+                      .trim();
+                  }
+
+                  const complete_data = {
+                    홍삼: `${find_data}mg`,
+                  };
+                } else if (split_data[0].includes('히알우론산나트륨')) {
+                  const parse_data = split_data[1];
+                  const first_index = parse_data.indexOf('(');
+                  const second_index = parse_data.indexOf('mg');
+                  let find_data = parse_data
+                    .slice(first_index + 1, second_index)
+                    .trim();
+                  if (!find_data) {
+                    find_data = parse_data.slice(0, second_index).trim();
+                  }
+                  if (find_data.includes('㎎')) {
+                    find_data = find_data
+                      .slice(0, find_data.indexOf('㎎'))
+                      .trim();
+                  }
+                  if (find_data.includes('표시량')) {
+                    find_data = find_data.substr(3).trim();
+                  }
+                  if (find_data.includes('의')) {
+                    find_data = parse_data
+                      .slice(0, parse_data.indexOf('('))
+                      .trim();
+                  }
+                  if (find_data.includes('[') || find_data.includes('｛')) {
+                    find_data = find_data.substr(1).trim();
+                  }
+                  if (find_data.includes('표시량')) {
+                    find_data = split_data[1]
+                      .slice(
+                        split_data[1].indexOf('(') + 1,
+                        split_data[1].indexOf('mg'),
+                      )
+                      .trim();
+                    find_data = find_data
+                      .slice(find_data.indexOf('(') + 1, find_data.length)
+                      .trim();
+                  }
+
+                  const complete_data = {
+                    히알우론산나트륨: `${find_data}mg`,
+                  };
+                } else if (split_data[0].includes('가르시니아캄보지아')) {
+                  const parse_data = split_data[1];
+                  const first_index = parse_data.indexOf('(');
+                  const second_index = parse_data.indexOf('mg');
+                  let find_data = parse_data
+                    .slice(first_index + 1, second_index)
+                    .trim();
+                  if (!find_data) {
+                    find_data = parse_data.slice(0, second_index).trim();
+                  }
+                  if (find_data.includes('㎎')) {
+                    find_data = find_data
+                      .slice(0, find_data.indexOf('㎎'))
+                      .trim();
+                  }
+                  if (find_data.includes('표시량')) {
+                    find_data = find_data.substr(3).trim();
+                  }
+                  if (find_data.includes('의')) {
+                    find_data = parse_data
+                      .slice(0, parse_data.indexOf('('))
+                      .trim();
+                  }
+                  if (find_data.includes('[') || find_data.includes('｛')) {
+                    find_data = find_data.substr(1).trim();
+                  }
+                  if (find_data.includes('표시량')) {
+                    find_data = split_data[1]
+                      .slice(
+                        split_data[1].indexOf('(') + 1,
+                        split_data[1].indexOf('mg'),
+                      )
+                      .trim();
+                    find_data = find_data
+                      .slice(find_data.indexOf('(') + 1, find_data.length)
+                      .trim();
+                  }
+                  if (find_data.includes('서')) {
+                    find_data = find_data
+                      .slice(find_data.indexOf('서') + 1, find_data.length)
+                      .trim();
+                  }
+
+                  const complete_data = {
+                    '가르시니아캄보지아 추출물': `${find_data}mg`,
+                  };
+                } else if (split_data[0].includes('폴리페논')) {
+                  const parse_data = split_data[1];
+                  const first_index = parse_data.indexOf('(');
+                  const second_index = parse_data.indexOf('mg');
+                  let find_data = parse_data
+                    .slice(first_index + 1, second_index)
+                    .trim();
+                  if (!find_data) {
+                    find_data = parse_data.slice(0, second_index).trim();
+                  }
+                  if (find_data.includes('㎎')) {
+                    find_data = find_data
+                      .slice(0, find_data.indexOf('㎎'))
+                      .trim();
+                  }
+                  if (find_data.includes('표시량')) {
+                    find_data = find_data.substr(3).trim();
+                  }
+                  if (find_data.includes('의')) {
+                    find_data = parse_data
+                      .slice(0, parse_data.indexOf('('))
+                      .trim();
+                  }
+                  if (find_data.includes('[') || find_data.includes('｛')) {
+                    find_data = find_data.substr(1).trim();
+                  }
+                  if (find_data.includes('표시량')) {
+                    find_data = split_data[1]
+                      .slice(
+                        split_data[1].indexOf('(') + 1,
+                        split_data[1].indexOf('mg'),
+                      )
+                      .trim();
+                    find_data = find_data
+                      .slice(find_data.indexOf('(') + 1, find_data.length)
+                      .trim();
+                  }
+                  if (find_data.includes('서')) {
+                    find_data = find_data
+                      .slice(find_data.indexOf('서') + 1, find_data.length)
+                      .trim();
+                  }
+
+                  const complete_data = {
+                    '총 폴리페논': `${find_data}mg`,
+                  };
+                } else if (split_data[0].includes('라피노스')) {
+                  const parse_data = split_data[1];
+                  const first_index = parse_data.indexOf('(');
+                  const second_index = parse_data.indexOf('mg');
+                  let find_data = parse_data
+                    .slice(first_index + 1, second_index)
+                    .trim();
+                  if (!find_data) {
+                    find_data = parse_data.slice(0, second_index).trim();
+                  }
+                  if (find_data.includes('㎎')) {
+                    find_data = find_data
+                      .slice(0, find_data.indexOf('㎎'))
+                      .trim();
+                  }
+                  if (find_data.includes('표시량')) {
+                    find_data = find_data.substr(3).trim();
+                  }
+                  if (find_data.includes('의')) {
+                    find_data = parse_data
+                      .slice(0, parse_data.indexOf('('))
+                      .trim();
+                  }
+                  if (find_data.includes('[') || find_data.includes('｛')) {
+                    find_data = find_data.substr(1).trim();
+                  }
+                  if (find_data.includes('표시량')) {
+                    find_data = split_data[1]
+                      .slice(
+                        split_data[1].indexOf('(') + 1,
+                        split_data[1].indexOf('mg'),
+                      )
+                      .trim();
+                    find_data = find_data
+                      .slice(find_data.indexOf('(') + 1, find_data.length)
+                      .trim();
+                  }
+                  if (find_data.includes('서')) {
+                    find_data = find_data
+                      .slice(find_data.indexOf('서') + 1, find_data.length)
+                      .trim();
+                  }
+
+                  if (find_data.includes(')')) {
+                    find_data = find_data
+                      .slice(0, find_data.indexOf(')'))
+                      .trim();
+                  }
+
+                  let complete_data = {
+                    라피노스: `${find_data}mg`,
+                  };
+                  if (find_data.includes('g')) {
+                    find_data = find_data
+                      .slice(0, find_data.indexOf('g'))
+                      .trim();
+                    complete_data = {
+                      라피노스: `${find_data}g`,
+                    };
+                  }
+                } else if (
+                  split_data[0].includes('Hydro') ||
+                  split_data[0].includes('hydro')
+                ) {
+                  const parse_data = split_data[1];
+                  const first_index = parse_data.indexOf('(');
+                  const second_index = parse_data.indexOf('mg');
+                  let find_data = parse_data
+                    .slice(first_index + 1, second_index)
+                    .trim();
+                  if (!find_data) {
+                    find_data = parse_data.slice(0, second_index).trim();
+                  }
+                  if (find_data.includes('㎎')) {
+                    find_data = find_data
+                      .slice(0, find_data.indexOf('㎎'))
+                      .trim();
+                  }
+                  if (find_data.includes('표시량')) {
+                    find_data = find_data.substr(3).trim();
+                  }
+                  if (find_data.includes('의')) {
+                    find_data = parse_data
+                      .slice(0, parse_data.indexOf('('))
+                      .trim();
+                  }
+                  if (find_data.includes('[') || find_data.includes('｛')) {
+                    find_data = find_data.substr(1).trim();
+                  }
+                  if (find_data.includes('표시량')) {
+                    find_data = split_data[1]
+                      .slice(
+                        split_data[1].indexOf('(') + 1,
+                        split_data[1].indexOf('mg'),
+                      )
+                      .trim();
+                    find_data = find_data
+                      .slice(find_data.indexOf('(') + 1, find_data.length)
+                      .trim();
+                  }
+                  if (find_data.includes('서')) {
+                    find_data = find_data
+                      .slice(find_data.indexOf('서') + 1, find_data.length)
+                      .trim();
+                  }
+
+                  if (split_data[0].includes('hiamine')) {
+                    const complete_data = {
+                      'Thiamine Hydrochloride': `${find_data}mg`,
+                    };
+                  } else if (split_data[0].includes('yridoxine')) {
+                    const complete_data = {
+                      'Pyridoxine Hydrochloride': `${find_data}mg`,
+                    };
+                  } else if (split_data[0].includes('Dehydro')) {
+                    const complete_data = {
+                      '디하이드로 및 진저다이온': `${find_data}mg`,
+                    };
+                  } else {
+                    const complete_data = {
+                      'Hydroxy-L-isoleucin': `${find_data}mg`,
+                    };
+                  }
+                } else if (split_data[0].includes('tetratriacontanol')) {
+                  const parse_data = split_data[1];
+                  const first_index = parse_data.indexOf('(');
+                  const second_index = parse_data.indexOf('mg');
+                  let find_data = parse_data
+                    .slice(first_index + 1, second_index)
+                    .trim();
+                  if (!find_data) {
+                    find_data = parse_data.slice(0, second_index).trim();
+                  }
+                  if (find_data.includes('㎎')) {
+                    find_data = find_data
+                      .slice(0, find_data.indexOf('㎎'))
+                      .trim();
+                  }
+                  if (find_data.includes('표시량')) {
+                    find_data = find_data.substr(3).trim();
+                  }
+                  if (find_data.includes('의')) {
+                    find_data = parse_data
+                      .slice(0, parse_data.indexOf('('))
+                      .trim();
+                  }
+                  if (find_data.includes('[') || find_data.includes('｛')) {
+                    find_data = find_data.substr(1).trim();
+                  }
+                  if (find_data.includes('표시량')) {
+                    find_data = split_data[1]
+                      .slice(
+                        split_data[1].indexOf('(') + 1,
+                        split_data[1].indexOf('mg'),
+                      )
+                      .trim();
+                    find_data = find_data
+                      .slice(find_data.indexOf('(') + 1, find_data.length)
+                      .trim();
+                  }
+                  if (find_data.includes('서')) {
+                    find_data = find_data
+                      .slice(find_data.indexOf('서') + 1, find_data.length)
+                      .trim();
+                  }
+
+                  const complete_data = {
+                    tetratriacontanol: `${find_data}mg`,
+                  };
+                } else if (split_data[0].includes('디메칠설폰')) {
+                  const parse_data = split_data[1];
+                  const first_index = parse_data.indexOf('(');
+                  const second_index = parse_data.indexOf('mg');
+                  let find_data = parse_data
+                    .slice(first_index + 1, second_index)
+                    .trim();
+                  if (!find_data) {
+                    find_data = parse_data.slice(0, second_index).trim();
+                  }
+                  if (find_data.includes('㎎')) {
+                    find_data = find_data
+                      .slice(0, find_data.indexOf('㎎'))
+                      .trim();
+                  }
+                  if (find_data.includes('표시량')) {
+                    find_data = find_data.substr(3).trim();
+                  }
+                  if (find_data.includes('의')) {
+                    find_data = parse_data
+                      .slice(0, parse_data.indexOf('('))
+                      .trim();
+                  }
+                  if (find_data.includes('[') || find_data.includes('｛')) {
+                    find_data = find_data.substr(1).trim();
+                  }
+                  if (find_data.includes('표시량')) {
+                    find_data = split_data[1]
+                      .slice(
+                        split_data[1].indexOf('(') + 1,
+                        split_data[1].indexOf('mg'),
+                      )
+                      .trim();
+                    find_data = find_data
+                      .slice(find_data.indexOf('(') + 1, find_data.length)
+                      .trim();
+                  }
+                  if (find_data.includes('서')) {
+                    find_data = find_data
+                      .slice(find_data.indexOf('서') + 1, find_data.length)
+                      .trim();
+                  }
+
+                  const complete_data = {
+                    디메칠설폰: `${find_data}mg`,
+                  };
                 } else {
                 }
               }
 
               if (split_data.length === 3) {
+                if (split_data[0].includes('비타민')) {
+                  if (split_data[0].includes('A')) {
+                    if (split_data[2].includes('㎍')) {
+                      const parse_data = split_data[2];
+                      const first_index = parse_data.indexOf('(');
+                      const second_index = parse_data.indexOf('㎍');
+                      const find_data = parse_data
+                        .slice(0, second_index)
+                        .trim();
+                      const complete_data = {
+                        비타민A: `${find_data}ugRE`,
+                      };
+                    } else if (split_data[2].includes('µg')) {
+                      const parse_data = split_data[2];
+                      const first_index = parse_data.indexOf('(');
+                      const second_index = parse_data.indexOf('µg');
+                      const find_data = parse_data
+                        .slice(0, second_index)
+                        .trim();
+                      const complete_data = {
+                        비타민A: `${find_data}ugRE`,
+                      };
+                    } else if (split_data[2].includes('μg')) {
+                      const parse_data = split_data[2];
+                      const first_index = parse_data.indexOf('(');
+                      const second_index = parse_data.indexOf('μg');
+                      const find_data = parse_data
+                        .slice(0, second_index)
+                        .trim();
+                      const complete_data = {
+                        비타민A: `${find_data}ugRE`,
+                      };
+                    } else if (split_data[2].includes('ug')) {
+                      const parse_data = split_data[2];
+                      const first_index = parse_data.indexOf('(');
+                      const second_index = parse_data.indexOf('ug');
+                      const find_data = parse_data
+                        .slice(0, second_index)
+                        .trim();
+                      const complete_data = {
+                        비타민A: `${find_data}ugRE`,
+                      };
+                    } else if (split_data[2].includes('mg')) {
+                      const parse_data = split_data[2];
+                      const first_index = parse_data.indexOf('(');
+                      const second_index = parse_data.indexOf('mg');
+                      const find_data = parse_data
+                        .slice(0, second_index)
+                        .trim();
+                      const complete_data = {
+                        비타민A: `${find_data}mg`,
+                      };
+                    } else {
+                      const parse_data = split_data[1];
+                      const first_index = parse_data.indexOf('(');
+                      const second_index = parse_data.indexOf('ug');
+                      const find_data = parse_data
+                        .slice(first_index + 1, second_index)
+                        .trim();
+                      const complete_data = {
+                        비타민A: `${find_data}ugRE`,
+                      };
+                    }
+                  } else if (
+                    split_data[0].includes('C') ||
+                    split_data[0].includes('c')
+                  ) {
+                    if (split_data[2].includes('㎎')) {
+                      const parse_data = split_data[2];
+                      const first_index = parse_data.indexOf('(');
+                      const second_index = parse_data.indexOf('㎎');
+                      const find_data = parse_data
+                        .slice(first_index + 1, second_index)
+                        .trim();
+                      const complete_data = {
+                        비타민C: `${find_data}mg`,
+                      };
+                    } else if (split_data[2].includes('mg')) {
+                      const parse_data = split_data[2];
+                      const first_index = parse_data.indexOf('(');
+                      const second_index = parse_data.indexOf('mg');
+                      const find_data = parse_data
+                        .slice(first_index + 1, second_index)
+                        .trim();
+                      const complete_data = {
+                        비타민C: `${find_data}mg`,
+                      };
+                    } else {
+                      const parse_data = split_data[1];
+                      const first_index = parse_data.indexOf('(');
+                      const second_index = parse_data.indexOf('mg');
+                      const find_data = parse_data
+                        .slice(first_index + 1, second_index)
+                        .trim();
+                      const complete_data = {
+                        비타민C: `${find_data}mg`,
+                      };
+                    }
+                  } else if (split_data[0].includes('D')) {
+                    if (split_data[2].includes('㎍')) {
+                      const parse_data = split_data[2];
+                      const first_index = parse_data.indexOf('(');
+                      const second_index = parse_data.indexOf('㎍');
+                      const find_data = parse_data
+                        .slice(0, second_index)
+                        .trim();
+                      const complete_data = {
+                        비타민D: `${find_data}ug`,
+                      };
+                    } else if (split_data[2].includes('µg')) {
+                      const parse_data = split_data[2];
+                      const first_index = parse_data.indexOf('(');
+                      const second_index = parse_data.indexOf('µg');
+                      const find_data = parse_data
+                        .slice(0, second_index)
+                        .trim();
+                      const complete_data = {
+                        비타민D: `${find_data}ug`,
+                      };
+                    } else if (split_data[2].includes('μg')) {
+                      const parse_data = split_data[2];
+                      const first_index = parse_data.indexOf('(');
+                      const second_index = parse_data.indexOf('μg');
+                      const find_data = parse_data
+                        .slice(0, second_index)
+                        .trim();
+                      const complete_data = {
+                        비타민D: `${find_data}ug`,
+                      };
+                    } else if (split_data[2].includes('ug')) {
+                      const parse_data = split_data[2];
+                      const first_index = parse_data.indexOf('(');
+                      const second_index = parse_data.indexOf('ug');
+                      const find_data = parse_data
+                        .slice(0, second_index)
+                        .trim();
+                      const complete_data = {
+                        비타민D: `${find_data}ug`,
+                      };
+                    } else if (split_data[2].includes('mg')) {
+                      const parse_data = split_data[2];
+                      const first_index = parse_data.indexOf('(');
+                      const second_index = parse_data.indexOf('mg');
+                      const find_data = parse_data
+                        .slice(0, second_index)
+                        .trim();
+                      const complete_data = {
+                        비타민D: `${find_data}mg`,
+                      };
+                    } else {
+                      const parse_data = split_data[1];
+                      const first_index = parse_data.indexOf('(');
+                      const second_index = parse_data.indexOf('ug');
+                      let find_data = parse_data
+                        .slice(first_index + 1, second_index)
+                        .trim();
+                      if (find_data.includes('표시량')) {
+                        find_data = find_data.substr(3).trim();
+                      }
+                      if (find_data.includes('μg')) {
+                        find_data = find_data
+                          .slice(0, find_data.indexOf('μg'))
+                          .trim();
+                      }
+                      if (find_data.includes('㎍')) {
+                        find_data = find_data
+                          .slice(0, find_data.indexOf('㎍'))
+                          .trim();
+                      }
+                      const complete_data = {
+                        비타민D: `${find_data}ug`,
+                      };
+                    }
+                  } else if (split_data[0].includes('E')) {
+                    if (split_data[2].includes('㎎')) {
+                      const parse_data = split_data[2];
+                      const first_index = parse_data.indexOf('(');
+                      const second_index = parse_data.indexOf('㎎');
+                      const find_data = parse_data
+                        .slice(first_index + 1, second_index)
+                        .trim();
+                      const complete_data = {
+                        비타민E: `${find_data}mga-TE`,
+                      };
+                    } else if (split_data[2].includes('mg')) {
+                      const parse_data = split_data[2];
+                      const first_index = parse_data.indexOf('(');
+                      const second_index = parse_data.indexOf('mg');
+                      const find_data = parse_data
+                        .slice(first_index + 1, second_index)
+                        .trim();
+                      const complete_data = {
+                        비타민E: `${find_data}mga-TE`,
+                      };
+                    } else {
+                      const parse_data = split_data[1];
+                      const first_index = parse_data.indexOf('(');
+                      const second_index = parse_data.indexOf('mg');
+                      let find_data = parse_data
+                        .slice(first_index + 1, second_index)
+                        .trim();
+                      if (!find_data) {
+                        find_data = parse_data
+                          .slice(parse_data.indexOf('량') + 1, second_index)
+                          .trim();
+                      }
+                      const complete_data = {
+                        비타민E: `${find_data}mga-TE`,
+                      };
+                    }
+                  } else if (split_data[0].includes('K')) {
+                    if (split_data[2].includes('㎍')) {
+                      const parse_data = split_data[2];
+                      const first_index = parse_data.indexOf('(');
+                      const second_index = parse_data.indexOf('㎍');
+                      const find_data = parse_data
+                        .slice(0, second_index)
+                        .trim();
+                      const complete_data = {
+                        비타민K: `${find_data}ug`,
+                      };
+                    } else if (split_data[2].includes('µg')) {
+                      const parse_data = split_data[2];
+                      const first_index = parse_data.indexOf('(');
+                      const second_index = parse_data.indexOf('µg');
+                      const find_data = parse_data
+                        .slice(0, second_index)
+                        .trim();
+                      const complete_data = {
+                        비타민K: `${find_data}ug`,
+                      };
+                    } else if (split_data[2].includes('μg')) {
+                      const parse_data = split_data[2];
+                      const first_index = parse_data.indexOf('(');
+                      const second_index = parse_data.indexOf('μg');
+                      const find_data = parse_data
+                        .slice(0, second_index)
+                        .trim();
+                      const complete_data = {
+                        비타민K: `${find_data}ug`,
+                      };
+                    } else if (split_data[2].includes('ug')) {
+                      const parse_data = split_data[2];
+                      const first_index = parse_data.indexOf('(');
+                      const second_index = parse_data.indexOf('ug');
+                      const find_data = parse_data
+                        .slice(0, second_index)
+                        .trim();
+                      const complete_data = {
+                        비타민K: `${find_data}ug`,
+                      };
+                    } else if (split_data[2].includes('mg')) {
+                      const parse_data = split_data[2];
+                      const first_index = parse_data.indexOf('(');
+                      const second_index = parse_data.indexOf('mg');
+                      const find_data = parse_data
+                        .slice(0, second_index)
+                        .trim();
+                      const complete_data = {
+                        비타민K: `${find_data}mg`,
+                      };
+                    } else {
+                    }
+                  } else if (
+                    split_data[0].includes('B') ||
+                    split_data[0].includes('b')
+                  ) {
+                    if (split_data[0].includes('12')) {
+                      if (split_data[2].includes('㎍')) {
+                        const parse_data = split_data[2];
+                        const first_index = parse_data.indexOf('(');
+                        const second_index = parse_data.indexOf('㎍');
+                        const find_data = parse_data
+                          .slice(0, second_index)
+                          .trim();
+                        const complete_data = {
+                          비타민B12: `${find_data}ug`,
+                        };
+                      } else if (split_data[2].includes('µg')) {
+                        const parse_data = split_data[2];
+                        const first_index = parse_data.indexOf('(');
+                        const second_index = parse_data.indexOf('µg');
+                        const find_data = parse_data
+                          .slice(0, second_index)
+                          .trim();
+                        const complete_data = {
+                          비타민B12: `${find_data}ug`,
+                        };
+                      } else if (split_data[2].includes('μg')) {
+                        const parse_data = split_data[2];
+                        const first_index = parse_data.indexOf('(');
+                        const second_index = parse_data.indexOf('μg');
+                        const find_data = parse_data
+                          .slice(0, second_index)
+                          .trim();
+                        const complete_data = {
+                          비타민B12: `${find_data}ug`,
+                        };
+                      } else if (split_data[2].includes('ug')) {
+                        const parse_data = split_data[2];
+                        const first_index = parse_data.indexOf('(');
+                        const second_index = parse_data.indexOf('ug');
+                        const find_data = parse_data
+                          .slice(0, second_index)
+                          .trim();
+                        const complete_data = {
+                          비타민B12: `${find_data}ug`,
+                        };
+                      } else if (split_data[2].includes('mg')) {
+                        const parse_data = split_data[2];
+                        const first_index = parse_data.indexOf('(');
+                        const second_index = parse_data.indexOf('mg');
+                        const find_data = parse_data
+                          .slice(0, second_index)
+                          .trim();
+                        const complete_data = {
+                          비타민B12: `${find_data}mg`,
+                        };
+                      } else {
+                      }
+                    } else if (split_data[0].includes('1')) {
+                      if (split_data[2].includes('㎎')) {
+                        const parse_data = split_data[2];
+                        const first_index = parse_data.indexOf('(');
+                        const second_index = parse_data.indexOf('㎎');
+                        const find_data = parse_data
+                          .slice(first_index + 1, second_index)
+                          .trim();
+                        const complete_data = {
+                          비타민B1: `${find_data}mg`,
+                        };
+                      } else if (split_data[2].includes('mg')) {
+                        const parse_data = split_data[2];
+                        const first_index = parse_data.indexOf('(');
+                        const second_index = parse_data.indexOf('mg');
+                        const find_data = parse_data
+                          .slice(first_index + 1, second_index)
+                          .trim();
+                        const complete_data = {
+                          비타민B1: `${find_data}mg`,
+                        };
+                      } else {
+                        const parse_data = split_data[1];
+                        const first_index = parse_data.indexOf('(');
+                        const second_index = parse_data.indexOf('mg');
+                        let find_data = parse_data
+                          .slice(first_index + 1, second_index)
+                          .trim();
+                        if (!find_data) {
+                          find_data = parse_data
+                            .slice(parse_data.indexOf('량') + 1, second_index)
+                            .trim();
+                        }
+                        const complete_data = {
+                          비타민B1: `${find_data}mg`,
+                        };
+                      }
+                    } else if (split_data[0].includes('2')) {
+                      if (split_data[2].includes('㎎')) {
+                        const parse_data = split_data[2];
+                        const first_index = parse_data.indexOf('(');
+                        const second_index = parse_data.indexOf('㎎');
+                        const find_data = parse_data
+                          .slice(first_index + 1, second_index)
+                          .trim();
+                        const complete_data = {
+                          비타민B2: `${find_data}mg`,
+                        };
+                      } else if (split_data[2].includes('mg')) {
+                        const parse_data = split_data[2];
+                        const first_index = parse_data.indexOf('(');
+                        const second_index = parse_data.indexOf('mg');
+                        const find_data = parse_data
+                          .slice(first_index + 1, second_index)
+                          .trim();
+                        const complete_data = {
+                          비타민B2: `${find_data}mg`,
+                        };
+                      } else {
+                        const parse_data = split_data[1];
+                        const first_index = parse_data.indexOf('(');
+                        const second_index = parse_data.indexOf('mg');
+                        let find_data = parse_data
+                          .slice(first_index + 1, second_index)
+                          .trim();
+                        if (!find_data) {
+                          find_data = parse_data
+                            .slice(parse_data.indexOf('량') + 1, second_index)
+                            .trim();
+                        }
+                        const complete_data = {
+                          비타민B2: `${find_data}mg`,
+                        };
+                      }
+                    } else if (split_data[0].includes('6')) {
+                      if (split_data[2].includes('㎎')) {
+                        const parse_data = split_data[2];
+                        const first_index = parse_data.indexOf('(');
+                        const second_index = parse_data.indexOf('㎎');
+                        const find_data = parse_data
+                          .slice(first_index + 1, second_index)
+                          .trim();
+                        const complete_data = {
+                          비타민B6: `${find_data}mg`,
+                        };
+                      } else if (split_data[2].includes('mg')) {
+                        const parse_data = split_data[2];
+                        const first_index = parse_data.indexOf('(');
+                        const second_index = parse_data.indexOf('mg');
+                        const find_data = parse_data
+                          .slice(first_index + 1, second_index)
+                          .trim();
+                        const complete_data = {
+                          비타민B6: `${find_data}mg`,
+                        };
+                      } else {
+                        const parse_data = split_data[1];
+                        const first_index = parse_data.indexOf('(');
+                        const second_index = parse_data.indexOf('mg');
+                        let find_data = parse_data
+                          .slice(first_index + 1, second_index)
+                          .trim();
+                        if (!find_data) {
+                          find_data = parse_data
+                            .slice(parse_data.indexOf('량') + 1, second_index)
+                            .trim();
+                        }
+                        const complete_data = {
+                          비타민B6: `${find_data}mg`,
+                        };
+                      }
+                    } else {
+                    }
+                  } else {
+                  }
+                } else {
+                  // console.log(split_data, e._id);
+                  // console.log(find_data);
+                }
               }
 
               if (split_data.length === 4) {
+                if (split_data[0].includes('대장균')) {
+                  if (split_data[1].includes('아연')) {
+                    const parse_data = split_data[2];
+                    const first_index = parse_data.indexOf('(');
+                    const second_index = parse_data.indexOf('mg');
+                    const find_data = parse_data
+                      .slice(first_index + 1, second_index)
+                      .trim();
+
+                    const complete_data = {
+                      아연: `${find_data}mg`,
+                    };
+                  }
+                  if (split_data[2].includes('아연')) {
+                    const parse_data = split_data[3];
+                    const first_index = parse_data.indexOf('(');
+                    const second_index = parse_data.indexOf('mg');
+                    const find_data = parse_data
+                      .slice(first_index + 1, second_index)
+                      .trim();
+
+                    const complete_data = {
+                      아연: `${find_data}mg`,
+                    };
+                  }
+                  if (split_data[2].includes('비타민')) {
+                    const parse_data = split_data[3];
+                    const first_index = parse_data.indexOf('(');
+                    const second_index = parse_data.indexOf('mg');
+                    const find_data = parse_data
+                      .slice(first_index + 1, second_index)
+                      .trim();
+                    const complete_data = {
+                      비타민D: `${find_data}mg`,
+                    };
+                  }
+                  if (split_data[2].includes('마그네슘')) {
+                    const parse_data = split_data[3];
+                    const first_index = parse_data.indexOf('(');
+                    const second_index = parse_data.indexOf('mg');
+                    const find_data = parse_data
+                      .slice(first_index + 1, second_index)
+                      .trim();
+                    const complete_data = {
+                      마그네슘: `${find_data}mg`,
+                    };
+                  }
+                } else if (split_data[0].includes('진세노사이드')) {
+                  const parse_data = split_data[3];
+                  const first_index = parse_data.indexOf('(');
+                  const second_index = parse_data.indexOf('mg');
+                  const find_data = parse_data
+                    .slice(first_index + 1, second_index)
+                    .trim();
+                  const complete_data = {
+                    '진세노사이드 Rg1, Rb1 및 Rg3의 합': `${find_data}mg`,
+                  };
+                } else if (split_data[0].includes('비타민')) {
+                  const parse_data = split_data[3];
+                  const first_index = parse_data.indexOf('(');
+                  const second_index = parse_data.indexOf('mg');
+                  const find_data = parse_data
+                    .slice(first_index + 1, second_index)
+                    .trim();
+                  const complete_data = {
+                    비타민B2: `${find_data}mg`,
+                  };
+                } else if (split_data[0].includes('글루칸')) {
+                  const parse_data = split_data[2];
+                  const first_index = parse_data.indexOf('(');
+                  const second_index = parse_data.indexOf('mg');
+                  const find_data = parse_data
+                    .slice(first_index + 1, second_index)
+                    .trim();
+                  const complete_data = {
+                    '베타-글루칸': `${find_data}mg`,
+                  };
+                } else if (split_data[0].includes('다당체')) {
+                  const parse_data = split_data[2];
+
+                  const second_index = parse_data.indexOf('mg');
+                  const find_data = parse_data.slice(0, second_index).trim();
+                  const complete_data = {
+                    총다당체: `${find_data}mg`,
+                  };
+                } else if (split_data[0].includes('Platycodin')) {
+                  const parse_data = split_data[1];
+
+                  const second_index = parse_data.indexOf('mg');
+                  const find_data = parse_data.slice(0, second_index).trim();
+                  const complete_data = {
+                    'Platycodin D': `${find_data}mg`,
+                  };
+                } else if (split_data[0].includes('인지질')) {
+                  const parse_data = split_data[3];
+
+                  const second_index = parse_data.indexOf('mg');
+                  const find_data = parse_data.slice(0, second_index).trim();
+                  const complete_data = {
+                    인지질: `${find_data}mg`,
+                  };
+                } else if (split_data[0].includes('옥타코사놀')) {
+                  const parse_data = split_data[3];
+
+                  const second_index = parse_data.indexOf('mg');
+                  const find_data = parse_data.slice(0, second_index).trim();
+                  const complete_data = {
+                    옥타코사놀: `${find_data}mg`,
+                  };
+                } else if (split_data[0].includes('대두추출물등복합물')) {
+                  const parse_data = split_data[1];
+
+                  const second_index = parse_data.indexOf('mg');
+                  const find_data = parse_data.slice(0, second_index).trim();
+                  const complete_data = {
+                    대두추출물등복합물: `${find_data}mg`,
+                  };
+                } else if (split_data[0].includes('카테킨')) {
+                  const parse_data = split_data[2];
+
+                  const second_index = parse_data.indexOf('mg');
+                  const find_data = parse_data.slice(0, second_index).trim();
+                  const complete_data = {
+                    카테킨: `${find_data}mg`,
+                  };
+                } else if (split_data[0].includes('MSM')) {
+                  const parse_data = split_data[3];
+
+                  const second_index = parse_data.indexOf('g');
+                  const find_data = parse_data.slice(0, second_index).trim();
+                  const complete_data = {
+                    MSM: `${find_data}g`,
+                  };
+                } else if (split_data[0].includes('키토산')) {
+                  const parse_data = split_data[1];
+                  const first_index = parse_data.indexOf('(');
+
+                  const second_index = parse_data.indexOf('mg');
+                  const find_data = parse_data
+                    .slice(first_index + 1, second_index)
+                    .trim();
+                  const complete_data = {
+                    키토산: `${find_data}mg`,
+                  };
+                } else if (split_data[0].includes('감마리놀렌산')) {
+                  const parse_data = split_data[2];
+
+                  const second_index = parse_data.indexOf('mg');
+                  const find_data = parse_data.slice(0, second_index).trim();
+                  const complete_data = {
+                    감마리놀렌산: `${find_data}mg`,
+                  };
+                } else {
+                  const parse_data = split_data[2];
+                  const first_index = parse_data.indexOf('(');
+                  const second_index = parse_data.indexOf('mg');
+                  let find_data = parse_data
+                    .slice(first_index + 1, second_index)
+                    .trim();
+                  if (find_data.includes('합')) {
+                    find_data = find_data
+                      .slice(find_data.indexOf('합') + 1, find_data.length)
+                      .trim();
+                  }
+                  const complete_data = {
+                    '진세노사이드 Rg1, Rb1 및 Rg3의 합': `${find_data}mg`,
+                  };
+                }
               }
 
               if (split_data.length === 5) {
+                if (
+                  split_data[0].includes('아') &&
+                  split_data[0].includes('연')
+                ) {
+                  const parse_data = split_data[2];
+                  const second_index = parse_data.indexOf('mg');
+                  const find_data = parse_data.slice(0, second_index).trim();
+
+                  const complete_data = {
+                    아연: `${find_data}mg`,
+                  };
+                }
+                if (split_data[2].includes('비타민')) {
+                  const parse_data = split_data[4];
+                  const second_index = parse_data.indexOf('mg');
+                  const find_data = parse_data.slice(0, second_index).trim();
+                  const complete_data = {
+                    비타민E: `${find_data}mgα-TE`,
+                  };
+                }
               }
 
               if (split_data.length === 10) {
+                if (split_data[2].includes('acid')) {
+                  const parse_data = split_data[3];
+                  const first_index = parse_data.indexOf('(');
+                  const second_index = parse_data.indexOf('㎎');
+                  const find_data = parse_data
+                    .slice(first_index + 1, second_index)
+                    .trim();
+                  const complete_data = {
+                    HCA: `${find_data}mg`,
+                  };
+                }
+                if (split_data[3].includes('식이섬유')) {
+                  const parse_data = split_data[4];
+                  const first_index = parse_data.indexOf('(');
+                  const second_index = parse_data.indexOf(')');
+                  const find_data = parse_data
+                    .slice(first_index + 1, second_index)
+                    .trim();
+                  const complete_data = {
+                    식이섬유: `${find_data}mg`,
+                  };
+                }
+                if (split_data[4].includes('비타민')) {
+                  const parse_data = split_data[5];
+                  const first_index = parse_data.indexOf('(');
+                  const second_index = parse_data.indexOf(')');
+                  const find_data = parse_data
+                    .slice(first_index + 1, second_index)
+                    .trim();
+                  const complete_data = {
+                    비타민B6: `${find_data}mg`,
+                  };
+                }
+                if (split_data[5].includes('엽산')) {
+                  const parse_data = split_data[6];
+                  const first_index = parse_data.indexOf('(');
+                  const second_index = parse_data.indexOf(')');
+                  const find_data = parse_data
+                    .slice(first_index + 1, second_index)
+                    .trim();
+                  const complete_data = {
+                    엽산: `${find_data}mg`,
+                  };
+                }
+                if (split_data[6].includes('비타민')) {
+                  const parse_data = split_data[7];
+                  const first_index = parse_data.indexOf('(');
+                  const second_index = parse_data.indexOf(')');
+                  const find_data = parse_data
+                    .slice(first_index + 1, second_index)
+                    .trim();
+                  const complete_data = {
+                    비타민B12: `${find_data}mg`,
+                  };
+                }
+                if (split_data[7].includes('크롬')) {
+                  const parse_data = split_data[8];
+                  const first_index = parse_data.indexOf('(');
+                  const second_index = parse_data.indexOf(')');
+                  const find_data = parse_data
+                    .slice(first_index + 1, second_index)
+                    .trim();
+                  const complete_data = {
+                    크롬: `${find_data}mg`,
+                  };
+                }
+                if (split_data[8].includes('마그네슘')) {
+                  const parse_data = split_data[9];
+                  const first_index = parse_data.indexOf('(');
+                  const second_index = parse_data.indexOf(')');
+                  const find_data = parse_data
+                    .slice(first_index + 1, second_index)
+                    .trim();
+                  const complete_data = {
+                    마그네슘: `${find_data}mg`,
+                  };
+                }
               }
             }
+          }
+          if (Object.keys(final_data).length !== 0) {
+            console.log(final_data);
           }
         }
 
