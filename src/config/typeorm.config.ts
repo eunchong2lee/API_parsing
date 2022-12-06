@@ -3,10 +3,10 @@ import 'dotenv/config';
 
 export const typeORMConfig: TypeOrmModuleOptions = {
   type: 'mysql',
-  host: process.env.NEW_HOST,
+  host: process.env.TEST_HOST,
   port: parseInt(process.env.DB_PORT),
-  username: process.env.NEW_USERNAME,
-  password: process.env.NEW_PASSWORD,
+  username: process.env.TEST_USERNAME,
+  password: process.env.TEST_PASSWORD,
   database: process.env.DB_DATABASE,
   entities: [__dirname + '/../**/*.entity.{js,ts}'],
   autoLoadEntities: true,
