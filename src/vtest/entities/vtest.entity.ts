@@ -7,7 +7,7 @@ import {
 } from 'typeorm';
 
 @Entity()
-export class Vtest {
+export class HealthFoodData {
   @PrimaryGeneratedColumn()
   _id: number;
 

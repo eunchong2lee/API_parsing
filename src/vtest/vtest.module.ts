@@ -1,13 +1,13 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Vtest } from './entities/vtest.entity';
+import { HealthFoodData } from './entities/vtest.entity';
 import { VtestController } from './vtest.controller';
 import { VtestService } from './vtest.service';
 import { HttpModule } from '@nestjs/axios';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Vtest]),
+    TypeOrmModule.forFeature([HealthFoodData]),
     HttpModule.registerAsync({
       useFactory: () => ({
         timeout: 20000000,

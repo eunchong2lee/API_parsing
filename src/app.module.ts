@@ -2,29 +2,30 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
-import { VitaminController } from './vitamin/vitamin.controller';
 import { VtestController } from './vtest/vtest.controller';
 
-import { VitaminService } from './vitamin/vitamin.service';
 import { VtestService } from './vtest/vtest.service';
 
-import { VitaminModule } from './vitamin/vitamin.module';
 import { VtestModule } from './vtest/vtest.module';
 
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { typeORMConfig } from './config/typeorm.config';
 import { HttpModule } from '@nestjs/axios';
+import { VtimgModule } from './vtimg/vtimg.module';
+import { VtimgController } from './vtimg/vtimg.controller';
+import { VtimgService } from './vtimg/vtimg.service';
+import { PuppeteerModule } from 'nest-puppeteer';
 
 @Module({
   imports: [
-    VitaminModule,
     VtestModule,
+    VtimgModule,
     TypeOrmModule.forRoot(typeORMConfig),
     HttpModule.register({
       timeout: 5000,
     }),
   ],
-  controllers: [AppController, VitaminController, VtestController],
-  providers: [AppService, VitaminService, VtestService],
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule {}
