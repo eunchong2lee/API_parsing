@@ -32631,9 +32631,68 @@ export class VtestService {
                       조단백질: `${find_data}g`,
                     };
                   }
-                } else {
+                } else if (split_data[0].includes('리놀렌산')) {
                   console.log(split_data, e._id);
                   // console.log(find_data);
+                } else if (split_data[0].includes('소포리코사이드')) {
+                } else if (split_data[0].includes('대두이소플라본')) {
+                } else if (split_data[0].includes('프락토올리')) {
+                } else if (split_data[0].includes('알라닌')) {
+                } else if (split_data[0].includes('아세틸글루코사민')) {
+                } else if (split_data[0].includes('피브린')) {
+                } else if (split_data[0].includes('진세노')) {
+                } else if (split_data[0].includes('스타키오스')) {
+                } else if (split_data[0].includes('리놀레산')) {
+                } else if (
+                  split_data[0].includes('디메틸설폰') ||
+                  split_data[0].toLowerCase().includes('dimethy')
+                ) {
+                } else if (split_data[0].includes('글루코사민')) {
+                } else if (split_data[0].includes('포스파티딜세린')) {
+                } else if (split_data[0].includes('피니톨')) {
+                } else if (
+                  split_data[0].toLowerCase().includes('dieckol') ||
+                  split_data[0].includes('디엑')
+                ) {
+                } else if (split_data[0].includes('판토펜산')) {
+                } else if (split_data[0].includes('안토시아')) {
+                } else if (
+                  split_data[0].includes('비텍신') ||
+                  split_data[0].toLowerCase().includes('vitexin')
+                ) {
+                } else if (split_data[0].includes('라우릭산')) {
+                } else if (split_data[0].includes('글루코실')) {
+                } else if (split_data[0].toLowerCase().includes('polyphenol')) {
+                } else if (
+                  split_data[0].includes('피로갈롤') ||
+                  split_data[0].toLowerCase().includes('pyrogallol')
+                ) {
+                } else if (split_data[0].includes('키토올리')) {
+                } else if (split_data[0].includes('PGG')) {
+                } else if (split_data[0].toLowerCase().includes('silymarin')) {
+                } else if (split_data[0].toLowerCase().includes('ellagic')) {
+                } else if (
+                  split_data[0].toLowerCase().includes('salvianolic')
+                ) {
+                } else if (split_data[0].toLowerCase().includes('gastrodin')) {
+                } else if (split_data[0].toLowerCase().includes('gallic')) {
+                } else if (
+                  split_data[0].toLowerCase().includes('chlorogenic')
+                ) {
+                } else if (split_data[0].toLowerCase().includes('glabridin')) {
+                } else if (split_data[0].toLowerCase().includes('coumaric')) {
+                } else if (split_data[0].toLowerCase().includes('rosavin')) {
+                } else if (split_data[0].toLowerCase().includes('panduratin')) {
+                } else if (split_data[0].toLowerCase().includes('quicic')) {
+                } else if (split_data[0].toLowerCase().includes('citric')) {
+                } else if (split_data[0].toLowerCase().includes('chicoric')) {
+                } else if (split_data[0].toLowerCase().includes('rosmarinic')) {
+                } else if (split_data[0].toLowerCase().includes('cinnamic')) {
+                } else if (split_data[0].toLowerCase().includes('oleanonic')) {
+                } else if (split_data[0].toLowerCase().includes('damulin')) {
+                } else if (split_data[0].toLowerCase().includes('gly')) {
+                } else if (split_data[0].includes('뮤코다당')) {
+                } else {
                 }
               }
 
