@@ -32522,13 +32522,118 @@ export class VtestService {
                       몰리브덴: `${find_data}ug`,
                     };
                   }
-                } else if (split_data[0].includes('코로솔산')) {
+                } else if (
+                  split_data[0].includes('코로솔산') ||
+                  split_data[0].includes('코로소린산')
+                ) {
+                  const parse_data = split_data[2];
+                  const first_index = parse_data.indexOf('(');
+                  const second_index = parse_data.indexOf('mg');
+                  let find_data = parse_data
+                    .slice(first_index + 1, second_index)
+                    .trim();
+                  if (find_data.includes('표시량')) {
+                    find_data = find_data.substr(3).trim();
+                  }
+                  if (find_data.includes('㎎')) {
+                    find_data = find_data
+                      .slice(0, find_data.indexOf('㎎'))
+                      .trim();
+                  }
+
+                  final_data['코로솔산'] = `${find_data}mg`;
+                  const complete_data = {
+                    코로솔산: `${find_data}mg`,
+                  };
+                } else if (split_data[0].includes('안트라')) {
+                  if (split_data[2].includes('㎎')) {
+                    const parse_data = split_data[2];
+                    const first_index = parse_data.indexOf('(');
+                    const second_index = parse_data.indexOf('㎎');
+                    const find_data = parse_data
+                      .slice(first_index + 1, second_index)
+                      .trim();
+                    final_data['안트라퀴논계화합물'] = `${find_data}mg`;
+                    const complete_data = {
+                      안트라퀴논계화합물: `${find_data}mg`,
+                    };
+                  } else if (split_data[2].includes('mg')) {
+                    const parse_data = split_data[2];
+                    const first_index = parse_data.indexOf('(');
+                    const second_index = parse_data.indexOf('mg');
+                    let find_data = parse_data
+                      .slice(first_index + 1, second_index)
+                      .trim();
+                    if (!find_data) {
+                      find_data = parse_data.slice(0, second_index).trim();
+                    }
+                    if (find_data.includes('나')) {
+                      find_data = find_data
+                        .slice(find_data.indexOf('나' + 1, find_data.length))
+                        .trim();
+                    }
+                    if (find_data.includes('1200')) {
+                      find_data = split_data[1]
+                        .slice(
+                          split_data[1].indexOf('(') + 1,
+                          split_data[1].indexOf('mg'),
+                        )
+                        .trim();
+                    }
+
+                    final_data['안트라퀴논계화합물'] = `${find_data}mg`;
+                    const complete_data = {
+                      안트라퀴논계화합물: `${find_data}mg`,
+                    };
+                  } else {
+                    const parse_data = split_data[1];
+                    const first_index = parse_data.indexOf('(');
+                    const second_index = parse_data.indexOf('mg');
+                    let find_data = parse_data
+                      .slice(first_index + 1, second_index)
+                      .trim();
+                    if (find_data.includes('표시량')) {
+                      find_data = find_data.substr(3).trim();
+                    }
+                    final_data['안트라퀴논계화합물'] = `${find_data}mg`;
+                    const complete_data = {
+                      안트라퀴논계화합물: `${find_data}mg`,
+                    };
+                  }
+                } else if (split_data[0].includes('단백질')) {
+                  if (split_data[2].includes('g')) {
+                    const parse_data = split_data[2];
+                    const first_index = parse_data.indexOf('(');
+                    const second_index = parse_data.indexOf('g');
+                    let find_data = parse_data
+                      .slice(first_index + 1, second_index)
+                      .trim();
+                    if (!find_data) {
+                      find_data = parse_data.slice(0, second_index).trim();
+                    }
+
+                    final_data['조단백질'] = `${find_data}g`;
+                    const complete_data = {
+                      조단백질: `${find_data}g`,
+                    };
+                  } else {
+                    const parse_data = split_data[1];
+                    const first_index = parse_data.indexOf('(');
+                    const second_index = parse_data.indexOf('g');
+                    let find_data = parse_data
+                      .slice(first_index + 1, second_index)
+                      .trim();
+                    if (find_data.includes('표시량')) {
+                      find_data = find_data.substr(3).trim();
+                    }
+                    final_data['조단백질'] = `${find_data}g`;
+                    const complete_data = {
+                      조단백질: `${find_data}g`,
+                    };
+                  }
+                } else {
                   console.log(split_data, e._id);
                   // console.log(find_data);
-                } else if (split_data[0].includes('코로소린산')) {
-                } else if (split_data[0].includes('안트라')) {
-                } else if (split_data[0].includes('단백질')) {
-                } else {
                 }
               }
 
