@@ -32207,25 +32207,328 @@ export class VtestService {
                     티로신: `${find_data}mg`,
                   };
                 } else if (split_data[0].includes('포스콜린')) {
+                  const parse_data = split_data[2];
+                  const first_index = parse_data.indexOf('(');
+                  const second_index = parse_data.indexOf('mg');
+                  let find_data = parse_data
+                    .slice(first_index + 1, second_index)
+                    .trim();
+                  if (find_data.includes('표시량')) {
+                    find_data = find_data.substr(3).trim();
+                  }
+
+                  final_data['포스콜린'] = `${find_data}mg`;
+                  const complete_data = {
+                    포스콜린: `${find_data}mg`,
+                  };
                 } else if (split_data[0].includes('다당체')) {
+                  const parse_data = split_data[1];
+                  const first_index = parse_data.indexOf('(');
+                  const second_index = parse_data.indexOf('mg');
+                  let find_data = parse_data
+                    .slice(first_index + 1, second_index)
+                    .trim();
+                  if (find_data.includes('표시량')) {
+                    find_data = find_data.substr(3).trim();
+                  }
+                  if (find_data.includes(')')) {
+                    find_data = find_data
+                      .slice(0, find_data.indexOf(')'))
+                      .trim();
+                  }
+                  if (find_data.includes('㎎')) {
+                    find_data = find_data
+                      .slice(0, find_data.indexOf('㎎'))
+                      .trim();
+                  }
+                  if (!find_data) {
+                    find_data = parse_data.slice(0, second_index).trim();
+                    if (find_data.includes('[')) {
+                      find_data = find_data
+                        .slice(find_data.indexOf('[') + 1, find_data.length)
+                        .trim();
+                    }
+                    if (find_data.includes('표시량')) {
+                      find_data = find_data
+                        .slice(find_data.indexOf('량') + 1, find_data.length)
+                        .trim();
+                    }
+                    if (find_data.includes('표시량')) {
+                      find_data = split_data[2]
+                        .slice(
+                          split_data[2].indexOf('(') + 1,
+                          split_data[2].indexOf('mg'),
+                        )
+                        .trim();
+                    }
+                  }
+                  final_data['총다당체'] = `${find_data}mg`;
+                  const complete_data = {
+                    총다당체: `${find_data}mg`,
+                  };
+                  if (split_data[1].includes('기타')) {
+                    const parse_data = split_data[2];
+                    const first_index = parse_data.indexOf('(');
+                    const second_index = parse_data.indexOf('mg');
+                    let find_data = parse_data
+                      .slice(first_index + 1, second_index)
+                      .trim();
+                    if (find_data.includes('표시량')) {
+                      find_data = find_data.substr(3).trim();
+                    }
+                    if (find_data.includes('/')) {
+                      find_data = find_data
+                        .slice(0, find_data.indexOf('/'))
+                        .trim();
+                    }
+                    if (find_data.includes('㎎')) {
+                      find_data = find_data
+                        .slice(0, find_data.indexOf('㎎'))
+                        .trim();
+                    }
+
+                    final_data['기타유래다당체'] = `${find_data}mg`;
+                    const complete_data = {
+                      기타유래다당체: `${find_data}mg`,
+                    };
+                  }
                 } else if (split_data[0].includes('폴리감마글루탐산')) {
+                  const parse_data = split_data[2];
+                  const first_index = parse_data.indexOf('(');
+                  const second_index = parse_data.indexOf('mg');
+                  let find_data = parse_data
+                    .slice(first_index + 1, second_index)
+                    .trim();
+                  if (find_data.includes('표시량')) {
+                    find_data = find_data.substr(3).trim();
+                  }
+
+                  final_data['폴리감마글루탐산'] = `${find_data}mg`;
+                  const complete_data = {
+                    폴리감마글루탐산: `${find_data}mg`,
+                  };
                 } else if (split_data[0].includes('플라보노이드')) {
+                  if (split_data[2].includes('㎎')) {
+                    const parse_data = split_data[2];
+                    const first_index = parse_data.indexOf('(');
+                    const second_index = parse_data.indexOf('㎎');
+                    const find_data = parse_data
+                      .slice(first_index + 1, second_index)
+                      .trim();
+                    final_data['총 플라보노이드'] = `${find_data}mg`;
+                    const complete_data = {
+                      '총 플라보노이드': `${find_data}mg`,
+                    };
+                  } else if (split_data[2].includes('mg')) {
+                    const parse_data = split_data[2];
+                    const first_index = parse_data.indexOf('(');
+                    const second_index = parse_data.indexOf('mg');
+                    let find_data = parse_data
+                      .slice(first_index + 1, second_index)
+                      .trim();
+                    if (!find_data) {
+                      find_data = parse_data.slice(0, second_index).trim();
+                    }
+                    if (find_data.includes('나')) {
+                      find_data = find_data
+                        .slice(find_data.indexOf('나' + 1, find_data.length))
+                        .trim();
+                    }
+
+                    final_data['총 플라보노이드'] = `${find_data}mg`;
+                    const complete_data = {
+                      '총 플라보노이드': `${find_data}mg`,
+                    };
+                  } else if (split_data[2].includes('g')) {
+                    const parse_data = split_data[2];
+                    const first_index = parse_data.indexOf('(');
+                    const second_index = parse_data.indexOf('g');
+                    const find_data = parse_data
+                      .slice(first_index + 1, second_index)
+                      .trim();
+                    final_data['총 플라보노이드'] = `${find_data}g`;
+                    const complete_data = {
+                      '총 플라보노이드': `${find_data}g`,
+                    };
+                  } else {
+                    const parse_data = split_data[1];
+                    const first_index = parse_data.indexOf('(');
+                    const second_index = parse_data.indexOf('mg');
+                    let find_data = parse_data
+                      .slice(first_index + 1, second_index)
+                      .trim();
+                    if (find_data.includes('표시량')) {
+                      find_data = find_data.substr(3).trim();
+                    }
+                    final_data['총 플라보노이드'] = `${find_data}mg`;
+                    const complete_data = {
+                      '총 플라보노이드': `${find_data}mg`,
+                    };
+                  }
                 } else if (split_data[0].includes('플라보놀')) {
+                  const parse_data = split_data[2];
+                  const first_index = parse_data.indexOf('(');
+                  const second_index = parse_data.indexOf('mg');
+                  let find_data = parse_data
+                    .slice(first_index + 1, second_index)
+                    .trim();
+                  if (find_data.includes('표시량')) {
+                    find_data = find_data.substr(3).trim();
+                  }
+                  if (find_data.includes('이상')) {
+                    find_data = split_data[1]
+                      .slice(0, split_data[1].indexOf('mg'))
+                      .trim();
+                  }
+
+                  final_data['플라보놀 배당체'] = `${find_data}mg`;
+                  const complete_data = {
+                    '플라보놀 배당체': `${find_data}mg`,
+                  };
                 } else if (
                   split_data[0].includes('글루코실세라미드') ||
                   split_data[0].includes('Glucosylceramide') ||
-                  split_data[0].includes('glucosylceramide')
+                  split_data[0].includes('glucosylceramide') ||
+                  split_data[0].toLowerCase().includes('glucosy')
                 ) {
-                } else if (split_data[0].includes('테아닌')) {
+                  const parse_data = split_data[2];
+                  const first_index = parse_data.indexOf('(');
+                  const second_index = parse_data.indexOf('mg');
+                  let find_data = parse_data
+                    .slice(first_index + 1, second_index)
+                    .trim();
+                  if (find_data.includes('표시량')) {
+                    find_data = find_data.substr(3).trim();
+                  }
+                  final_data['글루코실세라미드'] = `${find_data}mg`;
+                  const complete_data = {
+                    글루코실세라미드: `${find_data}mg`,
+                  };
+                } else if (
+                  split_data[0].includes('테아닌') ||
+                  split_data[0].toLowerCase().includes('theanine')
+                ) {
+                  if (split_data[2].includes('㎎')) {
+                    const parse_data = split_data[2];
+                    const first_index = parse_data.indexOf('(');
+                    const second_index = parse_data.indexOf('㎎');
+                    const find_data = parse_data
+                      .slice(first_index + 1, second_index)
+                      .trim();
+                    final_data['L-테아닌'] = `${find_data}mg`;
+                    const complete_data = {
+                      'L-테아닌': `${find_data}mg`,
+                    };
+                  } else if (split_data[2].includes('mg')) {
+                    const parse_data = split_data[2];
+                    const first_index = parse_data.indexOf('(');
+                    const second_index = parse_data.indexOf('mg');
+                    let find_data = parse_data
+                      .slice(first_index + 1, second_index)
+                      .trim();
+                    if (!find_data) {
+                      find_data = parse_data.slice(0, second_index).trim();
+                    }
+                    if (find_data.includes('나')) {
+                      find_data = find_data
+                        .slice(find_data.indexOf('나' + 1, find_data.length))
+                        .trim();
+                    }
+
+                    final_data['L-테아닌'] = `${find_data}mg`;
+                    const complete_data = {
+                      'L-테아닌': `${find_data}mg`,
+                    };
+                  } else {
+                    const parse_data = split_data[1];
+                    const first_index = parse_data.indexOf('(');
+                    const second_index = parse_data.indexOf('mg');
+                    let find_data = parse_data
+                      .slice(first_index + 1, second_index)
+                      .trim();
+                    if (find_data.includes('표시량')) {
+                      find_data = find_data.substr(3).trim();
+                    }
+                    final_data['L-테아닌'] = `${find_data}mg`;
+                    const complete_data = {
+                      'L-테아닌': `${find_data}mg`,
+                    };
+                  }
                 } else if (split_data[0].includes('몰리브덴')) {
-                } else if (split_data[0].includes('테아닌')) {
+                  if (split_data[2].includes('㎍')) {
+                    const parse_data = split_data[2];
+                    const first_index = parse_data.indexOf('(');
+                    const second_index = parse_data.indexOf('㎍');
+                    const find_data = parse_data
+                      .slice(first_index + 1, second_index)
+                      .trim();
+                    final_data['몰리브덴'] = `${find_data}ug`;
+                    const complete_data = {
+                      몰리브덴: `${find_data}ug`,
+                    };
+                  } else if (split_data[2].includes('µg')) {
+                    const parse_data = split_data[2];
+                    const first_index = parse_data.indexOf('(');
+                    const second_index = parse_data.indexOf('µg');
+                    const find_data = parse_data
+                      .slice(first_index + 1, second_index)
+                      .trim();
+                    final_data['몰리브덴'] = `${find_data}ug`;
+                    const complete_data = {
+                      몰리브덴: `${find_data}ug`,
+                    };
+                  } else if (split_data[2].includes('μg')) {
+                    const parse_data = split_data[2];
+                    const first_index = parse_data.indexOf('(');
+                    const second_index = parse_data.indexOf('μg');
+                    const find_data = parse_data
+                      .slice(first_index + 1, second_index)
+                      .trim();
+                    final_data['몰리브덴'] = `${find_data}ug`;
+                    const complete_data = {
+                      몰리브덴: `${find_data}ug`,
+                    };
+                  } else if (split_data[2].includes('ug')) {
+                    const parse_data = split_data[2];
+                    const first_index = parse_data.indexOf('(');
+                    const second_index = parse_data.indexOf('ug');
+                    const find_data = parse_data
+                      .slice(first_index + 1, second_index)
+                      .trim();
+                    final_data['몰리브덴'] = `${find_data}ug`;
+                    const complete_data = {
+                      몰리브덴: `${find_data}ug`,
+                    };
+                  } else if (split_data[2].includes('mg')) {
+                    const parse_data = split_data[2];
+                    const first_index = parse_data.indexOf('(');
+                    const second_index = parse_data.indexOf('mg');
+                    const find_data = parse_data
+                      .slice(first_index + 1, second_index)
+                      .trim();
+                    final_data['몰리브덴'] = `${find_data}mg`;
+                    const complete_data = {
+                      몰리브덴: `${find_data}mg`,
+                    };
+                  } else {
+                    const parse_data = split_data[1];
+                    const first_index = parse_data.indexOf('(');
+                    const second_index = parse_data.indexOf('ug');
+                    const find_data = parse_data
+                      .slice(first_index + 1, second_index)
+                      .trim();
+                    final_data['몰리브덴'] = `${find_data}ug`;
+                    const complete_data = {
+                      몰리브덴: `${find_data}ug`,
+                    };
+                  }
                 } else if (split_data[0].includes('코로솔산')) {
+                  console.log(split_data, e._id);
+                  // console.log(find_data);
                 } else if (split_data[0].includes('코로소린산')) {
                 } else if (split_data[0].includes('안트라')) {
                 } else if (split_data[0].includes('단백질')) {
                 } else {
-                  console.log(split_data, e._id);
-                  // console.log(find_data);
                 }
               }
 
