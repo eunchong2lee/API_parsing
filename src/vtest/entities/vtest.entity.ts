@@ -44,7 +44,7 @@ export class HealthFoodData {
   @Column('text', { nullable: true })
   BASE_STANDARD: string;
 
-  @Column({ nullable: true })
+  @Column('text', { nullable: true })
   PRMS_IMG: string;
 
   @Column('simple-json', { nullable: true })
