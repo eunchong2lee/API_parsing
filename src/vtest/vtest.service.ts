@@ -1641,7 +1641,7 @@ export class VtestService {
                     find_data = find_data.trim();
                     final_data['HCA'] = `${find_data}g`;
                     const complete_data = {
-                      "HCA'": `${find_data}g`,
+                      HCA: `${find_data}g`,
                     };
                   } else {
                   }
@@ -13047,7 +13047,7 @@ export class VtestService {
                     }
                     final_data['HCA'] = `${find_data}mg`;
                     const complete_data = {
-                      "HCA'": `${find_data}mg`,
+                      HCA: `${find_data}mg`,
                     };
                   } else if (split_data[1].includes('g')) {
                     const parse_data = split_data[1];
@@ -13109,7 +13109,7 @@ export class VtestService {
                     }
                     final_data['HCA'] = `${find_data}g`;
                     const complete_data = {
-                      "HCA'": `${find_data}g`,
+                      HCA: `${find_data}g`,
                     };
                   } else if (split_data[1].includes('(')) {
                     const parse_data = split_data[1];
@@ -13133,7 +13133,7 @@ export class VtestService {
                     }
                     final_data['HCA'] = `${find_data}mg`;
                     const complete_data = {
-                      "HCA'": `${find_data}mg`,
+                      HCA: `${find_data}mg`,
                     };
                   } else if (split_data[0].includes('g')) {
                     const parse_data = split_data[0];
@@ -13149,7 +13149,7 @@ export class VtestService {
                     }
                     final_data['HCA'] = `${find_data}mg`;
                     const complete_data = {
-                      "HCA'": `${find_data}mg`,
+                      HCA: `${find_data}mg`,
                     };
                   } else {
                     const parse_data = split_data[1];
@@ -13160,7 +13160,7 @@ export class VtestService {
                       .trim();
                     final_data['HCA'] = `${find_data}mg`;
                     const complete_data = {
-                      "HCA'": `${find_data}mg`,
+                      HCA: `${find_data}mg`,
                     };
                   }
                 } else if (split_data[0].includes('쉬잔드린')) {
@@ -33641,7 +33641,7 @@ export class VtestService {
                 } else if (split_data[0].includes('폴리페놀')) {
                 } else if (split_data[0].includes('프로시아니딘')) {
                 } else {
-                  console.log(split_data, e._id);
+                  // console.log(split_data, e._id);
                   // console.log(find_data);
                 }
               }
@@ -33953,9 +33953,9 @@ export class VtestService {
           }
 
           if (Object.keys(final_data).length !== 0) {
-            // e.PRMS_STANDARD = final_data;
-            // await this.VtestRepository.update(e._id, e);
-            // // console.log(final_data);
+            e.PRMS_STANDARD = final_data;
+            await this.VtestRepository.update(e._id, e);
+            console.log(final_data);
           }
         }
 

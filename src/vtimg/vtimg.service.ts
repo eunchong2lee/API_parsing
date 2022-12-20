@@ -54,7 +54,7 @@ export class VtimgService {
       );
       console.log('setting container client ===========');
       const browser = await puppeteer.launch({ headless: true });
-      for (let i = 2296; i < datas.length / 10; i++) {
+      for (let i = 0; i < datas.length / 10; i++) {
         const new_datas = datas.slice(i * 10, 10 + i * 10);
         console.log(new_datas.length, i, datas.length);
         for (const data of new_datas) {
