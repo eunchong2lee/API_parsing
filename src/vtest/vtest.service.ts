@@ -15,7 +15,7 @@ export class VtestService {
     private readonly httpService: HttpService,
   ) {}
 
-  // json 파일 데이터 저장
+  // json 파일 데이터 database에 저장
   async postVitamin() {
     try {
       const jsonFile = fs.readFileSync('drug-with-prd.json', 'utf8');
@@ -33971,41 +33971,6 @@ export class VtestService {
     } catch (e) {
       console.log(e.message);
     }
-  }
-
-  async clone_parse() {
-    const data = await this.VtestRepository.query(`
-    SELECT _id, BASE_STANDARD
-    FROM health_food_data
-    `);
-    data.forEach(async (e) => {
-      if (e.BASE_STANDARD) {
-        if (e.BASE_STANDARD.includes(';')) {
-          console.log(e);
-          // e.BASE_STANDARD.replace(/;/g, ':');
-          // await this.VtestRepository.update(e, e._id);
-        }
-      }
-    });
-    return 'complete';
-  }
-
-  async get_one_data() {
-    const data = await this.VtestRepository.query(
-      `
-      SELECT _id, BASE_STANDARD
-      FROM health_food_data
-      WHERE _id = 690
-      `,
-    );
-    return data;
-  }
-
-  // json 파일 받아오기
-  async test_json() {
-    const jsonFile = fs.readFileSync('drug-with-prd.json', 'utf8');
-    const jsonData = JSON.parse(jsonFile);
-    return jsonData.length;
   }
 
   // json 파일 만들기

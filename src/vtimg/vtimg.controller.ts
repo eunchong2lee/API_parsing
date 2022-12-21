@@ -23,18 +23,4 @@ export class VtimgController {
   async update_image() {
     return await this.vtimgService.postimage();
   }
-
-  @Post('azure/upload')
-  @UseInterceptors(FileInterceptor('file'))
-  async UploadedFilesUsingService(
-    @UploadedFile()
-    file: UploadedFileMetadata,
-  ) {
-    file = {
-      ...file,
-      originalname: 'foo-bar.txt',
-    };
-    const storageUrl = await this.azureStorage.upload(file);
-    Logger.log(`Storage URL: ${storageUrl}`, 'AppController');
-  }
 }

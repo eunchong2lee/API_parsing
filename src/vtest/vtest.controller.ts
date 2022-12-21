@@ -11,36 +11,21 @@ export class VtestController {
     return this.vtestService.getVitamin();
   }
 
-  @Get('/one')
-  async getonevitamin() {
-    return this.vtestService.get_one_data();
-  }
-
   // json data db에 넣기
   @Post('/settings')
   async postvitamin() {
     return this.vtestService.postVitamin();
   }
 
-  @Get('/parse_standard')
+  // data parsing
+  @Post('/parse_standard')
   async parse_standard() {
     return this.vtestService.parse_standard();
   }
 
-  @Get('/parse_clone')
-  async parse_clone() {
-    return this.vtestService.clone_parse();
-  }
-
   // json 파일 만들기
-  @Get('/jsondata')
+  @Post('/jsondata')
   async comparedata() {
     return this.vtestService.compare_test_crawl();
-  }
-
-  // json 파일 받아오기
-  @Get('/json')
-  async jsonlength() {
-    return this.vtestService.test_json();
   }
 }
