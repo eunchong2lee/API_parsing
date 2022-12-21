@@ -17,7 +17,7 @@ export class VtestController {
   }
 
   // json data db에 넣기
-  @Post('/')
+  @Post('/settings')
   async postvitamin() {
     return this.vtestService.postVitamin();
   }
