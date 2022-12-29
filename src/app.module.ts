@@ -15,6 +15,9 @@ import { VtimgModule } from './vtimg/vtimg.module';
 import { VtimgController } from './vtimg/vtimg.controller';
 import { VtimgService } from './vtimg/vtimg.service';
 import { PuppeteerModule } from 'nest-puppeteer';
+import { ItemController } from './item/item.controller';
+import { ItemService } from './item/item.service';
+import { ItemModule } from './item/item.module';
 
 @Module({
   imports: [
@@ -24,8 +27,9 @@ import { PuppeteerModule } from 'nest-puppeteer';
     HttpModule.register({
       timeout: 5000,
     }),
+    ItemModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [AppController, ItemController],
+  providers: [AppService, ItemService],
 })
 export class AppModule {}
