@@ -1,5 +1,19 @@
-import { Controller, Delete, Get, Put } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+  UploadedFile,
+  UseInterceptors,
+  UsePipes,
+  ValidationPipe,
+} from '@nestjs/common';
 import { ItemService } from './item.service';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { TransformInterceptor } from 'src/config/transform.interceptor';
 
 @Controller('item')
 export class ItemController {
@@ -12,20 +26,36 @@ export class ItemController {
   }
 
   // get one item
-  @Get('/one')
-  async getOneItems() {
-    return this.itemService.GetItem();
-  }
-
-  // put one item
-  @Put('/')
-  async putOneItems() {
-    return this.itemService.PutItem();
+  @Get(':id')
+  async getOneItems(@Param('id') id: string) {
+    return this.itemService.GetItem(id);
   }
 
   // delete one item
-  @Delete('/')
-  async deleteOneItems() {
-    return this.itemService.DeleteItem();
+  @Delete(':id')
+  async deleteOneItems(@Param('id') id: string) {
+    return this.itemService.DeleteItem(id);
+  }
+
+  // put one item
+  @Put(':id')
+  @UsePipes(TransformInterceptor)
+  @UseInterceptors(FileInterceptor('image'))
+  async PutItem(
+    @UploadedFile() file: Express.Multer.File,
+    @Body(ValidationPipe) ItemData,
+    @Param('id') id: string,
+  ) {
+    return this.itemService.PutItem(ItemData, id, file);
+  }
+
+  @Post('/')
+  @UsePipes(TransformInterceptor)
+  @UseInterceptors(FileInterceptor('image'))
+  async PostItem(
+    @UploadedFile() file: Express.Multer.File,
+    @Body(ValidationPipe) ItemData,
+  ) {
+    return this.itemService.PostItem(ItemData, file);
   }
 }

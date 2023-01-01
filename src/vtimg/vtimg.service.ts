@@ -5,7 +5,7 @@ import * as puppeteer from 'puppeteer';
 import { HealthFoodData } from 'src/vtest/entities/vtest.entity';
 import { Repository } from 'typeorm';
 import * as fs from 'fs';
-import { uuid } from 'uuidv4';
+import { v4 as uuidv4 } from 'uuid';
 import {
   BlobServiceClient,
   BlockBlobClient,

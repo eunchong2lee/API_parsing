@@ -31,6 +31,8 @@
     "@types/multer": "^1.4.7",
     "aws-sdk": "^2.1258.0",
     "cheerio": "^1.0.0-rc.12",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.0",
     "multer-s3": "^3.0.1",
     "mysql2": "^2.3.3",
     "nest-puppeteer": "^1.1.1",
@@ -39,6 +41,7 @@
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0",
     "typeorm": "0.2.41",
+    "uuid": "^9.0.0",
     "uuidv4": "^6.2.13"
   },
   "devDependencies": {
