@@ -25,10 +25,17 @@ export class ItemController {
     return this.itemService.GetItems();
   }
 
-  // get one item
-  @Get(':id')
-  async getOneItems(@Param('id') id: string) {
-    return this.itemService.GetItem(id);
+  // // get one item
+  // @Get(':id')
+  // async getOneItems(@Param('id') id: string) {
+  //   console.log('hello');
+  //   return this.itemService.GetItem(id);
+  // }
+
+  @Get('/first')
+  async getTestOneData() {
+    console.log('hi');
+    return this.itemService.testGetOneData();
   }
 
   // delete one item
@@ -57,5 +64,15 @@ export class ItemController {
     @Body(ValidationPipe) ItemData,
   ) {
     return this.itemService.PostItem(ItemData, file);
+  }
+
+  @Post('/test')
+  @UsePipes(TransformInterceptor)
+  @UseInterceptors(FileInterceptor('file'))
+  async PostFormData(
+    @UploadedFile() file: Express.Multer.File,
+    @Body(ValidationPipe) data,
+  ) {
+    return this.itemService.testFormData(data, file);
   }
 }

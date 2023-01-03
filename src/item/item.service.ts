@@ -5,7 +5,7 @@ import {
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { HealthFoodData } from 'src/vtest/entities/vtest.entity';
-import { Repository } from 'typeorm';
+import { CannotAttachTreeChildrenEntityError, Repository } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
@@ -23,7 +23,7 @@ export class ItemService {
             SELECT *
             FROM health_food_data`,
       );
-      return items;
+      return { data: items };
     } catch (err) {
       console.log(err.message);
     }
@@ -226,5 +226,31 @@ export class ItemService {
       console.log(err.message);
     }
     return 'hello';
+  }
+
+  async testFormData(data, file: Express.Multer.File) {
+    try {
+      console.log(file);
+      console.log(data.data);
+      return data;
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  async testGetOneData() {
+    try {
+      console.log(`1`);
+      const [item] = await this.ItemRepository.query(
+        `SELECT *
+            FROM health_food_data
+            WHERE _id = 1
+            `,
+      );
+      console.log(item);
+      return { data: item };
+    } catch (err) {
+      console.log(err);
+    }
   }
 }
