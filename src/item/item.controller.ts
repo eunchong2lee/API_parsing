@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Post,
   Put,
   UploadedFile,
@@ -19,23 +20,27 @@ import { TransformInterceptor } from 'src/config/transform.interceptor';
 export class ItemController {
   constructor(private itemService: ItemService) {}
 
-  // get all items
+  // get all items or value items
   @Get('/')
   async getAllItems() {
     return this.itemService.GetItems();
   }
 
-  // // get one item
-  // @Get(':id')
-  // async getOneItems(@Param('id') id: string) {
-  //   console.log('hello');
-  //   return this.itemService.GetItem(id);
-  // }
+  @Get('/limit/:limit/:page')
+  async getLimitItems(
+    @Param('limit') limit: string,
+    @Param('page') page: string,
+  ) {
+    console.log('================================================');
+    return this.itemService.GetLimitItems(limit, page);
+  }
 
-  @Get('/first')
-  async getTestOneData() {
-    console.log('hi');
-    return this.itemService.testGetOneData();
+  // Get One item
+  @Get(':id')
+  async getTestOneData(@Param('id') id: string) {
+    console.log(1);
+
+    return this.itemService.GetItem(id);
   }
 
   // delete one item
@@ -58,7 +63,7 @@ export class ItemController {
 
   @Post('/')
   @UsePipes(TransformInterceptor)
-  @UseInterceptors(FileInterceptor('image'))
+  @UseInterceptors(FileInterceptor('file'))
   async PostItem(
     @UploadedFile() file: Express.Multer.File,
     @Body(ValidationPipe) ItemData,
@@ -73,6 +78,7 @@ export class ItemController {
     @UploadedFile() file: Express.Multer.File,
     @Body(ValidationPipe) data,
   ) {
-    return this.itemService.testFormData(data, file);
+    console.log(data);
+    // return this.itemService.testFormData(data, file);
   }
 }

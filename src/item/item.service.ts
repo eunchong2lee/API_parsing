@@ -2,7 +2,7 @@ import {
   BlobServiceClient,
   StorageSharedKeyCredential,
 } from '@azure/storage-blob';
-import { Injectable } from '@nestjs/common';
+import { ConsoleLogger, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { HealthFoodData } from 'src/vtest/entities/vtest.entity';
 import { CannotAttachTreeChildrenEntityError, Repository } from 'typeorm';
@@ -18,11 +18,31 @@ export class ItemService {
   // Get all items
   async GetItems() {
     try {
+      // if (
+      //   Object.keys(data_length).length === 0 &&
+      //   data_length.constructor === Object
+      // )
+      console.log(' 모든 데이터 받아오기 실행');
       const items = await this.ItemRepository.query(
         `
-            SELECT *
-            FROM health_food_data`,
+              SELECT *
+              FROM health_food_data`,
       );
+      return { data: items };
+    } catch (err) {
+      console.log(err.message);
+    }
+  }
+
+  // limit itmes
+  async GetLimitItems(limit, page) {
+    try {
+      console.log(' 일정 데이터 받아오기 실행');
+      const items = await this.ItemRepository.query(`
+      SELECT *
+      FROM health_food_data
+      LIMIT ${limit}
+      `);
       return { data: items };
     } catch (err) {
       console.log(err.message);
@@ -32,13 +52,14 @@ export class ItemService {
   // Get one item
   async GetItem(id) {
     try {
-      const item = await this.ItemRepository.query(
+      const [item] = await this.ItemRepository.query(
         `SELECT *
             FROM health_food_data
             WHERE _id = "${id}"
             `,
       );
-      return item;
+
+      return { data: item };
     } catch (err) {
       console.log(err.message);
     }
@@ -56,6 +77,7 @@ export class ItemService {
 
       if (file) {
         // upload image
+
         const extension = file.originalname.split('.').pop();
         const file_name = uuidv4() + '.' + extension;
 
@@ -143,11 +165,11 @@ export class ItemService {
       );
       await blockBlobClient.deleteIfExists();
 
-      //   const item = await this.ItemRepository.query(
-      //     `DELETE FROM health_food_data
-      //           WHERE _id = '${id}'
-      //           `,
-      //   );
+      const item = await this.ItemRepository.query(
+        `DELETE FROM health_food_data
+                WHERE _id = '${id}'
+                `,
+      );
       return '삭제완료';
     } catch (err) {
       console.log(err.message);
@@ -162,14 +184,22 @@ export class ItemService {
         `SELECT * 
         FROM health_food_data`,
       );
+      ItemData = JSON.parse(ItemData.data);
+      console.log(ItemData);
       const item = items[items.length - 1];
       const new_number = item._id + 1;
 
       const new_item = new HealthFoodData();
 
       if (file) {
+        // 홍삼.png
+        // 홍삼.jpg
         // upload image
-        const extension = file.originalname.split('.').pop();
+        const split_data = file.originalname.split('.');
+        console.log(split_data);
+        const extension = split_data[0];
+        console.log(extension);
+
         const file_name = uuidv4() + '.' + extension;
 
         // azure blob
@@ -195,15 +225,16 @@ export class ItemService {
           containerName,
         );
         console.log('setting container client ===========');
-
         const blockBlobClient = containerClient.getBlockBlobClient(
           ItemData.PRDUCT,
         );
+        console.log('end1');
 
         await blockBlobClient.uploadData(file.buffer);
         const url = blockBlobClient.url;
         new_item.PRMS_IMG = url;
       }
+      console.log('end2');
 
       new_item._id = new_number;
       new_item.STTEMNT_NO = ItemData.STTEMNT_NO;
@@ -220,8 +251,9 @@ export class ItemService {
       new_item.PRMS_STANDARD = ItemData.PRMS_STANDARD;
 
       await this.ItemRepository.save(new_item);
+      console.log('end3');
 
-      return item;
+      return { data: new_item };
     } catch (err) {
       console.log(err.message);
     }

@@ -6,6 +6,8 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
+export type UseType = 'Y' | 'N';
+
 @Entity()
 export class HealthFoodData {
   @PrimaryGeneratedColumn()
@@ -55,4 +57,11 @@ export class HealthFoodData {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @Column({
+    type: 'enum',
+    enum: ['Y', 'N'],
+    default: 'Y',
+  })
+  useYN: UseType;
 }

@@ -9,6 +9,8 @@ import { HttpModule } from '@nestjs/axios';
 import { VtimgModule } from './vtimg/vtimg.module';
 import { ItemModule } from './item/item.module';
 import { APP_PIPE } from '@nestjs/core';
+import { AuthModule } from './auth/auth.module';
+import { SearchModule } from './search/search.module';
 
 @Module({
   imports: [
@@ -19,6 +21,8 @@ import { APP_PIPE } from '@nestjs/core';
       timeout: 5000,
     }),
     ItemModule,
+    AuthModule,
+    SearchModule,
   ],
   controllers: [AppController],
   providers: [AppService, { provide: APP_PIPE, useClass: ValidationPipe }],
