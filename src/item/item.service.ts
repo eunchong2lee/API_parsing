@@ -74,6 +74,8 @@ export class ItemService {
                     WHERE _id = "${id}"
                     `,
       );
+      ItemData = JSON.parse(ItemData.data);
+      console.log(ItemData);
 
       if (file) {
         // upload image
@@ -105,7 +107,9 @@ export class ItemService {
         );
         console.log('setting container client ===========');
 
-        const blockBlobClient = containerClient.getBlockBlobClient(item.PRDUCT);
+        const blockBlobClient = containerClient.getBlockBlobClient(
+          ItemData.PRDUCT,
+        );
 
         await blockBlobClient.uploadData(file.buffer);
         const url = blockBlobClient.url;
