@@ -97,8 +97,10 @@ export class AuthService {
     };
 
     return {
-      message: 'login successful',
-      token: this.jwtService.sign(payload),
+      data: {
+        message: 'login successful',
+        token: this.jwtService.sign(payload),
+      },
     };
   }
 }
