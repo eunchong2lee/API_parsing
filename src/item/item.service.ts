@@ -130,9 +130,10 @@ export class ItemService {
       item.BASE_STANDARD = ItemData.BASE_STANDARD;
       item.PRMS_STANDARD = ItemData.PRMS_STANDARD;
 
+      console.log(item);
       await this.ItemRepository.update(item._id, item);
 
-      return item;
+      return { data: item, status: 200 };
     } catch (err) {
       console.log(err.message);
     }
@@ -285,6 +286,16 @@ export class ItemService {
       );
       console.log(item);
       return { data: item };
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  async GetStandard() {
+    try {
+      console.log('성분 받아오기');
+      const colums = ['아연', '철', '1', '2', '쨋든', '데이터'];
+      return { data: colums };
     } catch (err) {
       console.log(err);
     }

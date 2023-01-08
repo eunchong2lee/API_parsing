@@ -26,6 +26,12 @@ export class ItemController {
     return this.itemService.GetItems();
   }
 
+  // 성분 받아오기
+  @Get('/standard')
+  async getStandard() {
+    return this.itemService.GetStandard();
+  }
+
   @Get('/limit/:limit/:page')
   async getLimitItems(
     @Param('limit') limit: string,
