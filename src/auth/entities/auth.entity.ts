@@ -7,7 +7,7 @@ export enum ApproveStatus {
   Deny = 'D',
 }
 
-@Entity({ name: 'AdminUser', schema: 'bodybuddy' })
+@Entity({ name: 'AdminUser' })
 export class AdminUserEntity {
   // id
   @PrimaryGeneratedColumn({ type: 'int', name: 'id' })

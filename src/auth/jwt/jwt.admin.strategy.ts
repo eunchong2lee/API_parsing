@@ -6,7 +6,7 @@ import { jwtConstants } from '../constants/constants';
 import { AdminUserService } from '../admin-auth.service';
 
 @Injectable()
-export class JwtTestStrategy extends PassportStrategy(Strategy, 'sec') {
+export class JwtTestStrategy extends PassportStrategy(Strategy) {
   constructor(private readonly userService: AdminUserService) {
     // 의존성 주입
 
@@ -25,6 +25,7 @@ export class JwtTestStrategy extends PassportStrategy(Strategy, 'sec') {
 
   async validate(payload: Payload) {
     //   async validate(payload) {
+    console.log(payload);
     const userId = payload.uid;
     const user = await this.userService.findOne({ _id: userId });
 

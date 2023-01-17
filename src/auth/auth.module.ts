@@ -6,6 +6,7 @@ import { AdminUserService } from './admin-auth.service';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { AdminUserEntity } from './entities/auth.entity';
+import { JwtTestStrategy } from './jwt/jwt.admin.strategy';
 
 @Module({
   imports: [
@@ -18,7 +19,7 @@ import { AdminUserEntity } from './entities/auth.entity';
     // forwardRef(() => AdminUserModule),
   ],
   controllers: [AuthController],
-  providers: [AuthService, AdminUserService],
+  providers: [AuthService, AdminUserService, JwtTestStrategy],
   exports: [AuthService, AdminUserService],
 })
 export class AuthModule {}

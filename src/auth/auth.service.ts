@@ -96,11 +96,27 @@ export class AuthService {
       nickname: user.managerName,
     };
 
+    console.log('payload', payload);
+
     return {
       data: {
         message: 'login successful',
         token: this.jwtService.sign(payload),
       },
     };
+  }
+
+  async checkaccount(data: any) {
+    try {
+      const { account } = data;
+      const [user] = await this.userService.find({ account });
+      let statusCode;
+      if (!user) {
+        statusCode = 200;
+      } else {
+        statusCode = 400;
+      }
+      return { data: statusCode };
+    } catch (err) {}
   }
 }

@@ -7,6 +7,8 @@ import {
   ParseIntPipe,
   Post,
   Put,
+  Res,
+  StreamableFile,
   UploadedFile,
   UseInterceptors,
   UsePipes,
@@ -15,6 +17,7 @@ import {
 import { ItemService } from './item.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { TransformInterceptor } from 'src/config/transform.interceptor';
+import type { Response } from 'express';
 
 @Controller('item')
 export class ItemController {
@@ -24,6 +27,12 @@ export class ItemController {
   @Get('/')
   async getAllItems() {
     return this.itemService.GetItems();
+  }
+
+  // get excel file
+  @Get('/file')
+  async getFile(@Res({ passthrough: true }) res: Response) {
+    return await this.itemService.getFile(res);
   }
 
   // 성분 받아오기

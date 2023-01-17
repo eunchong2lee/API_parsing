@@ -4,9 +4,13 @@ import {
 } from '@azure/storage-blob';
 import { ConsoleLogger, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Workbook } from 'exceljs';
 import { HealthFoodData } from 'src/vtest/entities/vtest.entity';
 import { CannotAttachTreeChildrenEntityError, Repository } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
+import * as XLSX from 'xlsx';
+import type { Response } from 'express';
+import { saveAs } from 'file-saver';
 
 @Injectable()
 export class ItemService {
@@ -291,11 +295,228 @@ export class ItemService {
     }
   }
 
+  async getFile(res: Response) {
+    try {
+      const data = await this.ItemRepository.query(`
+      SELECT *
+      FROM health_food_data
+      LIMIT 10`);
+
+      const workbook = new Workbook();
+      const worksheet = workbook.addWorksheet('My Sheet');
+      const colums = [
+        { header: '제품번호', key: 'STTEMNT_NO', width: 40 },
+        { header: '제조사', key: 'ENTRPS', width: 40 },
+        { header: '제품명', key: 'PRDUCT', width: 40 },
+        { header: '등록번호', key: 'REGIST_DT', width: 40 },
+        { header: '사용기간', key: 'DISTB_PD', width: 40 },
+        { header: '성상', key: 'SUNGSANG', width: 40 },
+        { header: '권유 섭취량', key: 'SRV_USE', width: 40 },
+        { header: '보관장소', key: 'PRSRV_PD', width: 40 },
+        { header: '주의사항', key: 'INTAKE_HINT1', width: 40 },
+        { header: '상품정보', key: 'MAIN_FNCTN', width: 40 },
+        { header: '기본성분', key: 'BASE_STANDARD', width: 40 },
+        { header: '건강성분', key: 'PRMS_STANDARD', width: 40 },
+        { header: '사용여부', key: 'useYN', width: 40 },
+      ];
+      worksheet.columns = colums;
+
+      data.map((data, index) => {
+        const {
+          STTEMNT_NO,
+          ENTRPS,
+          PRDUCT,
+          REGIST_DT,
+          DISTB_PD,
+          SUNGSANG,
+          SRV_USE,
+          PRSRV_PD,
+          INTAKE_HINT1,
+          MAIN_FNCTN,
+          BASE_STANDARD,
+          PRMS_STANDARD,
+          useYN,
+        } = data;
+        worksheet.addRow({
+          STTEMNT_NO,
+          ENTRPS,
+          PRDUCT,
+          REGIST_DT,
+          DISTB_PD,
+          SUNGSANG,
+          SRV_USE,
+          PRSRV_PD,
+          INTAKE_HINT1,
+          MAIN_FNCTN,
+          BASE_STANDARD,
+          PRMS_STANDARD,
+          useYN,
+        });
+      });
+      res.setHeader(
+        'Content-Type',
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      );
+      res.setHeader(
+        'Content-Disposition',
+        'attachment; filename=' + 'healthfooddata.xlsx',
+      );
+
+      await workbook.xlsx.write(res);
+      res.end();
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
   async GetStandard() {
     try {
       console.log('성분 받아오기');
-      const colums = ['아연', '철', '1', '2', '쨋든', '데이터'];
-      return { data: colums };
+      const first_colums = [
+        '시작',
+        '아연',
+        '철',
+        '1',
+        '2',
+        '쨋든',
+        '데이터',
+        '123',
+        '123',
+        '123',
+        '123',
+        '이',
+        '은',
+        '총',
+        '2',
+      ];
+      const colums = [
+        '시작',
+        '아연',
+        '철',
+        '1',
+        '2',
+        '쨋든',
+        '데이터',
+        '123',
+        '123',
+        '123',
+        '123',
+        '이',
+        '은',
+        '총',
+        '2',
+        '쨋든',
+        '데이터',
+        '123',
+        '123',
+        '123',
+        '123',
+        '이',
+        '은',
+        '총',
+        '2',
+        '쨋든',
+        '데이터',
+        '123',
+        '123',
+        '123',
+        '123',
+        '이',
+        '은',
+        '총',
+        '2',
+        '쨋든',
+        '데이터',
+        '123',
+        '123',
+        '123',
+        '123',
+        '이',
+        '은',
+        '총',
+        '2',
+        '쨋든',
+        '데이터',
+        '123',
+        '123',
+        '123',
+        '123',
+        '이',
+        '은',
+        '총',
+        '2',
+        '쨋든',
+        '데이터',
+        '123',
+        '123',
+        '123',
+        '123',
+        '이',
+        '은',
+        '총',
+        '2',
+        '쨋든',
+        '데이터',
+        '123',
+        '123',
+        '123',
+        '123',
+        '이',
+        '은',
+        '총',
+        '2',
+        '쨋든',
+        '데이터',
+        '123',
+        '123',
+        '123',
+        '123',
+        '이',
+        '은',
+        '총',
+        '2',
+        '쨋든',
+        '데이터',
+        '123',
+        '123',
+        '123',
+        '123',
+        '이',
+        '은',
+        '총',
+        '2',
+        '쨋든',
+        '데이터',
+        '123',
+        '123',
+        '123',
+        '123',
+        '이',
+        '은',
+        '총',
+        '2',
+        '쨋든',
+        '데이터',
+        '123',
+        '123',
+        '123',
+        '123',
+        '이',
+        '은',
+        '총',
+        '2',
+        '쨋든',
+        '데이터',
+        '123',
+        '123',
+        '123',
+        '123',
+        '이',
+        '은',
+        '총',
+        '끝',
+      ];
+      return { data: first_colums };
     } catch (err) {
       console.log(err);
     }
