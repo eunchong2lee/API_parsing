@@ -12,6 +12,9 @@ import { APP_PIPE } from '@nestjs/core';
 import { AuthModule } from './auth/auth.module';
 import { SearchModule } from './search/search.module';
 import { AnalyticsModule } from './analytics/analytics.module';
+import { DraftController } from './draft/draft.controller';
+import { DraftService } from './draft/draft.service';
+import { DraftModule } from './draft/draft.module';
 
 @Module({
   imports: [
@@ -25,6 +28,7 @@ import { AnalyticsModule } from './analytics/analytics.module';
     AuthModule,
     SearchModule,
     AnalyticsModule,
+    DraftModule,
   ],
   controllers: [AppController],
   providers: [AppService, { provide: APP_PIPE, useClass: ValidationPipe }],
