@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Draft } from './entities/draft.entity';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class DraftService {
@@ -32,6 +33,24 @@ export class DraftService {
       await this.DraftRepository.save(new_draft);
 
       return { data: { message: 'success', data: new_draft } };
+    } catch (err) {
+      console.log(err.message);
+    }
+  }
+
+  async postFile(file: Express.Multer.File) {
+    try {
+      console.log(file);
+      if (file) {
+        console.log(file);
+        const split_data = file.originalname.split('.');
+        console.log(split_data);
+        const extension = split_data[0];
+        console.log(extension);
+        const file_name = uuidv4() + '.' + extension;
+        console.log(file_name);
+      }
+      return '데이터 넘어옴';
     } catch (err) {
       console.log(err.message);
     }
