@@ -1,7 +1,7 @@
 import { AzureStorageModule } from '@nestjs/azure-storage';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { HealthFoodData } from 'src/vtest/entities/vtest.entity';
+import { HealthFoodData } from 'src/HealthFoodData/entities/HealthFoodData.entity';
 import { ItemController } from './item.controller';
 import { ItemService } from './item.service';
 

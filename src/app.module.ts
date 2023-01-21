@@ -2,7 +2,7 @@ import { Module, ValidationPipe } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
-import { VtestModule } from './vtest/vtest.module';
+import { VtestModule } from './HealthFoodData/vtest.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { typeORMConfig } from './config/typeorm.config';
 import { HttpModule } from '@nestjs/axios';
@@ -15,6 +15,7 @@ import { AnalyticsModule } from './analytics/analytics.module';
 import { DraftController } from './draft/draft.controller';
 import { DraftService } from './draft/draft.service';
 import { DraftModule } from './draft/draft.module';
+import { StandardModule } from './standard/standard.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { DraftModule } from './draft/draft.module';
     SearchModule,
     AnalyticsModule,
     DraftModule,
+    StandardModule,
   ],
   controllers: [AppController],
   providers: [AppService, { provide: APP_PIPE, useClass: ValidationPipe }],

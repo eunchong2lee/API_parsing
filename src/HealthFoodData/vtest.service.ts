@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { HealthFoodData } from './entities/vtest.entity';
+import { HealthFoodData } from './entities/HealthFoodData.entity';
 import { HttpService } from '@nestjs/axios';
 import * as fs from 'fs';
 import { IoTFleetHub } from 'aws-sdk';

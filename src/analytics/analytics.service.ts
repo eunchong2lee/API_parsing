@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { HealthFoodData } from 'src/vtest/entities/vtest.entity';
+import { HealthFoodData } from 'src/HealthFoodData/entities/HealthFoodData.entity';
 import { Repository } from 'typeorm';
 
 @Injectable()

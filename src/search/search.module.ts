@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { HealthFoodData } from 'src/vtest/entities/vtest.entity';
+import { HealthFoodData } from 'src/HealthFoodData/entities/HealthFoodData.entity';
 import { SearchController } from './search.controller';
 import { SearchService } from './search.service';
 

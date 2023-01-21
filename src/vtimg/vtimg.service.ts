@@ -2,7 +2,7 @@ import { HttpService } from '@nestjs/axios';
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as puppeteer from 'puppeteer';
-import { HealthFoodData } from 'src/vtest/entities/vtest.entity';
+import { HealthFoodData } from 'src/HealthFoodData/entities/HealthFoodData.entity';
 import { Repository } from 'typeorm';
 import * as fs from 'fs';
 import { v4 as uuidv4 } from 'uuid';

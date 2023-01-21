@@ -5,7 +5,7 @@ import {
 import { ConsoleLogger, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Workbook } from 'exceljs';
-import { HealthFoodData } from 'src/vtest/entities/vtest.entity';
+import { HealthFoodData } from 'src/HealthFoodData/entities/HealthFoodData.entity';
 import { CannotAttachTreeChildrenEntityError, Repository } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
 import * as XLSX from 'xlsx';
@@ -86,6 +86,12 @@ export class ItemService {
 
         const extension = file.originalname.split('.').pop();
         const file_name = uuidv4() + '.' + extension;
+
+        // 읽기 전용
+        //   const stream = intoStream(optimized) as Readable;
+        // const containerClient =
+        //   blobServiceClient.getContainerClient(containerName);
+        // const blockBlobClient = containerClient.getBlockBlobClient(blobName);
 
         // azure blob
         const accountName = process.env.AZURE_STORAGE_ACCOUNT_NAME;
@@ -364,159 +370,6 @@ export class ItemService {
 
       await workbook.xlsx.write(res);
       res.end();
-    } catch (err) {
-      console.log(err);
-    }
-  }
-
-  async GetStandard() {
-    try {
-      console.log('성분 받아오기');
-      const first_colums = [
-        '시작',
-        '아연',
-        '철',
-        '1',
-        '2',
-        '쨋든',
-        '데이터',
-        '123',
-        '123',
-        '123',
-        '123',
-        '이',
-        '은',
-        '총',
-        '2',
-      ];
-      const colums = [
-        '시작',
-        '아연',
-        '철',
-        '1',
-        '2',
-        '쨋든',
-        '데이터',
-        '123',
-        '123',
-        '123',
-        '123',
-        '이',
-        '은',
-        '총',
-        '2',
-        '쨋든',
-        '데이터',
-        '123',
-        '123',
-        '123',
-        '123',
-        '이',
-        '은',
-        '총',
-        '2',
-        '쨋든',
-        '데이터',
-        '123',
-        '123',
-        '123',
-        '123',
-        '이',
-        '은',
-        '총',
-        '2',
-        '쨋든',
-        '데이터',
-        '123',
-        '123',
-        '123',
-        '123',
-        '이',
-        '은',
-        '총',
-        '2',
-        '쨋든',
-        '데이터',
-        '123',
-        '123',
-        '123',
-        '123',
-        '이',
-        '은',
-        '총',
-        '2',
-        '쨋든',
-        '데이터',
-        '123',
-        '123',
-        '123',
-        '123',
-        '이',
-        '은',
-        '총',
-        '2',
-        '쨋든',
-        '데이터',
-        '123',
-        '123',
-        '123',
-        '123',
-        '이',
-        '은',
-        '총',
-        '2',
-        '쨋든',
-        '데이터',
-        '123',
-        '123',
-        '123',
-        '123',
-        '이',
-        '은',
-        '총',
-        '2',
-        '쨋든',
-        '데이터',
-        '123',
-        '123',
-        '123',
-        '123',
-        '이',
-        '은',
-        '총',
-        '2',
-        '쨋든',
-        '데이터',
-        '123',
-        '123',
-        '123',
-        '123',
-        '이',
-        '은',
-        '총',
-        '2',
-        '쨋든',
-        '데이터',
-        '123',
-        '123',
-        '123',
-        '123',
-        '이',
-        '은',
-        '총',
-        '2',
-        '쨋든',
-        '데이터',
-        '123',
-        '123',
-        '123',
-        '123',
-        '이',
-        '은',
-        '총',
-        '끝',
-      ];
-      return { data: first_colums };
     } catch (err) {
       console.log(err);
     }

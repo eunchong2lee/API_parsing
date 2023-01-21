@@ -46,9 +46,7 @@ export class DraftService {
         const split_data = file.originalname.split('.');
         console.log(split_data);
         const extension = split_data[0];
-        console.log(extension);
         const file_name = uuidv4() + '.' + extension;
-        console.log(file_name);
       }
       return '데이터 넘어옴';
     } catch (err) {
