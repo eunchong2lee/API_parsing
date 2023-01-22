@@ -16,6 +16,7 @@ import { DraftController } from './draft/draft.controller';
 import { DraftService } from './draft/draft.service';
 import { DraftModule } from './draft/draft.module';
 import { StandardModule } from './standard/standard.module';
+import { FileModule } from './file/file.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { StandardModule } from './standard/standard.module';
     AnalyticsModule,
     DraftModule,
     StandardModule,
+    FileModule,
   ],
   controllers: [AppController],
   providers: [AppService, { provide: APP_PIPE, useClass: ValidationPipe }],

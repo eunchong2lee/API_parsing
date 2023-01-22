@@ -13,4 +13,10 @@ export class Standard {
 
   @Column()
   name: string;
+
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
 }
