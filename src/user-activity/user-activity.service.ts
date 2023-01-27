@@ -22,29 +22,35 @@ export class UserActivityService {
     try {
       // 1. 해당 당일 날짜의 user-activity-relation이 있는지
       // 2. 해덩 당일 날짜의 user-activity가 있는지 user-activity만들기 -> 있으면 그대로 없으면 user-activity-relation +1 및 user-activity 활용
-      const new_date = new Date();
+
+      const kr_curr = new Date(new Date().getTime() + 9 * 60 * 60 * 1000);
+      const parse_date = `${kr_curr.getUTCFullYear()}-${
+        kr_curr.getUTCMonth() + 1
+      }-${kr_curr.getUTCDate()}`;
 
       const [[find_page_relation], [find_total_relation]] = await Promise.all([
         this.userActivityRelationRepository.query(`
             SELECT *
             FROM user_activity_relation
+            WHERE date = DATE_FORMAT(now(), '%Y-%m-%d')
         `),
 
         this.userActivityTotalRelationRepository.query(`
             SELECT *
             FROM user_activity_total_relation
+            WHERE date = DATE_FORMAT(now(), '%Y-%m-%d')
         `),
       ]);
 
       const userActivity = new UserActivity();
       userActivity.account = account;
-      userActivity.date = new Date();
+      userActivity.date = kr_curr;
       userActivity.page = page;
 
       await Promise.all([
         this.userActivityRepository.save(userActivity),
-        this.find_page_relation(find_page_relation, page),
-        this.find_total_relation(find_total_relation, page),
+        this.find_page_relation(find_page_relation, page, parse_date),
+        this.find_total_relation(find_total_relation, parse_date),
       ]);
 
       return '등록';
@@ -67,13 +73,13 @@ export class UserActivityService {
   }
 
   // 함수
-  async find_page_relation(find_page_relation, page) {
+  async find_page_relation(find_page_relation, page, now_date) {
     if (!find_page_relation) {
       const new_page_relation = new UserActivityRelation();
 
       new_page_relation.page = page;
       new_page_relation.count = 1;
-      new_page_relation.date = new Date();
+      new_page_relation.date = now_date;
 
       await this.userActivityRelationRepository.save(new_page_relation);
     } else {
@@ -85,11 +91,11 @@ export class UserActivityService {
     }
   }
 
-  async find_total_relation(find_total_relation, page) {
+  async find_total_relation(find_total_relation, now_date) {
     if (!find_total_relation) {
       const new_total_relation = new UserActivityTotalRelation();
       new_total_relation.count = 1;
-      new_total_relation.date = new Date();
+      new_total_relation.date = now_date;
       await this.userActivityTotalRelationRepository.save(new_total_relation);
     } else {
       find_total_relation.count++;
