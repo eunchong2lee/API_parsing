@@ -15,9 +15,15 @@ export class File {
   @PrimaryGeneratedColumn({ type: 'int', name: '_id' })
   _id: number;
 
+  // PRDUCT ID
+  @Column()
+  PRDUCT_ID: number;
+
+  // FILE 총 내용
   @Column('text', { nullable: true })
   File: string;
 
+  //
   @Column('text', { nullable: true })
   commonPath: string;
 
