@@ -18,6 +18,9 @@ export class UserActivity {
   date: Date;
 
   @Column()
+  day: string;
+
+  @Column()
   page: string;
 
   @CreateDateColumn()

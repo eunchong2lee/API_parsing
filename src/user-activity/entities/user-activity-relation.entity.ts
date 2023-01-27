@@ -20,6 +20,9 @@ export class UserActivityRelation {
   @Column()
   count: number;
 
+  @Column()
+  day: string;
+
   @CreateDateColumn()
   createdAt: Date;
 
@@ -34,6 +37,9 @@ export class UserActivityTotalRelation {
 
   @Column()
   date: Date;
+
+  @Column()
+  day: string;
 
   @Column()
   count: number;
