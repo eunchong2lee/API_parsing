@@ -10,11 +10,13 @@ export class SearchService {
     private ItemRepository: Repository<HealthFoodData>,
   ) {}
 
-  async searchInfo(tab, name, date, useYN, limit) {
+  async searchInfo(tab, name, date, useYN, page, limit) {
     try {
-      console.log(tab, name, date, useYN, limit);
-      // 처음데이터
-      const searchLimit = limit ? `Limit ${limit}` : ``;
+      const searchLimit = limit
+        ? `Limit ${limit} OFFSET ${(page - 1) * 10}`
+        : ``;
+      const searchUseYN = useYN == 'E' ? `` : `AND useYN = "${useYN}"`;
+
       // tab 확인
       let searchTab = '';
       if (tab === 'PRDUCT') {
@@ -31,9 +33,6 @@ export class SearchService {
         searchName = name;
       }
 
-      // 사용 여부 확인
-      const searchuseYN = useYN;
-
       let firstDate = '00000000';
       let secondDate = '99999999';
 
@@ -45,32 +44,28 @@ export class SearchService {
         secondDate = splitDate[1];
         secondDate = secondDate.split('-').join('');
       }
-      console.log(firstDate, secondDate);
 
-      let items: any[];
-      if (searchuseYN === 'E') {
-        items = await this.ItemRepository.query(`
-        SELECT * 
-        FROM health_food_data
-        WHERE ${searchTab} like "%${searchName}%"
-        AND REGIST_DT > ${firstDate}
-        AND ${secondDate} > REGIST_DT
-        ${searchLimit}
-        `);
-      } else {
-        items = await this.ItemRepository.query(`
-        SELECT * 
-        FROM health_food_data
-        WHERE ${searchTab} like "%${searchName}%"
-        AND useYN = "${searchuseYN}"
-        AND REGIST_DT > ${firstDate}
-        AND ${secondDate} > REGIST_DT
-        ${searchLimit}
-        `);
-      }
-      console.log(items.length);
-
-      return { data: items };
+      const [items, totalItems] = await Promise.all([
+        this.ItemRepository.query(`
+          SELECT *
+          FROM health_food_data
+          WHERE ${searchTab} like "%${searchName}%"
+          AND REGIST_DT >= ${firstDate}
+          AND ${secondDate} >= REGIST_DT
+          ${searchUseYN}
+          ${searchLimit}
+          `),
+        this.ItemRepository.query(`
+          SELECT *
+          FROM health_food_data
+          WHERE ${searchTab} like "%${searchName}%"
+          AND REGIST_DT >= ${firstDate}
+          AND ${secondDate} >= REGIST_DT
+          ${searchUseYN}
+        `),
+      ]);
+      const itemsLength = totalItems.length;
+      return { data: { data: items, dataLength: itemsLength } };
     } catch (err) {
       console.log(err.message);
     }

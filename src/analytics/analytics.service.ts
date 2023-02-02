@@ -72,7 +72,6 @@ export class AnalyticsService {
       }
       final_data.push(parsing);
     }
-    // console.log(final_data);
 
     return final_data;
   }

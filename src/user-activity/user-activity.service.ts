@@ -43,6 +43,7 @@ export class UserActivityService {
             SELECT *
             FROM user_activity_relation
             WHERE date = DATE_FORMAT(now(), '%Y-%m-%d')
+            AND page = ${page}
         `),
 
           this.userActivityTotalRelationRepository.query(`
@@ -149,6 +150,7 @@ export class UserActivityService {
         new_page_relation.page = page;
         new_page_relation.count = 1;
         new_page_relation.date = now_date;
+        new_page_relation.day = day;
 
         await this.userActivityRelationRepository.save(new_page_relation);
       } else {
@@ -167,6 +169,7 @@ export class UserActivityService {
         const new_total_relation = new UserActivityTotalRelation();
         new_total_relation.count = 1;
         new_total_relation.date = now_date;
+        new_total_relation.day = day;
         await this.userActivityTotalRelationRepository.save(new_total_relation);
       } else {
         find_total_relation.count++;

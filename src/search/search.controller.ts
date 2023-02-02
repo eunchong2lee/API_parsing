@@ -11,8 +11,9 @@ export class SearchController {
     @Query('name') name: string,
     @Query('date') date: string,
     @Query('useYN') useYN: string,
+    @Query('page') page: number,
     @Query('limit') limit: string,
   ) {
-    return this.searchService.searchInfo(tab, name, date, useYN, limit);
+    return this.searchService.searchInfo(tab, name, date, useYN, page, limit);
   }
 }

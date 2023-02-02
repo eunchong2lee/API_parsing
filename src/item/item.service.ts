@@ -41,13 +41,23 @@ export class ItemService {
   // limit itmes
   async GetLimitItems(limit, page) {
     try {
-      console.log(' 일정 데이터 받아오기 실행');
-      const items = await this.ItemRepository.query(`
+      const first_page = Number(page - 1) * 10;
+      const second_page = (Number(page - 1) + 1) * 10;
+      const [items_length, items] = await Promise.all([
+        this.ItemRepository.query(`
+      SELECT *
+      FROM health_food_data`),
+
+        this.ItemRepository.query(`
       SELECT *
       FROM health_food_data
+      WHERE _id > ${first_page}
+      AND _id <= ${second_page}
       LIMIT ${limit}
-      `);
-      return { data: items };
+      `),
+      ]);
+
+      return { data: { data: items, dataLength: items_length.length } };
     } catch (err) {
       console.log(err.message);
     }
