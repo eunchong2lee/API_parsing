@@ -10,12 +10,13 @@ import {
   Res,
   StreamableFile,
   UploadedFile,
+  UploadedFiles,
   UseInterceptors,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
 import { ItemService } from './item.service';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { AnyFilesInterceptor, FileInterceptor } from '@nestjs/platform-express';
 import { TransformInterceptor } from 'src/config/transform.interceptor';
 import type { Response } from 'express';
 
@@ -41,7 +42,7 @@ export class ItemController {
     @Param('page') page: string,
   ) {
     console.log('================================================');
-    return this.itemService.GetLimitItems(limit, page);
+    return await this.itemService.GetLimitItems(limit, page);
   }
 
   // Get One item
@@ -49,13 +50,13 @@ export class ItemController {
   async getTestOneData(@Param('id') id: string) {
     console.log(1);
 
-    return this.itemService.GetItem(id);
+    return await this.itemService.GetItem(id);
   }
 
   // delete one item
   @Delete(':id')
   async deleteOneItems(@Param('id') id: string) {
-    return this.itemService.DeleteItem(id);
+    return await this.itemService.DeleteItem(id);
   }
 
   // put one item
@@ -63,31 +64,30 @@ export class ItemController {
   @UsePipes(TransformInterceptor)
   @UseInterceptors(FileInterceptor('image'))
   async PutItem(
-    @UploadedFile() file: Express.Multer.File,
+    @UploadedFiles() file: Express.Multer.File,
     @Body(ValidationPipe) ItemData,
     @Param('id') id: string,
   ) {
-    return this.itemService.PutItem(ItemData, id, file);
+    return await this.itemService.PutItem(ItemData, id, file);
   }
 
   @Post('/')
   @UsePipes(TransformInterceptor)
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(AnyFilesInterceptor())
   async PostItem(
-    @UploadedFile() file: Express.Multer.File,
+    @UploadedFiles() files: Array<Express.Multer.File>,
     @Body(ValidationPipe) ItemData,
   ) {
-    return this.itemService.PostItem(ItemData, file);
+    return await this.itemService.PostItem(ItemData, files);
   }
 
-  @Post('/test')
+  @Post('/posttest')
   @UsePipes(TransformInterceptor)
-  @UseInterceptors(FileInterceptor('file'))
-  async PostFormData(
-    @UploadedFile() file: Express.Multer.File,
-    @Body(ValidationPipe) data,
+  @UseInterceptors(AnyFilesInterceptor())
+  async PostTest(
+    @UploadedFiles() files: Array<Express.Multer.File>,
+    @Body(ValidationPipe) ItemData,
   ) {
-    console.log(data);
-    // return this.itemService.testFormData(data, file);
+    return await this.itemService.testFormData(ItemData, files);
   }
 }

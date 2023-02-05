@@ -1,3 +1,4 @@
+import { PaperSize } from 'exceljs';
 import {
   Column,
   CreateDateColumn,
@@ -9,45 +10,37 @@ import {
 export type UseType = 'Y' | 'N';
 
 @Entity()
-export class HealthFoodData {
-  @PrimaryGeneratedColumn()
+export class Image {
+  // id
+  @PrimaryGeneratedColumn({ type: 'int', name: '_id' })
   _id: number;
 
+  // PRDUCT ID
   @Column()
-  STTEMNT_NO: string;
+  PRDUCT_ID: number;
 
-  @Column({ nullable: true })
-  ENTRPS: string;
+  // image 총 url
+  @Column('text', { nullable: true })
+  image: string;
+
+  //
+  @Column('text', { nullable: true })
+  commonPath: string;
+
+  @Column('text', { nullable: true })
+  detailPath: string;
+
+  @Column('text', { nullable: true })
+  originalFileName: string;
+
+  @Column('text', { nullable: true })
+  changeFileName: string;
 
   @Column()
-  PRDUCT: string;
+  extension: string;
 
   @Column()
-  REGIST_DT: string;
-
-  @Column({ nullable: true })
-  DISTB_PD: string;
-
-  @Column('text', { nullable: true })
-  SUNGSANG: string;
-
-  @Column({ nullable: true })
-  SRV_USE: string;
-
-  @Column('text', { nullable: true })
-  PRSRV_PD: string;
-
-  @Column('text', { nullable: true })
-  INTAKE_HINT1: string;
-
-  @Column('text', { nullable: true })
-  MAIN_FNCTN: string;
-
-  @Column('text', { nullable: true })
-  BASE_STANDARD: string;
-
-  @Column('simple-json', { nullable: true })
-  PRMS_STANDARD: string;
+  size: number;
 
   @CreateDateColumn()
   createdAt: Date;

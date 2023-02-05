@@ -11,22 +11,21 @@ import { v4 as uuidv4 } from 'uuid';
 import * as XLSX from 'xlsx';
 import type { Response } from 'express';
 import { saveAs } from 'file-saver';
+import { ImageService } from 'src/image/image.service';
+import { FileService } from 'src/file/file.service';
 
 @Injectable()
 export class ItemService {
   constructor(
     @InjectRepository(HealthFoodData)
     private readonly ItemRepository: Repository<HealthFoodData>,
+    private imageService: ImageService,
+    private fileService: FileService,
   ) {}
 
   // Get all items
   async GetItems() {
     try {
-      // if (
-      //   Object.keys(data_length).length === 0 &&
-      //   data_length.constructor === Object
-      // )
-      console.log(' 모든 데이터 받아오기 실행');
       const items = await this.ItemRepository.query(
         `
               SELECT *
@@ -133,7 +132,7 @@ export class ItemService {
 
         await blockBlobClient.uploadData(file.buffer);
         const url = blockBlobClient.url;
-        item.PRMS_IMG = url;
+        // item.PRMS_IMG = url;
       }
 
       // data 수정
@@ -202,115 +201,74 @@ export class ItemService {
   }
 
   //Post
-  async PostItem(ItemData, file: Express.Multer.File) {
+  async PostItem(ItemData, files: Array<Express.Multer.File>) {
     try {
-      // _id 만들기
-      const items = await this.ItemRepository.query(
-        `SELECT * 
-        FROM health_food_data`,
-      );
+      const newItem = new HealthFoodData();
+
+      // file 분할
+      const filesArray = [];
+      const imagesArray = [];
+
+      files.map((file, i) => {
+        if (file.fieldname === 'images') {
+          imagesArray.push(file);
+        } else if (file.fieldname === 'files') {
+          filesArray.push(file);
+        }
+      });
+
       ItemData = JSON.parse(ItemData.data);
-      console.log(ItemData);
-      const item = items[items.length - 1];
-      const new_number = item._id + 1;
 
-      const new_item = new HealthFoodData();
+      newItem.STTEMNT_NO = ItemData.STTEMNT_NO;
+      newItem.ENTRPS = ItemData.ENTRPS;
+      newItem.PRDUCT = ItemData.PRDUCT;
+      newItem.REGIST_DT = ItemData.REGIST_DT;
+      newItem.DISTB_PD = ItemData.DISTB_PD;
+      newItem.SUNGSANG = ItemData.SUNGSANG;
+      newItem.SRV_USE = ItemData.SRV_USE;
+      newItem.PRSRV_PD = ItemData.PRSRV_PD;
+      newItem.INTAKE_HINT1 = ItemData.INTAKE_HINT1;
+      newItem.MAIN_FNCTN = ItemData.MAIN_FNCTN;
+      newItem.BASE_STANDARD = ItemData.BASE_STANDARD;
+      newItem.PRMS_STANDARD = ItemData.PRMS_STANDARD;
 
-      if (file) {
-        // 홍삼.png
-        // 홍삼.jpg
-        // upload image
-        const split_data = file.originalname.split('.');
-        console.log(split_data);
-        const extension = split_data[0];
-        console.log(extension);
+      // 파일 저장
 
-        const file_name = uuidv4() + '.' + extension;
+      await Promise.all([
+        this.ItemRepository.save(newItem),
+        this.fileService.postFiles(filesArray, newItem._id),
+        this.imageService.postImages(imagesArray, newItem._id),
+      ]);
 
-        // azure blob
-        const accountName = process.env.AZURE_STORAGE_ACCOUNT_NAME;
-        if (!accountName) throw Error('Azure Storage accountName not found');
-
-        // Azure Storage resource key
-        const accountKey = process.env.AZURE_STORAGE_ACCOUNT_ACCESS_KEY;
-        if (!accountKey) throw Error('Azure Storage accountKey not found');
-
-        // Create credential
-        const sharedKeyCredential = new StorageSharedKeyCredential(
-          accountName,
-          accountKey,
-        );
-        const baseUrl = `https://${accountName}.blob.core.windows.net/crawl/`;
-        const containerName = `HealthFoodData`;
-        const blobServiceClient = new BlobServiceClient(
-          `${baseUrl}`,
-          sharedKeyCredential,
-        );
-        const containerClient = await blobServiceClient.getContainerClient(
-          containerName,
-        );
-        console.log('setting container client ===========');
-        const blockBlobClient = containerClient.getBlockBlobClient(
-          ItemData.PRDUCT,
-        );
-        console.log('end1');
-
-        await blockBlobClient.uploadData(file.buffer);
-        const url = blockBlobClient.url;
-        new_item.PRMS_IMG = url;
-      }
-      console.log('end2');
-
-      new_item._id = new_number;
-      new_item.STTEMNT_NO = ItemData.STTEMNT_NO;
-      new_item.ENTRPS = ItemData.ENTRPS;
-      new_item.PRDUCT = ItemData.PRDUCT;
-      new_item.REGIST_DT = ItemData.REGIST_DT;
-      new_item.DISTB_PD = ItemData.DISTB_PD;
-      new_item.SUNGSANG = ItemData.SUNGSANG;
-      new_item.SRV_USE = ItemData.SRV_USE;
-      new_item.PRSRV_PD = ItemData.PRSRV_PD;
-      new_item.INTAKE_HINT1 = ItemData.INTAKE_HINT1;
-      new_item.MAIN_FNCTN = ItemData.MAIN_FNCTN;
-      new_item.BASE_STANDARD = ItemData.BASE_STANDARD;
-      new_item.PRMS_STANDARD = ItemData.PRMS_STANDARD;
-
-      await this.ItemRepository.save(new_item);
-      console.log('end3');
-
-      return { data: new_item };
+      return { data: newItem };
     } catch (err) {
       console.log(err.message);
     }
     return 'hello';
   }
 
-  async testFormData(data, file: Express.Multer.File) {
+  async testFormData(data, files: Array<Express.Multer.File>) {
     try {
-      console.log(file);
-      console.log(data.data);
+      const filesArray = [];
+      const imagesArray = [];
+
+      files.map((file, i) => {
+        if (file.fieldname === 'images') {
+          imagesArray.push(file);
+        } else if (file.fieldname === 'files') {
+          filesArray.push(file);
+        }
+      });
+
+      console.log('file', filesArray);
+      console.log('iamges', imagesArray);
       return data;
     } catch (err) {
       console.log(err);
     }
   }
 
-  async testGetOneData() {
-    try {
-      console.log(`1`);
-      const [item] = await this.ItemRepository.query(
-        `SELECT *
-            FROM health_food_data
-            WHERE _id = 1
-            `,
-      );
-      console.log(item);
-      return { data: item };
-    } catch (err) {
-      console.log(err);
-    }
-  }
-
+  // excel file 받기
   async getFile(res: Response) {
     try {
       const data = await this.ItemRepository.query(`
@@ -383,5 +341,9 @@ export class ItemService {
     } catch (err) {
       console.log(err);
     }
+  }
+
+  async UseNo() {
+    return 'hello';
   }
 }

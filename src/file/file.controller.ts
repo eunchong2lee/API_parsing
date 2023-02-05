@@ -30,7 +30,6 @@ export class FileController {
     @UploadedFiles() files: Array<Express.Multer.File>,
     @Body() itemData,
   ) {
-    console.log(1, files);
     return await this.fileService.postFiles(files, itemData.id);
   }
 

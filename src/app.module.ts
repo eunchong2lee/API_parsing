@@ -18,6 +18,7 @@ import { DraftModule } from './draft/draft.module';
 import { StandardModule } from './standard/standard.module';
 import { FileModule } from './file/file.module';
 import { UserActivityModule } from './user-activity/user-activity.module';
+import { ImageModule } from './image/image.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { UserActivityModule } from './user-activity/user-activity.module';
     StandardModule,
     FileModule,
     UserActivityModule,
+    ImageModule,
   ],
   controllers: [AppController],
   providers: [AppService, { provide: APP_PIPE, useClass: ValidationPipe }],
