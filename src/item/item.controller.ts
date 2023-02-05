@@ -41,15 +41,12 @@ export class ItemController {
     @Param('limit') limit: string,
     @Param('page') page: string,
   ) {
-    console.log('================================================');
     return await this.itemService.GetLimitItems(limit, page);
   }
 
   // Get One item
   @Get(':id')
   async getTestOneData(@Param('id') id: string) {
-    console.log(1);
-
     return await this.itemService.GetItem(id);
   }
 
@@ -79,15 +76,5 @@ export class ItemController {
     @Body(ValidationPipe) ItemData,
   ) {
     return await this.itemService.PostItem(ItemData, files);
-  }
-
-  @Post('/posttest')
-  @UsePipes(TransformInterceptor)
-  @UseInterceptors(AnyFilesInterceptor())
-  async PostTest(
-    @UploadedFiles() files: Array<Express.Multer.File>,
-    @Body(ValidationPipe) ItemData,
-  ) {
-    return await this.itemService.testFormData(ItemData, files);
   }
 }

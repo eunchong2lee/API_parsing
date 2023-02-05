@@ -1,6 +1,8 @@
 import { AzureStorageModule } from '@nestjs/azure-storage';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { DraftService } from 'src/draft/draft.service';
+import { Draft } from 'src/draft/entities/draft.entity';
 import { File } from 'src/file/entities/file.entity';
 import { FileService } from 'src/file/file.service';
 import { HealthFoodData } from 'src/HealthFoodData/entities/HealthFoodData.entity';
@@ -11,7 +13,7 @@ import { ItemService } from './item.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([HealthFoodData, File, Image]),
+    TypeOrmModule.forFeature([HealthFoodData, File, Image, Draft]),
     AzureStorageModule.withConfig({
       sasKey: process.env['AZURE_STORAGE_ACCOUNT_ACCESS_KEY'],
       accountName: process.env['AZURE_STORAGE_ACCOUNT_NAME'],
@@ -20,6 +22,6 @@ import { ItemService } from './item.service';
   ],
   exports: [AzureStorageModule, TypeOrmModule],
   controllers: [ItemController],
-  providers: [ItemService, FileService, ImageService],
+  providers: [ItemService, FileService, ImageService, DraftService],
 })
 export class ItemModule {}

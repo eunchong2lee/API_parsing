@@ -13,6 +13,7 @@ import type { Response } from 'express';
 import { saveAs } from 'file-saver';
 import { ImageService } from 'src/image/image.service';
 import { FileService } from 'src/file/file.service';
+import { DraftService } from 'src/draft/draft.service';
 
 @Injectable()
 export class ItemService {
@@ -21,6 +22,7 @@ export class ItemService {
     private readonly ItemRepository: Repository<HealthFoodData>,
     private imageService: ImageService,
     private fileService: FileService,
+    private draftService: DraftService,
   ) {}
 
   // Get all items
@@ -124,7 +126,6 @@ export class ItemService {
         const containerClient = await blobServiceClient.getContainerClient(
           containerName,
         );
-        console.log('setting container client ===========');
 
         const blockBlobClient = containerClient.getBlockBlobClient(
           ItemData.PRDUCT,
@@ -238,6 +239,7 @@ export class ItemService {
         this.ItemRepository.save(newItem),
         this.fileService.postFiles(filesArray, newItem._id),
         this.imageService.postImages(imagesArray, newItem._id),
+        this.draftService.postDraft(ItemData.draft, newItem._id),
       ]);
 
       return { data: newItem };
@@ -245,27 +247,6 @@ export class ItemService {
       console.log(err.message);
     }
     return 'hello';
-  }
-
-  async testFormData(data, files: Array<Express.Multer.File>) {
-    try {
-      const filesArray = [];
-      const imagesArray = [];
-
-      files.map((file, i) => {
-        if (file.fieldname === 'images') {
-          imagesArray.push(file);
-        } else if (file.fieldname === 'files') {
-          filesArray.push(file);
-        }
-      });
-
-      console.log('file', filesArray);
-      console.log('iamges', imagesArray);
-      return data;
-    } catch (err) {
-      console.log(err);
-    }
   }
 
   // excel file 받기

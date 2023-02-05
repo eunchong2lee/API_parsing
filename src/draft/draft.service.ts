@@ -25,30 +25,15 @@ export class DraftService {
     }
   }
 
-  async postDraft(data) {
+  async postDraft(data, id) {
     try {
-      const new_draft = new Draft();
-      new_draft.text = data;
+      const newDraft = new Draft();
+      newDraft.text = data;
+      newDraft.PRDUCT_ID = id;
 
-      await this.DraftRepository.save(new_draft);
+      await this.DraftRepository.save(newDraft);
 
-      return { data: { message: 'success', data: new_draft } };
-    } catch (err) {
-      console.log(err.message);
-    }
-  }
-
-  async postFile(file: Express.Multer.File) {
-    try {
-      console.log(file);
-      if (file) {
-        console.log(file);
-        const split_data = file.originalname.split('.');
-        console.log(split_data);
-        const extension = split_data[0];
-        const file_name = uuidv4() + '.' + extension;
-      }
-      return '데이터 넘어옴';
+      return { data: { message: 'success', data: newDraft } };
     } catch (err) {
       console.log(err.message);
     }
