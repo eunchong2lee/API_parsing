@@ -8,7 +8,7 @@ import { IoTFleetHub } from 'aws-sdk';
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 @Injectable()
-export class VtestService {
+export class HeatlFoodDataService {
   constructor(
     @InjectRepository(HealthFoodData)
     private readonly VtestRepository: Repository<HealthFoodData>,
@@ -59,26 +59,11 @@ export class VtestService {
     }
   }
 
-  // mysql 전체 데이터 받아오기
-  async getVitamin() {
-    try {
-      const total_data = await this.VtestRepository.query(
-        `SELECT * FROM health_food_data`,
-      );
-      console.log(total_data.length);
-      return total_data;
-    } catch (e) {
-      console.log(e.message);
-    }
-  }
-
   async parse_standard() {
     try {
       const total_data = await this.VtestRepository.query(
         `SELECT _id, BASE_STANDARD FROM health_food_data`,
       );
-      console.log('start================================');
-      // const length_total = [];
 
       total_data.forEach(async (e) => {
         if (e.BASE_STANDARD) {
@@ -33955,7 +33940,6 @@ export class VtestService {
           if (Object.keys(final_data).length !== 0) {
             e.PRMS_STANDARD = final_data;
             await this.VtestRepository.update(e._id, e);
-            console.log(final_data);
           }
         }
 
@@ -33985,8 +33969,6 @@ export class VtestService {
       const compare_data = [];
       const response_data = [];
 
-      console.log('star==');
-
       for (let i = 0; i <= error_list.length; i++) {
         // 1 50 o
         // 51 100 o
@@ -33995,7 +33977,6 @@ export class VtestService {
         // 201 250 o
         // 251 300 o
         // 301 352 o
-        console.log(i);
         //https://apis.data.go.kr/1471000/HtfsInfoService03/getHtfsItem01?pageNo=307&numOfRows=100&ServiceKey=FYuL%2FLB1%2FP7L6akaiQeNf4u6iOJuQUpEROy4iLKnkRB4II%2FqewwrlXQqLU4C69eX2ml5WM3k6ZjdFZeyVScZKA%3D%3D&type=json
         const response = this.httpService.axiosRef
           .get(
@@ -34010,7 +33991,6 @@ export class VtestService {
             }
 
             fs.writeFileSync('drug-with-prd.json', JSON.stringify(jsonData));
-            console.log(i, '완료');
           })
           .catch((e) => {
             console.log(e.message, i);

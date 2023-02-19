@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { HealthFoodData } from './entities/HealthFoodData.entity';
-import { VtestController } from './vtest.controller';
-import { VtestService } from './vtest.service';
+import { HealthFoodDataController } from './health-food-data.controller';
+import { HeatlFoodDataService } from './health-food-data.service';
 import { HttpModule } from '@nestjs/axios';
 
 @Module({
@@ -16,7 +16,7 @@ import { HttpModule } from '@nestjs/axios';
     }),
   ],
   exports: [TypeOrmModule],
-  controllers: [VtestController],
-  providers: [VtestService],
+  controllers: [HealthFoodDataController],
+  providers: [HeatlFoodDataService],
 })
 export class VtestModule {}

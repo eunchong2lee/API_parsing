@@ -7,6 +7,7 @@ import {
   ParseIntPipe,
   Post,
   Put,
+  Query,
   Res,
   StreamableFile,
   UploadedFile,
@@ -19,6 +20,7 @@ import { ItemService } from './item.service';
 import { AnyFilesInterceptor, FileInterceptor } from '@nestjs/platform-express';
 import { TransformInterceptor } from 'src/config/transform.interceptor';
 import type { Response } from 'express';
+import { itemRegisterDto } from './dto/itemRegister.dto';
 
 @Controller('item')
 export class ItemController {
@@ -32,8 +34,14 @@ export class ItemController {
 
   // get excel file
   @Get('/file')
-  async getFile(@Res({ passthrough: true }) res: Response) {
-    return await this.itemService.getFile(res);
+  async getFile(
+    @Query('tab') tab: string,
+    @Query('name') name: string,
+    @Query('date') date: string,
+    @Query('useYN') useYN: string,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    return await this.itemService.getFile(tab, name, date, useYN, res);
   }
 
   @Get('/limit/:limit/:page')
@@ -59,13 +67,13 @@ export class ItemController {
   // put one item
   @Put(':id')
   @UsePipes(TransformInterceptor)
-  @UseInterceptors(FileInterceptor('image'))
+  @UseInterceptors(AnyFilesInterceptor())
   async PutItem(
-    @UploadedFiles() file: Express.Multer.File,
-    @Body(ValidationPipe) ItemData,
+    @UploadedFiles() files: Array<Express.Multer.File>,
+    @Body(ValidationPipe) itemData,
     @Param('id') id: string,
   ) {
-    return await this.itemService.PutItem(ItemData, id, file);
+    return await this.itemService.PutItem(itemData, id, files);
   }
 
   @Post('/')
@@ -73,8 +81,9 @@ export class ItemController {
   @UseInterceptors(AnyFilesInterceptor())
   async PostItem(
     @UploadedFiles() files: Array<Express.Multer.File>,
-    @Body(ValidationPipe) ItemData,
+    @Body(ValidationPipe) itemData: itemRegisterDto,
   ) {
-    return await this.itemService.PostItem(ItemData, files);
+    console.log(itemData);
+    return await this.itemService.PostItem(itemData, files);
   }
 }

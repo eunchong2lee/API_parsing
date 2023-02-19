@@ -14,6 +14,7 @@ import { saveAs } from 'file-saver';
 import { ImageService } from 'src/image/image.service';
 import { FileService } from 'src/file/file.service';
 import { DraftService } from 'src/draft/draft.service';
+import { itemRegisterDto } from './dto/itemRegister.dto';
 
 @Injectable()
 export class ItemService {
@@ -74,67 +75,29 @@ export class ItemService {
             `,
       );
 
-      return { data: item };
+      const draft = await this.draftService.getDraft(id);
+      const files = await this.fileService.getFiles(id);
+      const images = await this.imageService.getImages(id);
+
+      return { data: { item, draft, files, images } };
     } catch (err) {
       console.log(err.message);
     }
   }
 
   // multer upload image
-  async PutItem(ItemData, id, file: Express.Multer.File) {
+  async PutItem(ItemData, id, files: Array<Express.Multer.File>) {
     try {
+      // await this.ItemRepository.update();
       const [item] = await this.ItemRepository.query(
         `SELECT *
                     FROM health_food_data
                     WHERE _id = "${id}"
                     `,
       );
-      ItemData = JSON.parse(ItemData.data);
+
+      // ItemData = JSON.parse(ItemData.data);
       console.log(ItemData);
-
-      if (file) {
-        // upload image
-
-        const extension = file.originalname.split('.').pop();
-        const file_name = uuidv4() + '.' + extension;
-
-        // 읽기 전용
-        //   const stream = intoStream(optimized) as Readable;
-        // const containerClient =
-        //   blobServiceClient.getContainerClient(containerName);
-        // const blockBlobClient = containerClient.getBlockBlobClient(blobName);
-
-        // azure blob
-        const accountName = process.env.AZURE_STORAGE_ACCOUNT_NAME;
-        if (!accountName) throw Error('Azure Storage accountName not found');
-
-        // Azure Storage resource key
-        const accountKey = process.env.AZURE_STORAGE_ACCOUNT_ACCESS_KEY;
-        if (!accountKey) throw Error('Azure Storage accountKey not found');
-
-        // Create credential
-        const sharedKeyCredential = new StorageSharedKeyCredential(
-          accountName,
-          accountKey,
-        );
-        const baseUrl = `https://${accountName}.blob.core.windows.net/crawl/`;
-        const containerName = `HealthFoodData`;
-        const blobServiceClient = new BlobServiceClient(
-          `${baseUrl}`,
-          sharedKeyCredential,
-        );
-        const containerClient = await blobServiceClient.getContainerClient(
-          containerName,
-        );
-
-        const blockBlobClient = containerClient.getBlockBlobClient(
-          ItemData.PRDUCT,
-        );
-
-        await blockBlobClient.uploadData(file.buffer);
-        const url = blockBlobClient.url;
-        // item.PRMS_IMG = url;
-      }
 
       // data 수정
       item.STTEMNT_NO = ItemData.STTEMNT_NO;
@@ -150,8 +113,24 @@ export class ItemService {
       item.BASE_STANDARD = ItemData.BASE_STANDARD;
       item.PRMS_STANDARD = ItemData.PRMS_STANDARD;
 
-      console.log(item);
-      await this.ItemRepository.update(item._id, item);
+      const filesArray = [];
+      const imagesArray = [];
+
+      files.map((file, i) => {
+        if (file.fieldname === 'images') {
+          imagesArray.push(file);
+        } else if (file.fieldname === 'files') {
+          filesArray.push(file);
+        }
+      });
+
+      // await Promise.all([
+      //   this.fileService.putFiles(filesArray, id),
+      //   this.imageService.putImages(imagesArray, id),
+      //   this.draftService.putDraft(ItemData.Draft, id),
+      // ]);
+
+      // await this.ItemRepository.update(item._id, item);
 
       return { data: item, status: 200 };
     } catch (err) {
@@ -202,9 +181,24 @@ export class ItemService {
   }
 
   //Post
-  async PostItem(ItemData, files: Array<Express.Multer.File>) {
+  async PostItem(body: itemRegisterDto, files: Array<Express.Multer.File>) {
     try {
-      const newItem = new HealthFoodData();
+      console.log('body', body);
+      // console.log('fils', files);
+      // const newItem = await this.ItemRepository.save({
+      //   STTEMNT_NO: body.STTEMNT_NO,
+      //   ENTRPS: body.ENTRPS,
+      //   PRDUCT: body.PRDUCT,
+      //   REGIST_DT: body.REGIST_DT,
+      //   DISTB_PD: body.DISTB_PD,
+      //   SUNGSANG: body.SUNGSANG,
+      //   SRV_USE: body.SRV_USE,
+      //   PRSRV_PD: body.PRSRV_PD,
+      //   INTAKE_HINT1: body.INTAKE_HINT1,
+      //   MAIN_FNCTN: body.MAIN_FNCTN,
+      //   BASE_STANDARD: body.BASE_STANDARD,
+      //   PRMS_STANDARD: body.PRMS_STANDARD,
+      // });
 
       // file 분할
       const filesArray = [];
@@ -218,31 +212,21 @@ export class ItemService {
         }
       });
 
-      ItemData = JSON.parse(ItemData.data);
+      console.log(filesArray);
+      console.log(imagesArray);
 
-      newItem.STTEMNT_NO = ItemData.STTEMNT_NO;
-      newItem.ENTRPS = ItemData.ENTRPS;
-      newItem.PRDUCT = ItemData.PRDUCT;
-      newItem.REGIST_DT = ItemData.REGIST_DT;
-      newItem.DISTB_PD = ItemData.DISTB_PD;
-      newItem.SUNGSANG = ItemData.SUNGSANG;
-      newItem.SRV_USE = ItemData.SRV_USE;
-      newItem.PRSRV_PD = ItemData.PRSRV_PD;
-      newItem.INTAKE_HINT1 = ItemData.INTAKE_HINT1;
-      newItem.MAIN_FNCTN = ItemData.MAIN_FNCTN;
-      newItem.BASE_STANDARD = ItemData.BASE_STANDARD;
-      newItem.PRMS_STANDARD = ItemData.PRMS_STANDARD;
+      // // 파일 저장
+      // if (newItem._id) {
+      //   await Promise.all([
+      //     this.fileService.postFiles(filesArray, newItem._id),
+      //     this.imageService.postImages(imagesArray, newItem._id),
+      //     this.draftService.postDraft(body.Draft, newItem._id),
+      //   ]);
+      // }
 
-      // 파일 저장
+      return { body };
 
-      await Promise.all([
-        this.ItemRepository.save(newItem),
-        this.fileService.postFiles(filesArray, newItem._id),
-        this.imageService.postImages(imagesArray, newItem._id),
-        this.draftService.postDraft(ItemData.draft, newItem._id),
-      ]);
-
-      return { data: newItem };
+      // return { data: newItem };
     } catch (err) {
       console.log(err.message);
     }
@@ -250,12 +234,46 @@ export class ItemService {
   }
 
   // excel file 받기
-  async getFile(res: Response) {
+  async getFile(tab, name, date, useYN, res: Response) {
     try {
+      const searchUseYN = useYN == 'E' ? `` : `AND useYN = "${useYN}"`;
+
+      // tab 확인
+      let searchTab = '';
+      if (tab === 'PRDUCT') {
+        searchTab = 'PRDUCT';
+      } else if (tab === 'STTEMNT_NO') {
+        searchTab = 'STTEMNT_NO';
+      } else if (tab === 'ENTRPS') {
+        searchTab = 'ENTRPS';
+      }
+
+      // 검색 확인
+      let searchName = '';
+      if (name) {
+        searchName = name;
+      }
+
+      let firstDate = '00000000';
+      let secondDate = '99999999';
+
+      // 날짜 파싱
+      if (date) {
+        const splitDate = date.split('~');
+        firstDate = splitDate[0];
+        firstDate = firstDate.split('-').join('');
+        secondDate = splitDate[1];
+        secondDate = secondDate.split('-').join('');
+      }
+
       const data = await this.ItemRepository.query(`
-      SELECT *
-      FROM health_food_data
-      LIMIT 10`);
+          SELECT *
+          FROM health_food_data
+          WHERE ${searchTab} like "%${searchName}%"
+          AND REGIST_DT >= ${firstDate}
+          AND ${secondDate} >= REGIST_DT
+          ${searchUseYN}
+          `);
 
       const workbook = new Workbook();
       const worksheet = workbook.addWorksheet('My Sheet');

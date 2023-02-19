@@ -3,8 +3,10 @@ import {
   Body,
   Controller,
   Get,
+  Param,
   Post,
   Put,
+  Query,
   UploadedFile,
   UploadedFiles,
   UseInterceptors,
@@ -18,9 +20,9 @@ import { FileService } from './file.service';
 export class FileController {
   constructor(private fileService: FileService) {}
 
-  @Get()
-  async GetFiles() {
-    return await this.fileService.getFiles();
+  @Get('/:id')
+  async GetFiles(@Query('id') id: number) {
+    return await this.fileService.getFiles(id);
   }
 
   @Post()
@@ -33,8 +35,13 @@ export class FileController {
     return await this.fileService.postFiles(files, itemData.id);
   }
 
-  @Put()
-  async PutFiles() {
-    return await this.fileService.putFiles();
+  @Put(':id')
+  @UsePipes(TransformInterceptor)
+  @UseInterceptors(AnyFilesInterceptor())
+  async PutFiles(
+    @UploadedFiles() files: Array<Express.Multer.File>,
+    @Param('id') id: number,
+  ) {
+    return await this.fileService.putFiles(files, id);
   }
 }

@@ -135,7 +135,7 @@ export class VtimgService {
                 // fs.writeFileSync(`poster/${data.PRDUCT}.jpg`, imgResult.data);
                 await blockBlobClient.uploadData(imgResult.data);
                 url = blockBlobClient.url;
-                data.PRMS_IMG = url;
+                // data.PRMS_IMG = url;
                 console.log(url);
                 await this.VtestRepository.update(data._id, data);
               }

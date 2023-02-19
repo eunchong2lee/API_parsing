@@ -2,7 +2,9 @@ import {
   Body,
   Controller,
   Get,
+  Param,
   Post,
+  Put,
   UploadedFiles,
   UseInterceptors,
   UsePipes,
@@ -28,5 +30,15 @@ export class ImageController {
     @Body() itemData,
   ) {
     return await this.imageService.postImages(images, itemData.id);
+  }
+
+  @Put(':id')
+  @UsePipes(TransformInterceptor)
+  @UseInterceptors(AnyFilesInterceptor())
+  async PutImage(
+    @UploadedFiles() images: Array<Express.Multer.File>,
+    @Param('id') id: number,
+  ) {
+    return await this.imageService.putImages(images, id);
   }
 }

@@ -22,7 +22,6 @@ export class StandardService {
       for (let i = 0; i < data.length; i++) {
         if (data[i].PRMS_STANDARD) {
           const parse_data = Object.keys(JSON.parse(data[i].PRMS_STANDARD));
-          console.log(parse_data);
           for (let i = 0; i < parse_data.length; i++) {
             if (parse_data[i]) {
               const find_data = await this.StandardRepository.query(`
