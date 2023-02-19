@@ -187,6 +187,13 @@ export class ImageService {
           }
         });
       }
+      const returnImage = await this.imagRepository.query(`
+      SELECT *
+      FROM Image
+      WHERE PRDUCT_ID = ${id}
+      AND useYN = "Y"
+      `);
+      return returnImage;
     } catch (e) {
       console.log(e.message);
     }

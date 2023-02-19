@@ -1,4 +1,4 @@
-import { IsEmpty, IsOptional, IsString } from 'class-validator';
+import { IsOptional } from 'class-validator';
 
 export type UseType = 'Y' | 'N';
 
@@ -40,7 +40,7 @@ export class itemRegisterDto {
   PRMS_STANDARD: string;
 
   @IsOptional()
-  Draft: string;
+  draft: string;
 
   useYN: UseType;
 }

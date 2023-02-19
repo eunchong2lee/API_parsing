@@ -2,15 +2,12 @@ import {
   BlobServiceClient,
   StorageSharedKeyCredential,
 } from '@azure/storage-blob';
-import { ConsoleLogger, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Workbook } from 'exceljs';
 import { HealthFoodData } from 'src/HealthFoodData/entities/HealthFoodData.entity';
-import { CannotAttachTreeChildrenEntityError, Repository } from 'typeorm';
-import { v4 as uuidv4 } from 'uuid';
-import * as XLSX from 'xlsx';
+import { Repository } from 'typeorm';
 import type { Response } from 'express';
-import { saveAs } from 'file-saver';
 import { ImageService } from 'src/image/image.service';
 import { FileService } from 'src/file/file.service';
 import { DraftService } from 'src/draft/draft.service';
@@ -89,11 +86,12 @@ export class ItemService {
   async PutItem(ItemData, id, files: Array<Express.Multer.File>) {
     try {
       // await this.ItemRepository.update();
+      console.log(id);
       const [item] = await this.ItemRepository.query(
         `SELECT *
-                    FROM health_food_data
-                    WHERE _id = "${id}"
-                    `,
+          FROM health_food_data
+          WHERE _id = ${id}
+          `,
       );
 
       // ItemData = JSON.parse(ItemData.data);
@@ -111,7 +109,7 @@ export class ItemService {
       item.INTAKE_HINT1 = ItemData.INTAKE_HINT1;
       item.MAIN_FNCTN = ItemData.MAIN_FNCTN;
       item.BASE_STANDARD = ItemData.BASE_STANDARD;
-      item.PRMS_STANDARD = ItemData.PRMS_STANDARD;
+      item.PRMS_STANDARD = JSON.parse(ItemData.PRMS_STANDARD);
 
       const filesArray = [];
       const imagesArray = [];
@@ -124,15 +122,24 @@ export class ItemService {
         }
       });
 
-      // await Promise.all([
-      //   this.fileService.putFiles(filesArray, id),
-      //   this.imageService.putImages(imagesArray, id),
-      //   this.draftService.putDraft(ItemData.Draft, id),
-      // ]);
+      const [file, image, draft] = await Promise.all([
+        this.fileService.putFiles(filesArray, id),
+        this.imageService.putImages(imagesArray, id),
+        this.draftService.putDraft(ItemData.draft, id),
+      ]);
 
-      // await this.ItemRepository.update(item._id, item);
+      await this.ItemRepository.update(item._id, item);
 
-      return { data: item, status: 200 };
+      const [newData] = await this.ItemRepository.query(`
+      SELECT *
+          FROM health_food_data
+          WHERE _id = ${id}
+      `);
+
+      return {
+        data: { item: newData, file: file, draft: draft, image: image },
+        status: 200,
+      };
     } catch (err) {
       console.log(err.message);
     }
@@ -185,20 +192,20 @@ export class ItemService {
     try {
       console.log('body', body);
       // console.log('fils', files);
-      // const newItem = await this.ItemRepository.save({
-      //   STTEMNT_NO: body.STTEMNT_NO,
-      //   ENTRPS: body.ENTRPS,
-      //   PRDUCT: body.PRDUCT,
-      //   REGIST_DT: body.REGIST_DT,
-      //   DISTB_PD: body.DISTB_PD,
-      //   SUNGSANG: body.SUNGSANG,
-      //   SRV_USE: body.SRV_USE,
-      //   PRSRV_PD: body.PRSRV_PD,
-      //   INTAKE_HINT1: body.INTAKE_HINT1,
-      //   MAIN_FNCTN: body.MAIN_FNCTN,
-      //   BASE_STANDARD: body.BASE_STANDARD,
-      //   PRMS_STANDARD: body.PRMS_STANDARD,
-      // });
+      const newItem = await this.ItemRepository.save({
+        STTEMNT_NO: body.STTEMNT_NO,
+        ENTRPS: body.ENTRPS,
+        PRDUCT: body.PRDUCT,
+        REGIST_DT: body.REGIST_DT,
+        DISTB_PD: body.DISTB_PD,
+        SUNGSANG: body.SUNGSANG,
+        SRV_USE: body.SRV_USE,
+        PRSRV_PD: body.PRSRV_PD,
+        INTAKE_HINT1: body.INTAKE_HINT1,
+        MAIN_FNCTN: body.MAIN_FNCTN,
+        BASE_STANDARD: body.BASE_STANDARD,
+        PRMS_STANDARD: JSON.parse(body.PRMS_STANDARD),
+      });
 
       // file 분할
       const filesArray = [];
@@ -215,18 +222,16 @@ export class ItemService {
       console.log(filesArray);
       console.log(imagesArray);
 
-      // // 파일 저장
-      // if (newItem._id) {
-      //   await Promise.all([
-      //     this.fileService.postFiles(filesArray, newItem._id),
-      //     this.imageService.postImages(imagesArray, newItem._id),
-      //     this.draftService.postDraft(body.Draft, newItem._id),
-      //   ]);
-      // }
+      // 파일 저장
+      if (newItem._id) {
+        await Promise.all([
+          this.fileService.postFiles(filesArray, newItem._id),
+          this.imageService.postImages(imagesArray, newItem._id),
+          this.draftService.postDraft(body.draft, newItem._id),
+        ]);
+      }
 
-      return { body };
-
-      // return { data: newItem };
+      return { data: newItem };
     } catch (err) {
       console.log(err.message);
     }

@@ -1,6 +1,7 @@
 import { HttpModule } from '@nestjs/axios';
 import { AzureStorageModule } from '@nestjs/azure-storage';
 import { Module } from '@nestjs/common';
+import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { HealthFoodData } from 'src/HealthFoodData/entities/HealthFoodData.entity';
 import { VtimgController } from './vtimg.controller';
@@ -19,6 +20,10 @@ import { VtimgService } from './vtimg.service';
         timeout: 20000000,
         maxRedirects: 5,
       }),
+    }),
+    JwtModule.register({
+      secret: 'secure',
+      signOptions: { expiresIn: '1d' },
     }),
   ],
   exports: [AzureStorageModule, TypeOrmModule],

@@ -1,4 +1,3 @@
-import { PaperSize } from 'exceljs';
 import {
   Column,
   CreateDateColumn,

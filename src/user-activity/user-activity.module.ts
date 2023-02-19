@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import {
   UserActivityRelation,
@@ -15,6 +16,10 @@ import { UserActivityService } from './user-activity.service';
       UserActivityRelation,
       UserActivityTotalRelation,
     ]),
+    JwtModule.register({
+      secret: 'secure',
+      signOptions: { expiresIn: '1d' },
+    }),
   ],
   controllers: [UserActivityController],
   providers: [UserActivityService],

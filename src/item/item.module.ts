@@ -1,5 +1,6 @@
 import { AzureStorageModule } from '@nestjs/azure-storage';
 import { Module } from '@nestjs/common';
+import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DraftService } from 'src/draft/draft.service';
 import { Draft, DraftImage } from 'src/draft/entities/draft.entity';
@@ -18,6 +19,10 @@ import { ItemService } from './item.service';
       sasKey: process.env['AZURE_STORAGE_ACCOUNT_ACCESS_KEY'],
       accountName: process.env['AZURE_STORAGE_ACCOUNT_NAME'],
       containerName: 'nest-demo-container',
+    }),
+    JwtModule.register({
+      secret: 'secure',
+      signOptions: { expiresIn: '1d' },
     }),
   ],
   exports: [AzureStorageModule, TypeOrmModule],

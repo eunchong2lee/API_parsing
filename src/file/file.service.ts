@@ -186,7 +186,12 @@ export class FileService {
           }
         });
       }
-      return 'complete';
+      const returnFile = await this.fileRepository.query(`
+      SELECT *
+      FROM File
+      WHERE PRDUCT_ID = ${id}
+      AND useYN = "Y"`);
+      return returnFile;
     } catch (err) {
       console.log(err.message);
     }

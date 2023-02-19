@@ -19,11 +19,9 @@ export class DraftService {
 
   async getDraft(id) {
     try {
-      console.log(id);
       const [draft] = await this.DraftRepository.query(`
-        SELECT * FROM DRAFT WHERE _id = "${id}"`);
-
-      return { draft };
+        SELECT * FROM DRAFT WHERE PRDUCT_ID = ${id}`);
+      return draft;
     } catch (err) {
       console.log(err.message);
     }
@@ -124,10 +122,28 @@ export class DraftService {
 
   async putDraft(data, id) {
     try {
-      await this.DraftRepository.query(`
-      UPDATE DRAFT
-      SET text = ${data}
-      WHERE id = ${id}`);
+      if (data) {
+        const [findDraft] = await this.DraftRepository.query(`
+        SELECT *
+        FROM DRAFT
+        WHERE PRDUCT_ID = ${id}`);
+        console.log(data);
+
+        if (findDraft) {
+          const [returnDraft] = await this.DraftRepository.query(`
+          UPDATE DRAFT
+          SET text = ${data}
+          WHERE PRDUCT_ID = ${id}`);
+
+          return returnDraft;
+        } else {
+          const newDraft = await this.DraftRepository.save({
+            text: data,
+            PRDUCT_ID: id,
+          });
+          return newDraft;
+        }
+      }
     } catch (err) {
       console.log(err.message);
     }
