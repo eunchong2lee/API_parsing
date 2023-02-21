@@ -4,7 +4,7 @@ server:
 db:
   type: 'mysql'
   port: 3306
-  database: 'crawl'
+  database: 'healthfood'
   host: '20.200.216.18'
   username: 'root'
   password: '1004'

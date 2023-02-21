@@ -42,7 +42,7 @@ export class AnalyticsService {
     //12
     const day = await this.AnalyticsRepository.query(`
     SELECT DATE_FORMAT(createdAt, '%Y%m%d') AS date, count(*) AS cnt
-    FROM crawl.health_food_data
+    FROM health_food_data
     GROUP BY DATE_FORMAT(createdAt, '%Y%m%d')
     ORDER BY date DESC
     limit 12`);
@@ -79,7 +79,7 @@ export class AnalyticsService {
   async get_month() {
     const month = await this.AnalyticsRepository.query(`
     SELECT DATE_FORMAT(createdAt, '%Y%m') AS date, count(*) AS cnt
-    FROM crawl.health_food_data
+    FROM health_food_data
     GROUP BY DATE_FORMAT(createdAt, '%Y%m')
     ORDER BY date DESC
     limit 12`);
@@ -114,7 +114,7 @@ export class AnalyticsService {
   async get_year() {
     const year = await this.AnalyticsRepository.query(`
         SELECT DATE_FORMAT(createdAt, '%Y') AS date, count(*) AS cnt
-        FROM crawl.health_food_data
+        FROM health_food_data
         GROUP BY DATE_FORMAT(createdAt, '%Y')
         ORDER BY date DESC
         limit 12`);

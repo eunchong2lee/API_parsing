@@ -33970,13 +33970,6 @@ export class HeatlFoodDataService {
       const response_data = [];
 
       for (let i = 0; i <= error_list.length; i++) {
-        // 1 50 o
-        // 51 100 o
-        // 101 150 o
-        // 151 200 o
-        // 201 250 o
-        // 251 300 o
-        // 301 352 o
         //https://apis.data.go.kr/1471000/HtfsInfoService03/getHtfsItem01?pageNo=307&numOfRows=100&ServiceKey=FYuL%2FLB1%2FP7L6akaiQeNf4u6iOJuQUpEROy4iLKnkRB4II%2FqewwrlXQqLU4C69eX2ml5WM3k6ZjdFZeyVScZKA%3D%3D&type=json
         const response = this.httpService.axiosRef
           .get(
