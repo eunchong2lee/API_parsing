@@ -2,7 +2,7 @@ import {
   BlobServiceClient,
   StorageSharedKeyCredential,
 } from '@azure/storage-blob';
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Image } from './entities/image.entity';
@@ -24,7 +24,7 @@ export class ImageService {
 
       return { images };
     } catch (e) {
-      console.log(e.message);
+      throw new BadRequestException(e.response);
     }
   }
 
@@ -99,7 +99,7 @@ export class ImageService {
         });
       }
     } catch (e) {
-      console.log(e.message);
+      throw new BadRequestException(e.response);
     }
   }
 
@@ -195,7 +195,7 @@ export class ImageService {
       `);
       return returnImage;
     } catch (e) {
-      console.log(e.message);
+      throw new BadRequestException(e.response);
     }
   }
 }

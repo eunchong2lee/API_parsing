@@ -13,7 +13,6 @@ export class AdminUserService {
   async existsByEmail(email: string) {
     try {
       const user = await this.repo.findOne({ email });
-      console.log(user);
       return user;
     } catch (error) {
       throw new BadRequestException(error.response);
@@ -22,7 +21,6 @@ export class AdminUserService {
 
   async existsByUserId(account: string) {
     const user = await this.repo.findOne({ account });
-    console.log(user);
     return user;
   }
 
@@ -30,7 +28,7 @@ export class AdminUserService {
     try {
       return await this.repo.save(options);
     } catch (err) {
-      console.log(err);
+      throw new BadRequestException(err.response);
     }
   }
 

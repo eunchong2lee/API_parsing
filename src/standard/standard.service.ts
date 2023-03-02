@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { HealthFoodData } from 'src/HealthFoodData/entities/HealthFoodData.entity';
 import { Repository } from 'typeorm';
@@ -43,7 +43,7 @@ export class StandardService {
       FROM standard`);
       return final_standard;
     } catch (err) {
-      console.log(err.message);
+      throw new BadRequestException(err.response);
     }
   }
 
@@ -55,7 +55,7 @@ export class StandardService {
       );
       return { data };
     } catch (err) {
-      console.log(err.message);
+      throw new BadRequestException(err.response);
     }
   }
 }

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import {
@@ -82,7 +82,7 @@ export class UserActivityService {
 
       return '등록';
     } catch (err) {
-      console.log(err.messsage);
+      throw new BadRequestException(err.response);
     }
   }
 
@@ -126,7 +126,7 @@ export class UserActivityService {
 
       return { data: return_datas };
     } catch (err) {
-      console.log(err.message);
+      throw new BadRequestException(err.response);
     }
   }
 

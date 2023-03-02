@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { File } from './entities/file.entity';
@@ -98,7 +98,7 @@ export class FileService {
       }
       return 'complete';
     } catch (err) {
-      console.log(err.message);
+      throw new BadRequestException(err.response);
     }
   }
 
@@ -193,7 +193,7 @@ export class FileService {
       AND useYN = "Y"`);
       return returnFile;
     } catch (err) {
-      console.log(err.message);
+      throw new BadRequestException(err.response);
     }
   }
 }

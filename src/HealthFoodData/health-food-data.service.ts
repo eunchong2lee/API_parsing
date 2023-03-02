@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { HealthFoodData } from './entities/HealthFoodData.entity';
@@ -55,7 +55,7 @@ export class HeatlFoodDataService {
 
       return '데이터를 저장했습니다.';
     } catch (e) {
-      console.log(e);
+      throw new BadRequestException(e.response);
     }
   }
 
@@ -68,16 +68,10 @@ export class HeatlFoodDataService {
       total_data.forEach(async (e) => {
         if (e.BASE_STANDARD) {
           const data = e.BASE_STANDARD.split('\n');
-          // // console.log(data);
           const final_data = {};
           for (let i = 0; i < data.length; i++) {
             if (data[i].includes('표시량')) {
               const split_data = data[i].split(':');
-
-              // split 시 배열 데이터 길이
-              // if (!length_total.includes(split_data.length)) {
-              //   length_total.push(split_data.length);
-              // }
 
               // 하나의 길이 데이터 파싱
               if (split_data.length === 1) {
@@ -150,7 +144,6 @@ export class HeatlFoodDataService {
                     const complete_data = {
                       '진세노사이드 Rg1, Rb1 및 Rg3의 합': find_data,
                     };
-                    // console.log(complete_data);
                   } else if (split_data[0].includes('(표시량')) {
                     const parse_data = split_data[0];
                     const first_index = parse_data.indexOf('(표시량');
@@ -362,7 +355,6 @@ export class HeatlFoodDataService {
                       }
                     }
                   } else if (split_data[0].includes('E')) {
-                    // console.log(complete_data);
                     const parse_data = split_data[0];
                     const first_index = parse_data.indexOf('(');
                     const second_index = parse_data.indexOf('mg');
@@ -413,8 +405,6 @@ export class HeatlFoodDataService {
                         complete_data = {
                           비타민D: `${find_data}µg`,
                         };
-                        // console.log(complete_data);
-                        // console.log(split_data, e._id);
                       } else {
                         const parse_data = split_data[0];
                         const first_index = parse_data.indexOf('(');
@@ -610,8 +600,6 @@ export class HeatlFoodDataService {
                     }
                     if (find_data.includes('표시량')) {
                       find_data = find_data.slice(3, find_data.length).trim();
-
-                      // console.log(find_data);
                     }
                     final_data['엠에스엠'] = `${find_data}g`;
                     const complete_data = {
@@ -775,7 +763,6 @@ export class HeatlFoodDataService {
                       .trim();
                     if (!find_data.length) {
                       find_data = '24';
-                      // console.log(complete_data);
                     } else if (find_data.length > 6) {
                       find_data = '5';
                     }
@@ -838,8 +825,6 @@ export class HeatlFoodDataService {
                     const complete_data = {
                       실라마린: `${find_data}mg`,
                     };
-
-                    // console.log(complete_data);
                   }
                 } else if (split_data[0].includes('셀레늄')) {
                   if (split_data[0].includes('㎍')) {
@@ -33626,8 +33611,6 @@ export class HeatlFoodDataService {
                 } else if (split_data[0].includes('폴리페놀')) {
                 } else if (split_data[0].includes('프로시아니딘')) {
                 } else {
-                  // console.log(split_data, e._id);
-                  // console.log(find_data);
                 }
               }
 
@@ -33942,18 +33925,10 @@ export class HeatlFoodDataService {
             await this.VtestRepository.update(e._id, e);
           }
         }
-
-        // data parsing
-        // e.PRMS_STANDARD =
-
-        // data 저장
-        // await this.VtestRepository.save(e);
       });
-      console.log('end================================');
-      // console.log(length_total);
       return 'hello';
     } catch (e) {
-      console.log(e.message);
+      throw new BadRequestException(e.response);
     }
   }
 
@@ -33986,14 +33961,13 @@ export class HeatlFoodDataService {
             fs.writeFileSync('drug-with-prd.json', JSON.stringify(jsonData));
           })
           .catch((e) => {
-            console.log(e.message, i);
+            throw new BadRequestException(e.response);
           });
       }
 
-      console.log('end======');
       return 'done';
     } catch (e) {
-      console.log(e.message);
+      throw new BadRequestException(e.response);
     }
   }
 }

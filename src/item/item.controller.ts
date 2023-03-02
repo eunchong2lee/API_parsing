@@ -83,7 +83,6 @@ export class ItemController {
     @UploadedFiles() files: Array<Express.Multer.File>,
     @Body(ValidationPipe) itemData: itemRegisterDto,
   ) {
-    console.log(itemData);
     return await this.itemService.PostItem(itemData, files);
   }
 }

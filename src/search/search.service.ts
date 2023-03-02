@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { HealthFoodData } from 'src/HealthFoodData/entities/HealthFoodData.entity';
 import { Repository } from 'typeorm';
@@ -67,7 +67,7 @@ export class SearchService {
       const itemsLength = totalItems.length;
       return { data: { data: items, dataLength: itemsLength } };
     } catch (err) {
-      console.log(err.message);
+      throw new BadRequestException(err.response);
     }
   }
 }

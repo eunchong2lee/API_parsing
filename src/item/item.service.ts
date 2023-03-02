@@ -2,7 +2,7 @@ import {
   BlobServiceClient,
   StorageSharedKeyCredential,
 } from '@azure/storage-blob';
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Workbook } from 'exceljs';
 import { HealthFoodData } from 'src/HealthFoodData/entities/HealthFoodData.entity';
@@ -33,7 +33,7 @@ export class ItemService {
       );
       return { data: items };
     } catch (err) {
-      console.log(err.message);
+      throw new BadRequestException(err.response);
     }
   }
 
@@ -58,7 +58,7 @@ export class ItemService {
 
       return { data: { data: items, dataLength: items_length.length } };
     } catch (err) {
-      console.log(err.message);
+      throw new BadRequestException(err.response);
     }
   }
 
@@ -78,15 +78,13 @@ export class ItemService {
 
       return { data: { item, draft, files, images } };
     } catch (err) {
-      console.log(err.message);
+      throw new BadRequestException(err.response);
     }
   }
 
   // multer upload image
   async PutItem(ItemData, id, files: Array<Express.Multer.File>) {
     try {
-      // await this.ItemRepository.update();
-      console.log(id);
       const [item] = await this.ItemRepository.query(
         `SELECT *
           FROM health_food_data
@@ -95,7 +93,6 @@ export class ItemService {
       );
 
       // ItemData = JSON.parse(ItemData.data);
-      console.log(ItemData);
 
       // data 수정
       item.STTEMNT_NO = ItemData.STTEMNT_NO;
@@ -141,7 +138,7 @@ export class ItemService {
         status: 200,
       };
     } catch (err) {
-      console.log(err.message);
+      throw new BadRequestException(err.response);
     }
   }
 
@@ -183,15 +180,13 @@ export class ItemService {
       );
       return '삭제완료';
     } catch (err) {
-      console.log(err.message);
+      throw new BadRequestException(err.response);
     }
   }
 
   //Post
   async PostItem(body: itemRegisterDto, files: Array<Express.Multer.File>) {
     try {
-      console.log('body', body);
-      // console.log('fils', files);
       const newItem = await this.ItemRepository.save({
         STTEMNT_NO: body.STTEMNT_NO,
         ENTRPS: body.ENTRPS,
@@ -219,9 +214,6 @@ export class ItemService {
         }
       });
 
-      console.log(filesArray);
-      console.log(imagesArray);
-
       // 파일 저장
       if (newItem._id) {
         await Promise.all([
@@ -233,7 +225,7 @@ export class ItemService {
 
       return { data: newItem };
     } catch (err) {
-      console.log(err.message);
+      throw new BadRequestException(err.response);
     }
     return 'hello';
   }
@@ -343,7 +335,7 @@ export class ItemService {
       await workbook.xlsx.write(res);
       res.end();
     } catch (err) {
-      console.log(err);
+      throw new BadRequestException(err.response);
     }
   }
 

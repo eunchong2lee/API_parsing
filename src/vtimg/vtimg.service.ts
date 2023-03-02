@@ -1,5 +1,5 @@
 import { HttpService } from '@nestjs/axios';
-import { Injectable, Logger } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as puppeteer from 'puppeteer';
 import { HealthFoodData } from 'src/HealthFoodData/entities/HealthFoodData.entity';
@@ -23,13 +23,11 @@ export class VtimgService {
 
   async postimage() {
     try {
-      console.log('start =============================================');
       const datas = await this.VtestRepository.query(
         `
             SELECT *
             FROM health_food_data`,
       );
-      console.log('get data================================');
       // Azure Storage resource name
       const accountName = process.env.AZURE_STORAGE_ACCOUNT_NAME;
       if (!accountName) throw Error('Azure Storage accountName not found');
@@ -52,11 +50,10 @@ export class VtimgService {
       const containerClient = await blobServiceClient.getContainerClient(
         containerName,
       );
-      console.log('setting container client ===========');
+
       const browser = await puppeteer.launch({ headless: true });
       for (let i = 0; i < datas.length / 10; i++) {
         const new_datas = datas.slice(i * 10, 10 + i * 10);
-        console.log(new_datas.length, i, datas.length);
         for (const data of new_datas) {
           // await Promise.all(
           // new_datas.map(async (data) => {
@@ -73,7 +70,6 @@ export class VtimgService {
               } else {
                 name = `${data.PRDUCT}`;
               }
-              console.log(name, data._id);
               await page.goto(URL);
               await page.reload();
 
@@ -120,9 +116,8 @@ export class VtimgService {
                 return { img };
               });
               let url;
-              console.log(1);
+
               if (result.img) {
-                console.log(2);
                 const imgResult = await this.httpService.axiosRef.get(
                   result.img.replace(/\?.*$/, ''),
                   {
@@ -130,17 +125,15 @@ export class VtimgService {
                   },
                 );
 
-                console.log(3);
-
                 // fs.writeFileSync(`poster/${data.PRDUCT}.jpg`, imgResult.data);
                 await blockBlobClient.uploadData(imgResult.data);
                 url = blockBlobClient.url;
                 // data.PRMS_IMG = url;
-                console.log(url);
+
                 await this.VtestRepository.update(data._id, data);
               }
             } catch (e) {
-              console.log(e.message);
+              throw new BadRequestException(e.response);
             }
 
             await page.close();
@@ -152,7 +145,7 @@ export class VtimgService {
 
       return 'complete';
     } catch (e) {
-      console.log(e.message);
+      throw new BadRequestException(e.response);
     }
   }
 }
